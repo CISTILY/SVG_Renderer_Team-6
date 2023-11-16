@@ -11,6 +11,7 @@ public:
     virtual ~PolylineSVG();
 
     vector<Point2D> getPoints();
+    sf::Vector2f getCenter();
     void buildPolyline(vector<char*>, vector<char*>, Properties);
     void print();
 };

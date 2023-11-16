@@ -66,11 +66,6 @@ EllipseShape Renderer::getSF_ellip()
     return this->SF_ellip;
 }
 
-//EllipseShape Renderer::getSF_ellip()
-//{
-//    return this->SF_ellip;
-//}
-
 sf::ConvexShape Renderer::getSF_polygon()
 {
     return this->SF_polygon;
@@ -96,9 +91,64 @@ sf::Text Renderer::getSF_text()
     return this->SF_text;
 }
 
-void Renderer::moving()
-{
-    this->SF_rect.move(1.0f, 0);
+sf::Vector2f Renderer::getCenter() {
+    string temp = this->typeName;
+    if (temp == "rect") {
+        return this->getSF_rect().getPosition();
+    }
+    else if (temp == "circle") {
+        return this->getSF_cir().getPosition();
+    }
+
+    else if (temp == "text") {
+        return this->getSF_text().getPosition();
+    }
+
+    else if (temp == "line") {
+        return this->getSF_line().getPosition();
+    }
+
+    else if (temp == "ellipse") {
+        return this->getSF_ellip().getPosition();
+    }
+
+    else if (temp == "polygon") {
+        return this->getSF_polygon().getPosition();
+    }
+
+    else if (temp == "polyline") {
+        return this->getPolyline(). getCenter();
+    }
+}
+
+void Renderer::moving(float x, float y) {
+    this->SF_cir.move(x, y);
+    this->SF_ellip.move(x, y);
+    this->SF_line.move(x, y);
+    this->SF_polygon.move(x, y);
+    this->SF_rect.move(x, y);
+    this->SF_text.move(x, y);
+    for (sf::ConvexShape& fill : (this->SF_fillPolylines)) {
+        fill.move(x, y);
+    }
+    for (sf::RectangleShape& rect : this->SF_outlinePolylines) {
+        rect.move(x, y);
+    }
+}
+
+void Renderer::rotating(float angle) {
+    this->SF_cir.rotate(angle);
+    this->SF_ellip.rotate(angle);
+    this->SF_line.rotate(angle);
+    this->SF_polygon.rotate(angle);
+    this->SF_rect.rotate(angle);
+    this->SF_text.rotate(angle);
+    for (sf::ConvexShape& fill : (this->SF_fillPolylines)) {
+        fill.rotate(angle);
+    }
+    for (sf::RectangleShape& rect : this->SF_outlinePolylines) {
+        rect.rotate(angle);
+    }
 }
 
 string Renderer::getTypeName()
@@ -147,7 +197,9 @@ TextSVG Renderer::getText()
     return this->text;
 }
 
-void Renderer::printShapeInfo(SVGReader reader, Properties props, int& i, const sf::Font& font) {
+
+
+void Renderer::buildAndPrintShapeInfo(SVGReader reader, Properties props, int& i, const sf::Font& font) {
     this->typeName = reader.getNodeName();
     string temp = this->typeName;
     if (temp == "rect") {

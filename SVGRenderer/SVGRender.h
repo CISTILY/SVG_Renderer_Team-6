@@ -83,7 +83,7 @@ public:
     Renderer();
     ~Renderer();
 
-    void printShapeInfo(SVGReader, Properties, int&, const sf::Font&);
+    void buildAndPrintShapeInfo(SVGReader, Properties, int&, const sf::Font&);
 
 private:
     sf::RectangleShape SF_rect;
@@ -113,7 +113,9 @@ public:
     vector<sf::RectangleShape> getSF_outlinePolylines();
     sf::Text getSF_text();
 
-    void moving();
+    sf::Vector2f getCenter();
+    void moving(float, float);
+    void rotating(float);
 
     ////////////////////////////////////////
     float length(float, float, float, float);

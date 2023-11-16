@@ -2,6 +2,7 @@
 
 #include "Properties.h"
 #include "Point2D.h"
+#include "SFML/Graphics.hpp"
 #include <vector>
 #include <iostream>
 
