@@ -1,6 +1,5 @@
 #include "Polyline.h"
 
-
 using namespace std;
 
 PolylineSVG::PolylineSVG() {

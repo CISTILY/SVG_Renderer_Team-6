@@ -18,7 +18,6 @@ private:
     vector<char*> OtherAttrValue;
     static vector<string> content;
 public:
-    SVGReader();
     ~SVGReader();
 
     void setNodeName(char*);

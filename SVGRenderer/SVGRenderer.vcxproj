@@ -132,7 +132,6 @@
   <ItemGroup>
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="Color.cpp" />
-    <ClCompile Include="Draw.cpp" />
     <ClCompile Include="Ellipse.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -149,7 +148,6 @@
   <ItemGroup>
     <ClInclude Include="Circle.h" />
     <ClInclude Include="Color.h" />
-    <ClInclude Include="Draw.h" />
     <ClInclude Include="Ellipse.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="Point2D.h" />
