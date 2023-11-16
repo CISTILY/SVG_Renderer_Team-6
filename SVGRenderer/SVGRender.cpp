@@ -66,6 +66,11 @@ EllipseShape Renderer::getSF_ellip()
     return this->SF_ellip;
 }
 
+//EllipseShape Renderer::getSF_ellip()
+//{
+//    return this->SF_ellip;
+//}
+
 sf::ConvexShape Renderer::getSF_polygon()
 {
     return this->SF_polygon;
@@ -117,7 +122,7 @@ sf::Vector2f Renderer::getCenter() {
     }
 
     else if (temp == "polyline") {
-        return this->getPolyline(). getCenter();
+        return this->getPolyline().getCenter();
     }
 }
 
@@ -304,7 +309,7 @@ sf::Text Renderer::createText(TextSVG txt, const sf::Font& font)
     text.setPosition(txt.getCoordinateX(), txt.getCoordinateY());
     text.setFillColor(fillColor);
     text.setCharacterSize(txt.getFont_size());
-    text.setOrigin(txt.getFont_size(), txt.getFont_size());
+    text.setOrigin(txt.getFont_size() * 0.1, txt.getFont_size());
 
     return text;
 }
@@ -367,11 +372,11 @@ EllipseShape Renderer::createEllipse(EllipseSVG ellip)
 
     EllipseShape ellipse;
     ellipse.setPosition(ellip.getCoordinateX(), ellip.getCoordinateY());
-    ellipse.setRadius(radius);
+    ellipse.setRadius(radius + sf::Vector2f(ellip.getProperties().getStrokeWidth(), -ellip.getProperties().getStrokeWidth()));
     ellipse.setFillColor(fillColor);
     ellipse.setOutlineColor(outlineColor);
     ellipse.setOutlineThickness(ellip.getProperties().getStrokeWidth());
-    ellipse.setOrigin(radius);
+    ellipse.setOrigin(radius.x * 0.8f, radius.y / 0.8f);
 
     return ellipse;
 }
@@ -425,7 +430,7 @@ sf::ConvexShape Renderer::createPolygon(PolygonSVG plg)
     int i = 0;
     for (const sf::Vector2f& point : points)
     {
-        polygon.setPoint(i++, point);
+        polygon.setPoint(i++, point + sf::Vector2f(plg.getProperties().getStrokeWidth() * 1.5f, -plg.getProperties().getStrokeWidth()));
     }
     return polygon;
 }

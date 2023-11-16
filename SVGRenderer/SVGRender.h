@@ -134,4 +134,3 @@ public:
     vector<sf::ConvexShape> createPolyline(PolylineSVG);
     vector<sf::RectangleShape> createOutlinePolyline(PolylineSVG);
 };
-

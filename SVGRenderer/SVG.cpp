@@ -4,6 +4,13 @@ using namespace std;
 
 vector<string> SVGReader::content;
 
+SVGReader::SVGReader()
+{
+    this->nodeName = NULL;
+
+    cout << "SVGReader::Default Constructor" << endl;
+}
+
 SVGReader::~SVGReader() {
     cout << "SVGReader::Destructor" << endl;
 }
