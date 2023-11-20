@@ -1,7 +1,8 @@
 #include "rapidxml.hpp"
 #include "Shape.h"
 #include "SVG.h"
-#include "SVGRender.h"
+#include "Renderer.h"
+#include "ShapeData.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
@@ -40,8 +41,10 @@ int main() {
     xml_node<>* node = rootNode->first_node();
 
     int i = 0, j = 0;
-    Renderer temp;
-    vector<Renderer> print;
+    ShapeData temp;
+    SF_ShapeData tempRen;
+    vector<ShapeData> data;
+    vector<SF_ShapeData> print;
 
     // Set up SFML window
     sf::ContextSettings settings;
@@ -63,7 +66,6 @@ int main() {
 
     // Parse SVG file and create shapes
     while (node != NULL) {
-        Properties props;
         SVGReader reader;
 
         reader.setNodeName(node->name());
@@ -74,12 +76,14 @@ int main() {
 
             char* attributeName = Attr->name();
             char* attributeValue = Attr->value();
-            reader.PropertiesBuilder(attributeName, attributeValue, props);
+            reader.PropertiesBuilder(attributeName, attributeValue);
         }
 
-        // Create Renderer by build and print shape information
-        print.push_back(temp);
-        print[j].buildAndPrintShapeInfo(reader, props, i, font);
+        // Create ShapeData by build and print shape information
+        data.push_back(temp);
+        print.push_back(tempRen);
+        data[j].buildAndPrintShapeInfo(reader, i);
+        print[j].buildSFShape(data[j], font);
         j++;
 
         node = node->next_sibling();
@@ -122,8 +126,8 @@ int main() {
                     if (num == print.size()) {
                         num = 0;
                     }
-                    cout << print[num].getTypeName() << endl;
-                    view.setCenter(print[num].getCenter());
+                    cout << data[num].getTypeName() << endl;
+                    view.setCenter(print[num].getCenter(data[num]));
                     window.setView(view);
                 }
             }
@@ -144,23 +148,23 @@ int main() {
         // Draw shapes using SFML
         for (int i = 0; i < print.size(); ++i)
         {
-            if (print[i].getTypeName() == "rect")
+            if (data[i].getTypeName() == "rect")
                 window.draw(print[i].getSF_rect());
-            if (print[i].getTypeName() == "circle")
+            if (data[i].getTypeName() == "circle")
                 window.draw(print[i].getSF_cir());
-            if (print[i].getTypeName() == "ellipse")
+            if (data[i].getTypeName() == "ellipse")
                 window.draw(print[i].getSF_ellip());
-            if (print[i].getTypeName() == "line")
+            if (data[i].getTypeName() == "line")
                 window.draw(print[i].getSF_line());
-            if (print[i].getTypeName() == "polygon")
+            if (data[i].getTypeName() == "polygon")
                 window.draw(print[i].getSF_polygon());
-            if (print[i].getTypeName() == "text")
+            if (data[i].getTypeName() == "text")
                 window.draw(print[i].getSF_text());
-            if (print[i].getTypeName() == "polyline")
+            if (data[i].getTypeName() == "polyline")
             {
                 for (const sf::ConvexShape& filPolyline : print[i].getSF_fillPolylines())
                     window.draw(filPolyline);
-                if (print[i].getFlagStroke())
+                if (data[i].getFlagStroke())
                 {
                     for (const sf::RectangleShape& outline : print[i].getSF_outlinePolylines())
                         window.draw(outline);
@@ -199,7 +203,7 @@ int main() {
                 print[num].moving(MOVEDIS, 0);
             else {
                 for (int l = 0; l < print.size(); l++) {
-                    if (print[l].getTypeName() == Type[type])
+                    if (data[l].getTypeName() == Type[type])
                         print[l].moving(MOVEDIS, 0);
                 }
             }
@@ -209,7 +213,7 @@ int main() {
                 print[num].moving(-MOVEDIS, 0);
             else {
                 for (int l = 0; l < print.size(); l++) {
-                    if (print[l].getTypeName() == Type[type])
+                    if (data[l].getTypeName() == Type[type])
                         print[l].moving(-MOVEDIS, 0);
                 }
             }
@@ -219,7 +223,7 @@ int main() {
                 print[num].moving(0, -MOVEDIS);
             else {
                 for (int l = 0; l < print.size(); l++) {
-                    if (print[l].getTypeName() == Type[type])
+                    if (data[l].getTypeName() == Type[type])
                         print[l].moving(0, -MOVEDIS);
                 }
             }
@@ -229,7 +233,7 @@ int main() {
                 print[num].moving(0, MOVEDIS);
             else {
                 for (int l = 0; l < print.size(); l++) {
-                    if (print[l].getTypeName() == Type[type])
+                    if (data[l].getTypeName() == Type[type])
                         print[l].moving(0, MOVEDIS);
                 }
             }
@@ -239,7 +243,7 @@ int main() {
                 print[num].rotating(5);
             else {
                 for (int l = 0; l < print.size(); l++) {
-                    if (print[l].getTypeName() == Type[type])
+                    if (data[l].getTypeName() == Type[type])
                         print[l].rotating(5);
                 }
             }
@@ -249,7 +253,7 @@ int main() {
                 print[num].rotating(-5);
             else {
                 for (int l = 0; l < print.size(); l++) {
-                    if (print[l].getTypeName() == Type[type])
+                    if (data[l].getTypeName() == Type[type])
                         print[l].rotating(-5);
                 }
             }

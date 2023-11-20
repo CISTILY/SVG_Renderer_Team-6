@@ -10,6 +10,6 @@ PolygonSVG::~PolygonSVG() {
     cout << "Polygon::Destructor" << endl;
 }
 
-void PolygonSVG::buildPolygon(vector<char*> name, vector<char*> value, Properties polygon) {
-    this->buildPolyline(name, value, polygon);
+void PolygonSVG::buildPolygon(vector<char*> name, vector<char*> value) {
+    this->buildPolyline(name, value);
 }

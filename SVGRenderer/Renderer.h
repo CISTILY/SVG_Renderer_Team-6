@@ -3,15 +3,7 @@
 #include <vector>
 #include <cmath>
 #include <SFML/Graphics.hpp>
-#include "Shape.h"
-#include "SVG.h"
-#include "Rect.h"
-#include "Circle.h"
-#include "Polygon.h"
-#include "Text.h"
-#include "Line.h"
-#include "Ellipse.h"
-#include "Polyline.h"
+#include "ShapeData.h"
 
 using namespace std;
 
@@ -54,37 +46,7 @@ public:
     void updatePoints(sf::Vector2f, vector<sf::Vector2f>&);
 };
 
-
-
-class Renderer {
-private:
-    char* typeName;
-    bool flagStroke;
-
-    RectangleSVG rect;
-    CircleSVG cir;
-    EllipseSVG ellip;
-    PolygonSVG polygon;
-    LineSVG line;
-    PolylineSVG polyline;
-    TextSVG text;
-
-public:
-    string getTypeName();
-    bool getFlagStroke();
-    RectangleSVG getRect();
-    CircleSVG getCir();
-    EllipseSVG getEllip();
-    PolygonSVG getPolygon();
-    LineSVG getLine();
-    PolylineSVG getPolyline();
-    TextSVG getText();
-
-    Renderer();
-    ~Renderer();
-
-    void buildAndPrintShapeInfo(SVGReader, Properties, int&, const sf::Font&);
-
+class SF_ShapeData {
 private:
     sf::RectangleShape SF_rect;
     sf::CircleShape SF_cir;
@@ -96,13 +58,10 @@ private:
     sf::Text SF_text;
 
 public:
-    void setSF_rect();
-    void setSF_cir();
-    void setSF_ellip();
-    void setSF_polygon();
-    void setSF_line();
-    void setSF_Polylines();
-    void setSF_text(const sf::Font&);
+    SF_ShapeData();
+    ~SF_ShapeData();
+
+    void buildSFShape(ShapeData, const sf::Font&);
 
     sf::RectangleShape getSF_rect();
     sf::CircleShape getSF_cir();
@@ -113,7 +72,8 @@ public:
     vector<sf::RectangleShape> getSF_outlinePolylines();
     sf::Text getSF_text();
 
-    sf::Vector2f getCenter();
+    sf::Vector2f getCenter(ShapeData);
+    sf::Vector2f getCenterPolyline(PolylineSVG);
     void moving(float, float);
     void rotating(float);
 
@@ -130,7 +90,8 @@ public:
     sf::ConvexShape createPolygon(PolygonSVG);
     sf::ConvexShape createPolygon(int, sf::Color, sf::Color, float, vector<sf::Vector2f>);
 
-
     vector<sf::ConvexShape> createPolyline(PolylineSVG);
     vector<sf::RectangleShape> createOutlinePolyline(PolylineSVG);
+
+
 };

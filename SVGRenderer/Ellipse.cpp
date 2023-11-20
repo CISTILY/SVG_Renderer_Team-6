@@ -13,7 +13,7 @@ EllipseSVG::~EllipseSVG() {
     cout << "Ellipse::Destructor" << endl;
 }
 
-void EllipseSVG::buildEllipse(vector<char*> name, vector<char*> value, Properties ellipse) {
+void EllipseSVG::buildEllipse(vector<char*> name, vector<char*> value) {
     string temp;
     for (int i = 0; i < name.size(); ++i) {
         temp = name[i];
@@ -26,7 +26,6 @@ void EllipseSVG::buildEllipse(vector<char*> name, vector<char*> value, Propertie
         else if (temp == "ry")
             this->setRadiusY(atoi(value[i]));
     }
-    this->shapeProps = ellipse;
 }
 
 void EllipseSVG::setRadiusX(int x) {
@@ -50,5 +49,5 @@ int EllipseSVG::getRadiusY()
 void EllipseSVG::print() {
     this->coordinate.print();
     cout << " " << this->rx << " " << this->ry << " ";
-    this->shapeProps.print();
+    Shape::print();
 }

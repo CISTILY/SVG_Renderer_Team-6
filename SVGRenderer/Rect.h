@@ -8,12 +8,12 @@ public:
 	RectangleSVG();
 	~RectangleSVG();
 
-	void buildRect(vector<char*>, vector<char*>, Properties);
+	void buildRect(vector<char*>, vector<char*>);
 
 	void setWidth(int);
 	void setHeight(int);
 	int getWidth();
 	int getHeight();
 
-	void print();
+	void print() override;
 };

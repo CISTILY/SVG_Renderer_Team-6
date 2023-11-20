@@ -9,6 +9,6 @@ public:
     CircleSVG();
     ~CircleSVG();
 
-    void buildCircle(vector<char*>, vector<char*>, Properties);
+    void buildCircle(vector<char*>, vector<char*>);
     void print() override;
 };

@@ -8,5 +8,5 @@ public:
     PolygonSVG();
     ~PolygonSVG();
 
-    void buildPolygon(vector<char*>, vector<char*>, Properties);
+    void buildPolygon(vector<char*>, vector<char*>);
 };

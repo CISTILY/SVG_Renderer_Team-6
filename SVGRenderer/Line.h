@@ -11,6 +11,6 @@ public:
     ~LineSVG();
 
     Point2D getEnd();
-    void buildLine(vector<char*>, vector<char*>, Properties);
-    void print();
+    void buildLine(vector<char*>, vector<char*>);
+    void print() override;
 };

@@ -18,4 +18,3 @@ public:
 	int getGreen();
 	int getBlue();
 };
-

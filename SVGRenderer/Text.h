@@ -11,7 +11,7 @@ public:
 
     string getContent();
     int getFont_size();
-    void buildText(vector<char*>, vector<char*>, string, Properties);
+    void buildText(vector<char*>, vector<char*>, string);
     void setFontSize(int);
-    void print();
+    void print() override;
 };

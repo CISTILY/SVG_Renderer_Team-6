@@ -26,8 +26,8 @@ CircleSVG::~CircleSVG() {
 + CricleSVG variable with correct properties from "sample.svg"
 */
 /////////////////////////////////////////////////////////////////
-void CircleSVG::buildCircle(vector<char*> name, vector<char*> value, Properties circle) {
-    this->buildEllipse(name, value, circle);
+void CircleSVG::buildCircle(vector<char*> name, vector<char*> value) {
+    this->buildEllipse(name, value);
 }
 /////////////////////////////////////////////////////////////////
 
@@ -35,5 +35,5 @@ void CircleSVG::buildCircle(vector<char*> name, vector<char*> value, Properties 
 void CircleSVG::print() {
     this->coordinate.print();
     cout << " " << this->rx << " ";
-    this->shapeProps.print();
+    Shape::print();
 }

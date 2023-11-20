@@ -12,7 +12,7 @@ public:
     EllipseSVG();
     virtual ~EllipseSVG();
 
-    void buildEllipse(vector<char*>, vector<char*>, Properties);
+    void buildEllipse(vector<char*>, vector<char*>);
 
     void setRadiusX(int);
     void setRadiusY(int);

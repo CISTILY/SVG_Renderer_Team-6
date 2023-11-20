@@ -15,7 +15,7 @@ Point2D LineSVG::getEnd()
     return this->end;
 }
 
-void LineSVG::buildLine(vector<char*> name, vector<char*> value, Properties line) {
+void LineSVG::buildLine(vector<char*> name, vector<char*> value) {
     string temp;
     for (int i = 0; i < name.size(); ++i) {
         temp = name[i];
@@ -28,7 +28,6 @@ void LineSVG::buildLine(vector<char*> name, vector<char*> value, Properties line
         else if (temp == "y2")
             this->end.setY(atoi(value[i]));
     }
-    this->shapeProps = line;
 }
 
 void LineSVG::print() {
@@ -36,5 +35,5 @@ void LineSVG::print() {
     cout << " ";
     this->end.print();
     cout << " ";
-    this->shapeProps.print();
+    Shape::print();
 }

@@ -138,9 +138,10 @@
     <ClCompile Include="Point2D.cpp" />
     <ClCompile Include="Polygon.cpp" />
     <ClCompile Include="Polyline.cpp" />
-    <ClCompile Include="Properties.cpp" />
     <ClCompile Include="Rect.cpp" />
-    <ClCompile Include="SVGRender.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Renderer.h" />
+    <ClCompile Include="ShapeData.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="SVG.cpp" />
     <ClCompile Include="Text.cpp" />
@@ -153,10 +154,9 @@
     <ClInclude Include="Point2D.h" />
     <ClInclude Include="Polygon.h" />
     <ClInclude Include="Polyline.h" />
-    <ClInclude Include="Properties.h" />
     <ClInclude Include="rapidxml.hpp" />
     <ClInclude Include="Rect.h" />
-    <ClInclude Include="SVGRender.h" />
+    <ClInclude Include="ShapeData.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="SVG.h" />
     <ClInclude Include="Text.h" />

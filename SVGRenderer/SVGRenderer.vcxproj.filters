@@ -30,9 +30,6 @@
     <ClCompile Include="Polyline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Properties.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Shape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -54,7 +51,13 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SVGRender.cpp">
+    <ClCompile Include="ShapeData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -80,9 +83,6 @@
     <ClInclude Include="Polyline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Properties.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="rapidxml.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -98,7 +98,7 @@
     <ClInclude Include="Text.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SVGRender.h">
+    <ClInclude Include="ShapeData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

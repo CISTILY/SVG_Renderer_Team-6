@@ -5,7 +5,7 @@
 #include <cstring>
 #include <fstream>
 #include <string>
-#include "Properties.h"
+#include "Shape.h"
 
 using namespace std;
 
@@ -24,9 +24,11 @@ public:
     void setNodeName(char*);
     char* getNodeName();
 
-    void PropertiesBuilder(char*, char*, Properties&);
+    void PropertiesBuilder(char*, char*);
     static void readContent();
     static vector<string> getContent();
     vector<char*> getOtherAttrName();
     vector<char*> getOtherAttrValue();
+    vector<char*> getPropsAttrName();
+    vector<char*> getPropsAttrValue();
 };
