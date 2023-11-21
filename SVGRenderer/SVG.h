@@ -18,17 +18,22 @@ private:
     vector<char*> OtherAttrValue;
     static vector<string> content;
 public:
+    // Constructor
     SVGReader();
+
+    // Destructor
     ~SVGReader();
 
+    // Setters
     void setNodeName(char*);
-    char* getNodeName();
-
     void PropertiesBuilder(char*, char*);
     static void readContent();
-    static vector<string> getContent();
+    
+    // Getters
+    char* getNodeName();
     vector<char*> getOtherAttrName();
     vector<char*> getOtherAttrValue();
     vector<char*> getPropsAttrName();
     vector<char*> getPropsAttrValue();
+    static vector<string> getContent();
 };

@@ -1,4 +1,5 @@
 #pragma once
+
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -19,6 +20,7 @@ private:
     char* typeName;
     bool flagStroke;
 
+    // shape variables
     RectangleSVG rect;
     CircleSVG cir;
     EllipseSVG ellip;
@@ -26,8 +28,17 @@ private:
     LineSVG line;
     PolylineSVG polyline;
     TextSVG text;
-
 public:
+    // Constructor
+    ShapeData();
+
+    // Destructor
+    ~ShapeData();
+
+    // Assign data for shape variables
+    void buildAndPrintShapeInfo(SVGReader, int&);
+
+    // Getters
     string getTypeName();
     bool getFlagStroke();
     RectangleSVG getRect();
@@ -37,9 +48,4 @@ public:
     LineSVG getLine();
     PolylineSVG getPolyline();
     TextSVG getText();
-
-    ShapeData();
-    ~ShapeData();
-
-    void buildAndPrintShapeInfo(SVGReader, int&);
 };

@@ -14,29 +14,6 @@ Shape::~Shape() {
     cout << "Shape::Destructor" << endl;
 }
 
-int Shape::getCoordinateX() {
-    return this->coordinate.getX();
-}
-
-int Shape::getCoordinateY() {
-    return this->coordinate.getY();
-}
-
-///////////////// buildProperties function ////////////////////
-/*
-* Input parameters:
-+ vector<char*> name contains vector of Attribute Name
-+ vector<char*> value contains vector of Attribute Value
-
-* Usage:
-+ Type cast name[i] from char* to string
-+ Convert value[i] to corresponding type (atoi for array to int)
-+ Assign value to corresponding variable
-
-* Output:
-+ Properties variable with correct common properties from "sample.svg"
-*/
-///////////////////////////////////////////////////////////////
 void Shape::buildProperties(vector<char*> name, vector<char*> value) {
     string temp;
     for (int i = 0; i < name.size(); ++i) {
@@ -64,7 +41,6 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
             this->fill_opacity = atof(value[i]);
     }
 }
-///////////////////////////////////////////////////////////////
 
 void Shape::print() {
     cout << "(fill-opacity: " << this->fill_opacity << "), (fill: ";
@@ -72,6 +48,14 @@ void Shape::print() {
     cout << "), (stroke: ";
     this->stroke.print();
     cout << "), (stroke-width: " << this->stroke_width << "), (stroke-opacity:" << this->stroke_opacity << ")" << endl;
+}
+
+int Shape::getCoordinateX() {
+    return this->coordinate.getX();
+}
+
+int Shape::getCoordinateY() {
+    return this->coordinate.getY();
 }
 
 Color Shape::getStroke() {
