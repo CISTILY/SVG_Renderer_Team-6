@@ -9,15 +9,23 @@ protected:
     int rx;
     int ry;
 public:
+    // Constructor
     EllipseSVG();
+
+    // Destructor
     virtual ~EllipseSVG();
 
-    void buildEllipse(vector<char*>, vector<char*>, Properties);
+    // Build ellipse shape
+    void buildEllipse(vector<char*>, vector<char*>);
 
+    // Setters
     void setRadiusX(int);
     void setRadiusY(int);
+
+    // Getters
     int getRadiusX();
     int getRadiusY();
 
+    // Print data of ellipse
     virtual void print();
 };

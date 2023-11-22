@@ -11,7 +11,7 @@ RectangleSVG::~RectangleSVG() {
     cout << "Rectangle::Destructor" << endl;
 }
 
-void RectangleSVG::buildRect(vector<char*> name, vector<char*> value, Properties rect) {
+void RectangleSVG::buildRect(vector<char*> name, vector<char*> value) {
     string temp;
     for (int i = 0; i < name.size(); ++i) {
         temp = name[i];
@@ -24,7 +24,6 @@ void RectangleSVG::buildRect(vector<char*> name, vector<char*> value, Properties
         else if (temp == "height")
             this->setHeight(atoi(value[i]));
     }
-    this->shapeProps = rect;
 }
 
 void RectangleSVG::setWidth(int w) {
@@ -44,7 +43,7 @@ int RectangleSVG::getWidth() {
 }
 
 void RectangleSVG::print() {
-    coordinate.print();
+    this->coordinate.print();
     cout << " " << this->width << " " << this->height << " ";
-    shapeProps.print();
+    Shape::print();
 }

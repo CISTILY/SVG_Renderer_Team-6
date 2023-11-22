@@ -22,7 +22,7 @@ int TextSVG::getFont_size()
     return this->font_size;
 }
 
-void TextSVG::buildText(vector<char*> name, vector<char*> value, string content, Properties effect) {
+void TextSVG::buildText(vector<char*> name, vector<char*> value, string content) {
     string temp;
     for (int i = 0; i < name.size(); ++i) {
         temp = name[i];
@@ -33,7 +33,6 @@ void TextSVG::buildText(vector<char*> name, vector<char*> value, string content,
         else if (temp == "font-size")
             this->setFontSize(atoi(value[i]));
     }
-    this->shapeProps = effect;
     this->content = content;
 }
 
@@ -45,5 +44,5 @@ void TextSVG::print() {
     this->coordinate.print();
     cout << " " << this->font_size << " ";
     cout << this->content;
-    this->shapeProps.print();
+    Shape::print();
 }

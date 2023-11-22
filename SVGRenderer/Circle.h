@@ -6,9 +6,15 @@ using namespace std;
 
 class CircleSVG : public EllipseSVG {
 public:
+    // Constructor
     CircleSVG();
+
+    // Destructor
     ~CircleSVG();
 
-    void buildCircle(vector<char*>, vector<char*>, Properties);
+    // Build circle
+    void buildCircle(vector<char*>, vector<char*>);
+
+    // Print data of circle
     void print() override;
 };

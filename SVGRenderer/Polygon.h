@@ -5,8 +5,12 @@ using namespace std;
 
 class PolygonSVG : public PolylineSVG {
 public:
+    // Constructor
     PolygonSVG();
+
+    // Destructor
     ~PolygonSVG();
 
-    void buildPolygon(vector<char*>, vector<char*>, Properties);
+    // Build polygon shape
+    void buildPolygon(vector<char*>, vector<char*>);
 };

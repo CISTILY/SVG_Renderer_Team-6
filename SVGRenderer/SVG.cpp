@@ -25,7 +25,7 @@ char* SVGReader::getNodeName()
     return nodeName;
 }
 
-void SVGReader::PropertiesBuilder(char* attrName, char* attrVal, Properties& shape) {
+void SVGReader::PropertiesBuilder(char* attrName, char* attrVal) {
 
     if (strstr(attrName, "fill-opacity") != NULL || strstr(attrName, "fill") != NULL || strstr(attrName, "stroke-opacity") != NULL
         || strstr(attrName, "stroke-width") != NULL || strstr(attrName, "stroke") != NULL) {
@@ -36,8 +36,6 @@ void SVGReader::PropertiesBuilder(char* attrName, char* attrVal, Properties& sha
         OtherAttrName.push_back(attrName);
         OtherAttrValue.push_back(attrVal);
     }
-
-    shape.buildProperties(PropsAttrName, PropsAttrValue);
 }
 
 void SVGReader::readContent() {
@@ -66,6 +64,14 @@ vector<char*> SVGReader::getOtherAttrName() {
 
 vector<char*> SVGReader::getOtherAttrValue() {
     return this->OtherAttrValue;
+}
+
+vector<char*> SVGReader::getPropsAttrName() {
+    return this->PropsAttrName;
+}
+
+vector<char*> SVGReader::getPropsAttrValue() {
+    return this->PropsAttrValue;
 }
 
 vector<string> SVGReader::getContent() {

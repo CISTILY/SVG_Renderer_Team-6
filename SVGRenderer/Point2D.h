@@ -9,14 +9,21 @@ private:
 	int x;
 	int y;
 public:
+	// Constructor
 	Point2D();
 	Point2D(string);
+
+	// Destructor
 	~Point2D();
 
+	// Setters
 	void setX(int);
 	void setY(int);
-	void print();
 
+	// Getters
 	int getX();
 	int getY();
+
+	// Print data of Point2D
+	void print();
 };

@@ -8,14 +8,20 @@ class Color {
 private:
 	int red, green, blue;
 public:
+	// Constructor
 	Color();
+
+	// Destructor
 	~Color();
 
+	// Setters
 	void setColor(string);
-	void print();
 
+	// Getters
 	int getRed();
 	int getGreen();
 	int getBlue();
-};
 
+	// Print data of color
+	void print();
+};

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Properties.h"
+#include "Color.h"
 #include "Point2D.h"
 #include "SFML/Graphics.hpp"
 #include <vector>
@@ -11,12 +11,32 @@ using namespace std;
 class Shape {
 protected:
     Point2D coordinate;
-    Properties shapeProps;
+    bool flagStroke;
+    int stroke_width;
+    double fill_opacity;
+    double stroke_opacity;
+    Color fill;
+    Color stroke;
 public:
+    // Constructor
     Shape();
+
+    // Destructor
     virtual ~Shape();
 
-    int getCoordinateX();
+    // Setters
+    void buildProperties(vector<char*>, vector<char*>);
+
+    // Getters
+    int getCoordinateX(); 
     int getCoordinateY();
-    Properties getProperties();
+    bool getFlagStroke();
+    int getStrokeWidth();
+    double getStrokeOpacity();
+    double getFillOpacity();
+    Color getStroke();
+    Color getFill();
+
+    // Print out attributes
+    virtual void print();
 };
