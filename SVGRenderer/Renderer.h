@@ -45,6 +45,9 @@ public:
     sf::Vector2f getP1();
     sf::Vector2f getP2();
 
+    float getA();
+    float getB();
+
     // Create line from 2 points
     Line createLineFrom2Points(sf::Vector2f, sf::Vector2f);
 
@@ -60,6 +63,11 @@ public:
     // Update point
     void updatePoints(sf::Vector2f, vector<sf::Vector2f>&);
 };
+
+sf::Vector2f findCenterPoint(vector<sf::Vector2f>);
+float findDelta(float, float, float);
+sf::Vector2f findNewPoint(sf::Vector2f, sf::Vector2f, float);
+vector<sf::Vector2f> resizePolygon(vector<sf::Vector2f>, float);
 
 class SF_ShapeData {
 private:

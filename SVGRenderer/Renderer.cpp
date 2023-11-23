@@ -213,7 +213,7 @@ sf::Text SF_ShapeData::createText(TextSVG txt, const sf::Font& font)
     text.setPosition(txt.getCoordinateX(), txt.getCoordinateY());
     text.setFillColor(fillColor);
     text.setCharacterSize(txt.getFont_size());
-    text.setOrigin(txt.getFont_size() * 0.1, txt.getFont_size());
+    text.setOrigin(txt.getFont_size() - 50, txt.getFont_size());
 
     return text;
 }
@@ -235,6 +235,7 @@ sf::RectangleShape SF_ShapeData::createRectangle(RectangleSVG rectangle)
     rect.setOutlineThickness(rectangle.getStrokeWidth());
     rect.setOutlineColor(outlineColor);
     rect.setFillColor(fillColor);
+    rect.setOrigin(0, -3);
 
     return rect;
 }
@@ -252,7 +253,7 @@ sf::CircleShape SF_ShapeData::createCircle(CircleSVG cir)
 
     sf::CircleShape circle;
     circle.setPosition(cir.getCoordinateX(), cir.getCoordinateY());
-    circle.setRadius(cir.getRadiusX());
+    circle.setRadius(cir.getRadiusX() - cir.getStrokeWidth() / 2);
     circle.setFillColor(fillColor);
     circle.setOutlineColor(outlineColor);
     circle.setOutlineThickness(cir.getStrokeWidth());
@@ -276,11 +277,11 @@ EllipseShape SF_ShapeData::createEllipse(EllipseSVG ellip)
 
     EllipseShape ellipse;
     ellipse.setPosition(ellip.getCoordinateX(), ellip.getCoordinateY());
-    ellipse.setRadius(radius + sf::Vector2f(ellip.getStrokeWidth(), -ellip.getStrokeWidth()));
+    ellipse.setRadius(radius + sf::Vector2f(ellip.getStrokeWidth(), -ellip.getStrokeWidth() * 0.5f));
     ellipse.setFillColor(fillColor);
     ellipse.setOutlineColor(outlineColor);
     ellipse.setOutlineThickness(ellip.getStrokeWidth());
-    ellipse.setOrigin(radius.x * 0.8f, radius.y / 0.8f);
+    ellipse.setOrigin(radius.x * 0.9f, radius.y / 0.9f);
 
     return ellipse;
 }
@@ -297,6 +298,7 @@ sf::RectangleShape SF_ShapeData::createLine(LineSVG l)
     line.setPosition(l.getCoordinateX(), l.getCoordinateY());
     line.setRotation(angle(l.getCoordinateX(), l.getCoordinateY(), l.getEnd().getX(), l.getEnd().getY()));
     line.setFillColor(fillColor);
+    line.setOrigin(0, 4);
 
     return line;
 }
@@ -332,9 +334,10 @@ sf::ConvexShape SF_ShapeData::createPolygon(PolygonSVG plg)
     polygon.setOutlineColor(outlineColor);
     polygon.setOutlineThickness(plg.getStrokeWidth());
     int i = 0;
-    for (const sf::Vector2f& point : points)
+    vector<sf::Vector2f> newPoints = resizePolygon(points, plg.getStrokeWidth());
+    for (const sf::Vector2f& point : newPoints)
     {
-        polygon.setPoint(i++, point + sf::Vector2f(plg.getStrokeWidth() * 1.5f, -plg.getStrokeWidth()));
+        polygon.setPoint(i++, point + sf::Vector2f(plg.getStrokeWidth() - 5, plg.getStrokeWidth() - 15));
     }
     return polygon;
 }
@@ -363,6 +366,16 @@ sf::Vector2f Line::getP1()
 sf::Vector2f Line::getP2()
 {
     return this->p2;
+}
+
+float Line::getA()
+{
+    return a;
+}
+
+float Line::getB()
+{
+    return b;
 }
 
 Line Line::createLineFrom2Points(sf::Vector2f A, sf::Vector2f B)
@@ -571,7 +584,6 @@ vector<sf::RectangleShape> SF_ShapeData::createOutlinePolyline(PolylineSVG pll)
     for (auto& point : pll.getPoints()) {
         points.push_back(sf::Vector2f(static_cast<float>(point.getX()), static_cast<float>(point.getY())));
     }
-    points.push_back(points[0]);
 
     vector<Line> lines;
     Line line;
@@ -589,8 +601,30 @@ vector<sf::RectangleShape> SF_ShapeData::createOutlinePolyline(PolylineSVG pll)
     sf::RectangleShape outline;
     for (int i = 0; i < lines.size(); i++)
     {
-        outline = temp.createLine(lines[i].getP1().x, lines[i].getP1().y, lines[i].getP2().x, lines[i].getP2().y, outlineColor, pll.getStrokeWidth());
-        outlinePolylines.push_back(outline);
+        if (lines[i].getP1().x == lines[i].getP2().x && lines[i].getP1().y > lines[i].getP2().y)
+        {
+            outline = temp.createLine(lines[i].getP1().x - pll.getStrokeWidth() / 2, lines[i].getP1().y - pll.getStrokeWidth() / 2, lines[i].getP2().x - pll.getStrokeWidth() / 2, lines[i].getP2().y + pll.getStrokeWidth() / 2, outlineColor, pll.getStrokeWidth());
+            outlinePolylines.push_back(outline);
+            outline = temp.createLine(lines[i].getP2().x - pll.getStrokeWidth() / 2, lines[i].getP2().y + pll.getStrokeWidth() / 2, lines[i].getP2().x - pll.getStrokeWidth() / 2, lines[i].getP2().y - pll.getStrokeWidth() / 2, outlineColor, pll.getStrokeWidth());
+            outlinePolylines.push_back(outline);
+        }
+        else if (lines[i].getP1().x == lines[i].getP2().x && lines[i].getP1().y < lines[i].getP2().y)
+        {
+            outline = temp.createLine(lines[i].getP1().x + pll.getStrokeWidth() / 2, lines[i].getP1().y + pll.getStrokeWidth() / 2, lines[i].getP2().x + pll.getStrokeWidth() / 2, lines[i].getP2().y, outlineColor, pll.getStrokeWidth());
+            outlinePolylines.push_back(outline);
+            outline = temp.createLine(lines[i].getP2().x + pll.getStrokeWidth() / 2, lines[i].getP2().y, lines[i].getP2().x + pll.getStrokeWidth() / 2, lines[i].getP2().y + pll.getStrokeWidth() / 2, outlineColor, pll.getStrokeWidth());
+            outlinePolylines.push_back(outline);
+        }
+        else if (lines[i].getP1().x > lines[i].getP2().x && lines[i].getP1().y == lines[i].getP2().y)
+        {
+            outline = temp.createLine(lines[i].getP1().x - pll.getStrokeWidth() / 2, lines[i].getP1().y + pll.getStrokeWidth() / 2, lines[i].getP2().x - pll.getStrokeWidth() / 2, lines[i].getP2().y + pll.getStrokeWidth() / 2, outlineColor, pll.getStrokeWidth());
+            outlinePolylines.push_back(outline);
+        }
+        else if (lines[i].getP1().x < lines[i].getP2().x && lines[i].getP1().y == lines[i].getP2().y)
+        {
+            outline = temp.createLine(lines[i].getP1().x + pll.getStrokeWidth() / 2, lines[i].getP1().y - pll.getStrokeWidth() / 2, lines[i].getP2().x + pll.getStrokeWidth() / 2, lines[i].getP2().y - pll.getStrokeWidth() / 2, outlineColor, pll.getStrokeWidth());
+            outlinePolylines.push_back(outline);
+        }
     }
     return outlinePolylines;
 }
@@ -793,4 +827,89 @@ void Renderer::Render(vector<SF_ShapeData> print, vector<ShapeData> data) {
 
         window.display();
     }
+}
+
+sf::Vector2f findCenterPoint(vector<sf::Vector2f> points)
+{
+    sf::Vector2f center(0, 0);
+    for (sf::Vector2f point : points)
+    {
+        center.x += point.x;
+        center.y += point.y;
+    }
+    center.x /= points.size();
+    center.y /= points.size();
+    return center;
+}
+vector<sf::Vector2f> resizePolygon(vector<sf::Vector2f> points, float strokeWidth)
+{
+    vector<sf::Vector2f> newPoints;
+    sf::Vector2f newPoint;
+    sf::Vector2f center = findCenterPoint(points);
+
+    for (sf::Vector2f point : points)
+    {
+        if (point.x == center.x && point.y > center.y)
+        {
+            newPoint.x = point.x;
+            newPoint.y = point.y - strokeWidth / 2;
+        }
+        else if (point.x == center.x && point.y < center.y)
+        {
+            newPoint.x = point.x;
+            newPoint.y = point.y + strokeWidth / 2;
+        }
+        else if (point.x < center.x && point.y == center.y)
+        {
+            newPoint.x = point.x + strokeWidth / 2;
+            newPoint.y = point.y;
+        }
+        else if (point.x > center.x && point.y == center.y)
+        {
+            newPoint.x = point.x - strokeWidth / 2;
+            newPoint.y = point.y;
+        }
+        else
+        {
+            newPoint = findNewPoint(point, center, strokeWidth);
+        }
+        newPoints.push_back(newPoint);
+    }
+    return newPoints;
+}
+
+float findDelta(float a, float b, float c)
+{
+    return b * b - 4 * a * c;
+}
+
+sf::Vector2f findNewPoint(sf::Vector2f A, sf::Vector2f B, float strokeWidth)
+{
+    float a, b, c;
+    Line AB = AB.createLineFrom2Points(A, B);
+    a = AB.getA() * AB.getA() + 1;
+    b = -2 * (A.x - AB.getA() * (AB.getB() - A.y));
+    c = A.x * A.x + (AB.getB() - A.y) * (AB.getB() - A.y) - strokeWidth * strokeWidth / 4;
+
+    sf::Vector2f newPoint;
+    float delta = findDelta(a, b, c);
+    if (delta > 0)
+    {
+        if (A.x > B.x)
+        {
+            newPoint.x = (-b - sqrt(delta)) / (2 * a);
+            newPoint.y = AB.getA() * newPoint.x + AB.getB();
+        }
+        else
+        {
+            newPoint.x = (-b + sqrt(delta)) / (2 * a);
+            newPoint.y = AB.getA() * newPoint.x + AB.getB();
+        }
+    }
+    else if (delta == 0)
+    {
+        newPoint.x = -b / (2 * a);
+        newPoint.y = AB.getA() * newPoint.x + AB.getB();
+    }
+    return newPoint;
 }
