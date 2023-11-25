@@ -6,11 +6,11 @@ EllipseSVG::EllipseSVG() {
     this->rx = 0;
     this->ry = 0;
 
-    cout << "Ellipse::Default Constructor" << endl;
+    //cout << "Ellipse::Default Constructor" << endl;
 }
 
 EllipseSVG::~EllipseSVG() {
-    cout << "Ellipse::Destructor" << endl;
+    //cout << "Ellipse::Destructor" << endl;
 }
 
 void EllipseSVG::buildEllipse(vector<char*> name, vector<char*> value) {

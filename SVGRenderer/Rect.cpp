@@ -4,11 +4,11 @@ RectangleSVG::RectangleSVG() {
     this->width = 0;
     this->height = 0;
 
-    cout << "Rectangle::Default Constructor" << endl;
+    //cout << "Rectangle::Default Constructor" << endl;
 }
 
 RectangleSVG::~RectangleSVG() {
-    cout << "Rectangle::Destructor" << endl;
+    //cout << "Rectangle::Destructor" << endl;
 }
 
 void RectangleSVG::buildRect(vector<char*> name, vector<char*> value) {

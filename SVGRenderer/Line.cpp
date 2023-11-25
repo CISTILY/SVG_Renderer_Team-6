@@ -3,11 +3,11 @@
 using namespace std;
 
 LineSVG::LineSVG() {
-    cout << "Line::Constructor" << endl;
+    //cout << "Line::Constructor" << endl;
 }
 
 LineSVG::~LineSVG() {
-    cout << "Line::Destructor" << endl;
+    //cout << "Line::Destructor" << endl;
 }
 
 Point2D LineSVG::getEnd()

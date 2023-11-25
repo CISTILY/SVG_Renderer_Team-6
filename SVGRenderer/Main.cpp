@@ -19,7 +19,7 @@ int main() {
     xml_node<>* rootNode;
 
     // Read the xml file into a vector
-    ifstream file("sample.svg");
+    ifstream file("test.svg");
     vector<char> buffer((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
     buffer.push_back('\0');
 
@@ -28,7 +28,6 @@ int main() {
 
     rootNode = doc.first_node("svg");
     xml_node<>* node = rootNode->first_node();
-
     int i = 0, j = 0;
     ShapeData temp;
     SF_ShapeData tempRen;
@@ -42,33 +41,37 @@ int main() {
         cout << "Error";
     }
 
+    int count = 0;
+    temp.readFile(node, data, count);
+    cout << "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" << count << endl;
+
     // Parse SVG file and create shapes
-    while (node != NULL) {
-        SVGReader reader;
+    //while (node != NULL) {
+    //    SVGReader reader;
 
-        reader.setNodeName(node->name());
-        reader.readContent();   // read all the text content
+    //    reader.setNodeName(node->name());
+    //    reader.readContent();   // read all the text content
 
-        // Read attributes and build properties
-        for (xml_attribute<>* Attr = node->first_attribute(); Attr; Attr = Attr->next_attribute()) {
+    //    // Read attributes and build properties
+    //    for (xml_attribute<>* Attr = node->first_attribute(); Attr; Attr = Attr->next_attribute()) {
 
-            char* attributeName = Attr->name();
-            char* attributeValue = Attr->value();
-            reader.PropertiesBuilder(attributeName, attributeValue);
-        }
+    //        char* attributeName = Attr->name();
+    //        char* attributeValue = Attr->value();
+    //        reader.PropertiesBuilder(attributeName, attributeValue);
+    //    }
 
-        // Create ShapeData by build and print shape information
-        data.push_back(temp);
-        print.push_back(tempRen);
-        data[j].buildAndPrintShapeInfo(reader, i);
-        print[j].buildSFShape(data[j], font);
-        j++;
+    //    // Create ShapeData by build and print shape information
+    //    data.push_back(temp);
+    //    print.push_back(tempRen);
+    //    data[j].buildAndPrintShapeInfo(reader, i);
+    //    print[j].buildSFShape(data[j], font);
+    //    j++;
 
-        node = node->next_sibling();
-    }
-    
-    // Render shape
-    pen.Render(print, data);
+    //    node = node->next_sibling();
+    //}
+    //
+    //// Render shape
+    //pen.Render(print, data);
 
     return 0;
 }

@@ -7,12 +7,12 @@ ShapeData::ShapeData()
     flagStroke = 0;
     this->typeName = NULL;
 
-    cout << "ShapeData::Default Constructor" << endl;
+    //cout << "ShapeData::Default Constructor" << endl;
 }
 
 ShapeData::~ShapeData()
 {
-    cout << "ShapeData::Destructor" << endl;
+    //cout << "ShapeData::Destructor" << endl;
 }
 
 string ShapeData::getTypeName()
@@ -59,6 +59,60 @@ PolylineSVG ShapeData::getPolyline()
 TextSVG ShapeData::getText()
 {
     return this->text;
+}
+
+void ShapeData::readFile(xml_node<>* node, vector<ShapeData>& data, int& count)
+{
+    
+    ShapeData temp;
+    int i = 0, j = 0;
+
+    ++count;
+
+    while (node != NULL) {
+        SVGReader reader;
+        xml_node<>* child = node->first_node();
+        reader.setNodeName(node->name());
+        reader.readContent();   // read all the text content
+
+        // Read attributes and build properties
+        for (xml_attribute<>* Attr = node->first_attribute(); Attr; Attr = Attr->next_attribute()) {
+
+            char* attributeName = Attr->name();
+            char* attributeValue = Attr->value();
+            cout << attributeName << " " << attributeValue << " ";
+            //reader.PropertiesBuilder(attributeName, attributeValue);
+        }
+        cout << endl;
+        
+
+        if (child != NULL)
+        {
+            this->readFile(child, data, count);
+            //child = child->next_sibling();
+        }
+            
+        if (child == NULL)
+            cout << "NULL me r" << endl;
+        
+
+        //while (child != NULL) {
+        //    for (xml_attribute<>* Attr = child->first_attribute(); Attr; Attr = Attr->next_attribute()) {
+
+        //        char* attributeName = Attr->name();
+        //        char* attributeValue = Attr->value();
+        //        cout << attributeName << " " << attributeValue << " ";
+        //        //reader.PropertiesBuilder(attributeName, attributeValue);
+        //    }
+        //    child = child->next_sibling();
+        //}
+
+        // Create ShapeData by build and print shape information
+        /*data.push_back(temp);
+        data[j].buildAndPrintShapeInfo(reader, i);
+        j++;*/
+        node = node->next_sibling();
+    }
 }
 
 void ShapeData::buildAndPrintShapeInfo(SVGReader reader, int& i) {

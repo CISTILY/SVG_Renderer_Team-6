@@ -12,7 +12,10 @@
 #include "Line.h"
 #include "Ellipse.h"
 #include "Polyline.h"
+#include "SVG.h"
+#include "rapidxml.hpp"
 
+using namespace rapidxml;
 using namespace std;
 
 class ShapeData {
@@ -48,4 +51,6 @@ public:
     LineSVG getLine();
     PolylineSVG getPolyline();
     TextSVG getText();
+
+    void readFile(xml_node<>* node, vector<ShapeData>& data, int&);
 };

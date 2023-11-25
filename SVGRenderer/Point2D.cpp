@@ -6,7 +6,7 @@ Point2D::Point2D() {
     this->x = 0;
     this->y = 0;
 
-    cout << "Point2D::Default Constructor" << endl;
+    //cout << "Point2D::Default Constructor" << endl;
 }
 
 Point2D::Point2D(string s) {
@@ -17,11 +17,11 @@ Point2D::Point2D(string s) {
     temp = s.substr(p + 1, s.length());
     this->y = stoi(temp);
 
-    cout << "Point2D::String Constructor" << endl;
+    //cout << "Point2D::String Constructor" << endl;
 }
 
 Point2D::~Point2D() {
-    cout << "Point2D::Destructor" << endl;
+    //cout << "Point2D::Destructor" << endl;
 }
 
 void Point2D::setX(int x) {

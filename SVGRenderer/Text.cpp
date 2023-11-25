@@ -5,11 +5,11 @@ using namespace std;
 TextSVG::TextSVG() {
     this->font_size = 0;
 
-    cout << "Text::Constructor" << endl;
+    //cout << "Text::Constructor" << endl;
 }
 
 TextSVG::~TextSVG() {
-    cout << "Text::Destructor" << endl;
+    //cout << "Text::Destructor" << endl;
 }
 
 string TextSVG::getContent()

@@ -3,11 +3,11 @@
 using namespace std;
 
 CircleSVG::CircleSVG() {
-    cout << "Circle::Default Constructor" << endl;
+    //cout << "Circle::Default Constructor" << endl;
 }
 
 CircleSVG::~CircleSVG() {
-    cout << "Cricle::Destructor" << endl;
+    //cout << "Cricle::Destructor" << endl;
 }
 
 void CircleSVG::buildCircle(vector<char*> name, vector<char*> value) {

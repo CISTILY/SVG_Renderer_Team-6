@@ -2,13 +2,13 @@
 
 using namespace std;
 
-SF_ShapeData::SF_ShapeData() {
-    cout << "SF_ShapeData::Default Constructor" << endl;
-}
-
-SF_ShapeData::~SF_ShapeData() {
-    cout << "SF_ShapeData::Destructor" << endl;
-}
+//SF_ShapeData::SF_ShapeData() {
+//    cout << "SF_ShapeData::Default Constructor" << endl;
+//}
+//
+//SF_ShapeData::~SF_ShapeData() {
+//    cout << "SF_ShapeData::Destructor" << endl;
+//}
 
 void SF_ShapeData::buildSFShape(ShapeData data, const sf::Font& font) {
     if (data.getTypeName() == "rect") {

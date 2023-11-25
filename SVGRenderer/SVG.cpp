@@ -8,11 +8,11 @@ SVGReader::SVGReader()
 {
     this->nodeName = NULL;
 
-    cout << "SVGReader::Default Constructor" << endl;
+    //cout << "SVGReader::Default Constructor" << endl;
 }
 
 SVGReader::~SVGReader() {
-    cout << "SVGReader::Destructor" << endl;
+    //cout << "SVGReader::Destructor" << endl;
 }
 
 void SVGReader::setNodeName(char* name)

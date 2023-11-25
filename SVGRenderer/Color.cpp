@@ -4,12 +4,12 @@ using namespace std;
 
 Color::Color() {
     red = blue = green = 0;
-    cout << "Color::Default Constructor" << endl;
+    //cout << "Color::Default Constructor" << endl;
 }
 
 Color::~Color()
 {
-    cout << "Color::Destructor" << endl;
+    //cout << "Color::Destructor" << endl;
 }
 
 void Color::setColor(string s) {

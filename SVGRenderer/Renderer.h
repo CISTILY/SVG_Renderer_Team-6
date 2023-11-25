@@ -81,10 +81,10 @@ private:
     vector<sf::RectangleShape> SF_outlinePolylines;
 public:
     // Constructor
-    SF_ShapeData();
+    //SF_ShapeData();
 
     // Destructor
-    ~SF_ShapeData();
+    //~SF_ShapeData();
 
     // Assign data to SF format shapes
     void buildSFShape(ShapeData, const sf::Font&);

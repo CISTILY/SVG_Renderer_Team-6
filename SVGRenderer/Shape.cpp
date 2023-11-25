@@ -7,11 +7,11 @@ Shape::Shape() {
     this->stroke_width = 1;
     this->stroke_opacity = 1;
     this->fill_opacity = 1;
-    cout << "Shape::Constructor" << endl;
+    //cout << "Shape::Constructor" << endl;
 }
 
 Shape::~Shape() {
-    cout << "Shape::Destructor" << endl;
+    //cout << "Shape::Destructor" << endl;
 }
 
 void Shape::buildProperties(vector<char*> name, vector<char*> value) {
