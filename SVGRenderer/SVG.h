@@ -5,9 +5,11 @@
 #include <cstring>
 #include <fstream>
 #include <string>
+#include "rapidxml.hpp"
 #include "Shape.h"
 
 using namespace std;
+using namespace rapidxml;
 
 class SVGReader {
 private:
@@ -17,6 +19,7 @@ private:
     vector<char*> OtherAttrName;
     vector<char*> OtherAttrValue;
     static vector<string> content;
+    static vector<int> ID;
 public:
     // Constructor
     SVGReader();
@@ -28,6 +31,9 @@ public:
     void setNodeName(char*);
     void PropertiesBuilder(char*, char*);
     static void readContent();
+    static void setID(xml_node<>*);
+    void ReplaceProperties(SVGReader);
+
     
     // Getters
     char* getNodeName();
@@ -36,4 +42,8 @@ public:
     vector<char*> getPropsAttrName();
     vector<char*> getPropsAttrValue();
     static vector<string> getContent();
+    static vector<int> getID();
+
+    void resetNode();
+    SVGReader& operator+= (SVGReader&);
 };

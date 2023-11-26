@@ -178,13 +178,13 @@ size_t EllipseShape::getPointCount() const
     return 30;
 }
 
-sf::Vector2f EllipseShape::getPoint(std::size_t index) const
+sf::Vector2f EllipseShape::getPoint(size_t index) const
 {
-    static const float pi = 3.141592654f;
+    const float pi = 3.141592654f;
 
     float angle = index * 2 * pi / getPointCount() - pi / 2;
-    float x = std::cos(angle) * m_radius.x;
-    float y = std::sin(angle) * m_radius.y;
+    float x = cos(angle) * m_radius.x;
+    float y = sin(angle) * m_radius.y;
 
     return sf::Vector2f(m_radius.x + x, m_radius.y + y);
 }
@@ -630,7 +630,6 @@ vector<sf::RectangleShape> SF_ShapeData::createOutlinePolyline(PolylineSVG pll)
 }
 
 Renderer::Renderer() {
-    // Set up variables
     this->num = 0;
     this->type = 0;
     this->zoom = 1.0;

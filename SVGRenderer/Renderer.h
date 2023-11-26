@@ -29,8 +29,8 @@ public:
 
     // Getters
     const sf::Vector2f& getRadius() const;
-    virtual std::size_t getPointCount() const;
-    virtual sf::Vector2f getPoint(std::size_t) const;
+    virtual size_t getPointCount() const;
+    virtual sf::Vector2f getPoint(size_t) const;
 };
 
 class Line {

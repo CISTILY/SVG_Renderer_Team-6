@@ -19,9 +19,16 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
     for (int i = 0; i < name.size(); ++i) {
         temp = name[i];
         if (temp == "stroke") {
-            this->flagStroke = 1;
             string stroke = value[i];
-            this->stroke.setColor(stroke);
+            if (stroke == "none")
+                continue;
+            
+            else {
+                this->flagStroke = 1;
+                
+                this->stroke.setColor(stroke);
+            }
+            
         }
         else if (temp == "stroke-width")
         {
@@ -35,7 +42,12 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
         }
         else if (temp == "fill") {
             string fill = value[i];
-            this->fill.setColor(fill);
+            if (fill == "none")
+                continue;
+
+            else {
+                this->fill.setColor(fill);
+            }
         }
         else if (temp == "fill-opacity")
             this->fill_opacity = atof(value[i]);
