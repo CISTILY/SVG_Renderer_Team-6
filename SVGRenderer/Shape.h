@@ -5,12 +5,17 @@
 #include "SFML/Graphics.hpp"
 #include <vector>
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
 class Shape {
 protected:
     Point2D coordinate;
+    Point2D translate;
+    Point2D scalePoint;
+    int scaleAngle;
+    int rotate;
     bool flagStroke;
     int stroke_width;
     double fill_opacity;
@@ -39,4 +44,7 @@ public:
 
     // Print out attributes
     virtual void print();
+
+    void splitWord(string, Point2D&, int&, Point2D&, int&);
+    void setTransform(Point2D, int, Point2D, int);
 };

@@ -36,6 +36,10 @@ void Point2D::print() {
     cout << this->x << " " << this->y;
 }
 
+string Point2D::ToString() {
+    return to_string(this->x) + ", " + to_string(y);
+}
+
 int Point2D::getX() {
     return this->x;
 }

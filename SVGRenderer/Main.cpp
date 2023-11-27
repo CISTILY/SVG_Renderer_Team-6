@@ -19,7 +19,7 @@ int main() {
     xml_node<>* rootNode;
 
     // Read the xml file into a vector
-    ifstream file("sample1.svg");
+    ifstream file("test.svg");
     vector<char> buffer((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
     buffer.push_back('\0');
     // Parse the buffer using the xml file parsing library into doc 

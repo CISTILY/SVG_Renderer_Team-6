@@ -53,5 +53,4 @@ public:
     TextSVG getText();
 
     void readFile(xml_node<>* node, vector<ShapeData>& data, SVGReader);
-    bool isSibling(xml_node<>* node);
 };

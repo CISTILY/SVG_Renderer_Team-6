@@ -81,12 +81,15 @@ void ShapeData::readFile(xml_node<>* node, vector<ShapeData>& data, SVGReader gr
         }
 
         reader.ReplaceProperties(group);
-        /*cout << reader.getNodeName() << " ";
+
+       /* cout << reader.getNodeName() << " ";
         for (int i = 0; i < reader.getPropsAttrName().size(); ++i)
             cout << reader.getPropsAttrName()[i] << " " << reader.getPropsAttrValue()[i] << " ";
 
         for (int i = 0; i < reader.getOtherAttrName().size(); ++i)
             cout << reader.getOtherAttrName()[i] << " " << reader.getOtherAttrValue()[i] << " ";*/
+        
+        cout << endl;
 
         if (!reader.getOtherAttrName().empty()) {
             data.push_back(temp);

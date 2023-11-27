@@ -26,4 +26,6 @@ public:
 
 	// Print data of Point2D
 	void print();
+
+	string ToString();
 };

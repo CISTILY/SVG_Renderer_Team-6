@@ -45,5 +45,5 @@ public:
     static vector<int> getID();
 
     void resetNode();
-    SVGReader& operator+= (SVGReader&);
+    void getTransformValue(string, Point2D&, int&, Point2D&, int&, vector<int>&);
 };
