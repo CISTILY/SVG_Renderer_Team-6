@@ -27,9 +27,9 @@ void TextSVG::buildText(vector<char*> name, vector<char*> value, string content)
     for (int i = 0; i < name.size(); ++i) {
         temp = name[i];
         if (temp == "x")
-            this->coordinate.setX(atoi(value[i]));
+            this->coordinate.setX(stof(value[i]));
         else if (temp == "y")
-            this->coordinate.setY(atoi(value[i]));
+            this->coordinate.setY(stof(value[i]));
         else if (temp == "font-size")
             this->setFontSize(atoi(value[i]));
     }

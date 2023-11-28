@@ -20,13 +20,13 @@ void LineSVG::buildLine(vector<char*> name, vector<char*> value) {
     for (int i = 0; i < name.size(); ++i) {
         temp = name[i];
         if (temp == "x1")
-            this->coordinate.setX(atoi(value[i]));
+            this->coordinate.setX(stof(value[i]));
         else if (temp == "y1")
-            this->coordinate.setY(atoi(value[i]));
+            this->coordinate.setY(stof(value[i]));
         else if (temp == "x2")
-            this->end.setX(atoi(value[i]));
+            this->end.setX(stof(value[i]));
         else if (temp == "y2")
-            this->end.setY(atoi(value[i]));
+            this->end.setY(stof(value[i]));
     }
 }
 

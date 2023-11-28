@@ -45,5 +45,5 @@ public:
     static vector<int> getID();
 
     void resetNode();
-    void getTransformValue(string, Point2D&, int&, Point2D&, int&, vector<int>&);
+    void getTransformValue(string, Point2D&, float&, Point2D&, float&, vector<int>&);
 };

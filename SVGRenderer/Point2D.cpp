@@ -13,22 +13,26 @@ Point2D::Point2D(string s) {
     string temp;
     int p = s.find(',');
     temp = s.substr(0, p);
-    this->x = stoi(temp);
+    this->x = stof(temp);
     temp = s.substr(p + 1, s.length());
-    this->y = stoi(temp);
-
+    this->y = stof(temp);
     //cout << "Point2D::String Constructor" << endl;
+}
+
+Point2D::Point2D(float x, float y) {
+    this->x = x;
+    this->y = y;
 }
 
 Point2D::~Point2D() {
     //cout << "Point2D::Destructor" << endl;
 }
 
-void Point2D::setX(int x) {
+void Point2D::setX(float x) {
     this->x = x;
 }
 
-void Point2D::setY(int y) {
+void Point2D::setY(float y) {
     this->y = y;
 }
 
@@ -37,13 +41,13 @@ void Point2D::print() {
 }
 
 string Point2D::ToString() {
-    return to_string(this->x) + ", " + to_string(y);
+    return to_string(this->x) + ", " + to_string(this->y);
 }
 
-int Point2D::getX() {
+float Point2D::getX() {
     return this->x;
 }
 
-int Point2D::getY() {
+float Point2D::getY() {
     return this->y;
 }

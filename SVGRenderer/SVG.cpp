@@ -43,7 +43,7 @@ void SVGReader::PropertiesBuilder(char* attrName, char* attrVal) {
     }
 }
 
-void SVGReader::getTransformValue(string str, Point2D& translate, int& rotate, Point2D& scalePoint, int& scaleAngle, vector<int>& type) {
+void SVGReader::getTransformValue(string str, Point2D& translate, float& rotate, Point2D& scalePoint, float& scaleAngle, vector<int>& type) {
     string value;
     while (str != "") {
         if (str.find("translate") != string::npos) {
@@ -59,7 +59,7 @@ void SVGReader::getTransformValue(string str, Point2D& translate, int& rotate, P
             type[1] = 1;
             int pos = str.find(')');
             value = str.substr(str.find("rotate") + 7, pos - 1 - 6);
-            rotate = stoi(value);
+            rotate = stof(value);
             str.erase(0, pos + 1);
         }
         else if (str.find("scale") != string::npos) {
@@ -72,7 +72,7 @@ void SVGReader::getTransformValue(string str, Point2D& translate, int& rotate, P
                 delete temp;
             }
             else {
-                scaleAngle = stoi(value);
+                scaleAngle = stof(value);
             }
             str.erase(0, pos + 1);
         }
@@ -101,25 +101,13 @@ void SVGReader::ReplaceProperties(SVGReader group) {
         }
     }
 
-    for (int i = 0; i < shapeAttr.size(); ++i) {
-        cout << shapeAttr[i] << " ";
-    }
-
-    cout << endl;
-
-    for (int i = 0; i < shapeAttr.size(); ++i) {
-        cout << groupAttr[i] << " ";
-    }
-
-    cout << endl;
     if (merge == true) {
         if (shapeAttr[5] == groupAttr[5]) {
             string temp1 = "", temp2 = "";
-            Point2D translate1, scalePoint1("1, 1"), translate2, scalePoint2("1, 1");
-            int angle1 = 0, angle2 = 0, scaleAngle1 = 1, scaleAngle2 = 1;
-            bool isPoint = true;
+            Point2D translate1, scalePoint1("1, 1"), translate2, scalePoint2("1, 1"), scalePoint;
+            float angle1 = 0, angle2 = 0, scaleAngle1 = 1, scaleAngle2 = 1;
             vector<int> type1 = { 0, 0, 0 }, type2 = { 0, 0, 0 };
-
+            bool isPoint = false;
             string scale;
 
             for (int i = 0; i < group.getPropsAttrName().size(); ++i)
@@ -138,31 +126,31 @@ void SVGReader::ReplaceProperties(SVGReader group) {
             }
             if (type1[1] == type2[1]) {
                 angle1 += angle2;
-                cout << to_string(angle1);
             }
             if (type1[2] == type2[2]) {
 
                 if (scaleAngle1 != 1 || scaleAngle2 != 1) {
                     scaleAngle1 += scaleAngle2;
-                    isPoint = false;
-
+                    isPoint = true;
+                    scalePoint.setX(scaleAngle1);
+                    scalePoint.setY(scaleAngle1);
                 }
 
                 else if (scalePoint1.getX() != 1 || scalePoint1.getY() != 1 || scalePoint2.getX() != 1 || scalePoint2.getY() != 1) {
                     scalePoint1.setX(scalePoint1.getX() + scalePoint2.getX());
                     scalePoint1.setY(scalePoint1.getY() + scalePoint2.getY());
-
                 }
 
+                
+                cout << "================" << scale;
             }
-
             if (isPoint == true) {
-                scale = scalePoint1.ToString();
+                scale = scalePoint.ToString();
             }
             else {
-                scale = to_string(scaleAngle1);
+                scale = scalePoint1.ToString();
             }
-            string transform = "translate(" + translate1.ToString() + ") " + "rotate(" + to_string(angle1) + ") " + "scale(" + scale + ")";
+            string transform = "translate(" + translate1.ToString() + ") rotate(" + to_string(angle1) + ") scale(" + scale + ")";
             const char* temp = transform.c_str();
 
             for (int i = 0; i < group.getPropsAttrName().size(); ++i) {
@@ -172,7 +160,6 @@ void SVGReader::ReplaceProperties(SVGReader group) {
             }
         }
     }
-    
 
     for (int i = 0; i < groupAttr.size(); ++i) {
         if (groupAttr[i] == shapeAttr[i] || groupAttr[i] < shapeAttr[i])

@@ -14,8 +14,7 @@ protected:
     Point2D coordinate;
     Point2D translate;
     Point2D scalePoint;
-    int scaleAngle;
-    int rotate;
+    float rotate;
     bool flagStroke;
     int stroke_width;
     double fill_opacity;
@@ -33,18 +32,23 @@ public:
     void buildProperties(vector<char*>, vector<char*>);
 
     // Getters
-    int getCoordinateX(); 
-    int getCoordinateY();
+    float getCoordinateX(); 
+    float getCoordinateY();
+    float getTranslateX();
+    float getTranslateY();
+    float getScaleX();
+    float getScaleY();
     bool getFlagStroke();
     int getStrokeWidth();
     double getStrokeOpacity();
     double getFillOpacity();
     Color getStroke();
     Color getFill();
+    float getRotate();
+    
 
     // Print out attributes
     virtual void print();
 
-    void splitWord(string, Point2D&, int&, Point2D&, int&);
-    void setTransform(Point2D, int, Point2D, int);
+    void splitWord(string, Point2D&, float&, Point2D&);
 };

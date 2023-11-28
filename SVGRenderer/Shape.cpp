@@ -7,7 +7,6 @@ Shape::Shape() {
     this->stroke_width = 1;
     this->stroke_opacity = 1;
     this->fill_opacity = 1;
-    this->scaleAngle = 1;
     this->scalePoint.setX(1);
     this->scalePoint.setY(1);
     //cout << "Shape::Constructor" << endl;
@@ -17,7 +16,7 @@ Shape::~Shape() {
     //cout << "Shape::Destructor" << endl;
 }
 
-void Shape::splitWord(string str, Point2D& translate, int& rotate, Point2D& scalePoint, int& scaleAngle) {
+void Shape::splitWord(string str, Point2D& translate, float& rotate, Point2D& scalePoint) {
     string value;
     while (str != "") {
         if (str.find("translate") != string::npos) {
@@ -31,30 +30,18 @@ void Shape::splitWord(string str, Point2D& translate, int& rotate, Point2D& scal
         else if (str.find("rotate") != string::npos) {
             int pos = str.find(')');
             value = str.substr(str.find("rotate") + 7, pos - 1 - 6);
-            rotate = stoi(value);
+            rotate = stof(value);
             str.erase(0, pos + 1);
         }
         else if (str.find("scale") != string::npos) {
             int pos = str.find(')');
             value = str.substr(str.find("scale") + 6, pos - 1 - 5);
-            if (value.find(',') != string::npos) {
-                Point2D* temp = new Point2D(value);
-                scalePoint = *temp;
-                delete temp;
-            }
-            else {
-                scaleAngle = stoi(value);
-            }
+            Point2D* temp = new Point2D(value);
+            scalePoint = *temp;
+            delete temp;
             str.erase(0, pos + 1);
         }
     }
-}
-
-void Shape::setTransform(Point2D translate, int angle, Point2D scalePoint, int scaleAngle) {
-    this->translate = translate;
-    this->rotate = angle;
-    this->scaleAngle = scaleAngle;
-    this->scalePoint = scalePoint;
 }
 
 void Shape::buildProperties(vector<char*> name, vector<char*> value) {
@@ -81,7 +68,7 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
         else if (temp == "stroke-opacity")
         {
             this->flagStroke = 1;
-            this->stroke_opacity = atof(value[i]);
+            this->stroke_opacity = stof(value[i]);
         }
         else if (temp == "fill") {
             string fill = value[i];
@@ -93,10 +80,10 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
             }
         }
         else if (temp == "fill-opacity")
-            this->fill_opacity = atof(value[i]);
+            this->fill_opacity = stof(value[i]);
 
         else if (temp == "transform") {
-            this->splitWord(value[i], this->translate, this->rotate, this->scalePoint, this->scaleAngle);
+            this->splitWord(value[i], this->translate, this->rotate, this->scalePoint);
         }
     }
 }
@@ -106,29 +93,34 @@ void Shape::print() {
     this->fill.print();
     cout << "), (stroke: ";
     this->stroke.print();
-    cout << "), (stroke-width: " << this->stroke_width << "), (stroke-opacity:" << this->stroke_opacity << ")" << endl;
+    cout << "), (stroke-width: " << this->stroke_width << "), (stroke-opacity: " << this->stroke_opacity << ")" << endl;
     cout << "transform ("; this->translate.print(); cout << ") rotate (" << this->rotate << ") scale (";
-    if (this->scaleAngle != 1) {
-        cout << this->scaleAngle << ")";
-    }
-
-    else if (this->scalePoint.getX() != 1 || this->scalePoint.getY() != 1) {
-        this->scalePoint.print();
-        cout << ")";
-    }
-
-    else {
-        this->scalePoint.print();
-        cout << ")";
-    }
+    this->scalePoint.print();
+    cout << ")";
 }
 
-int Shape::getCoordinateX() {
+float Shape::getCoordinateX() {
     return this->coordinate.getX();
 }
 
-int Shape::getCoordinateY() {
+float Shape::getCoordinateY() {
     return this->coordinate.getY();
+}
+
+float Shape::getTranslateX() {
+    return this->translate.getX();
+}
+
+float Shape::getTranslateY() {
+    return this->translate.getY();
+}
+
+float Shape::getScaleX() {
+    return this->scalePoint.getX();
+}
+
+float Shape::getScaleY() {
+    return this->scalePoint.getY();
 }
 
 Color Shape::getStroke() {
@@ -154,4 +146,8 @@ double Shape::getFillOpacity() {
 
 double Shape::getStrokeOpacity() {
     return this->stroke_opacity;
+}
+
+float Shape::getRotate() {
+    return this->rotate;
 }

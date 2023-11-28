@@ -212,9 +212,11 @@ sf::Text SF_ShapeData::createText(TextSVG txt, const sf::Font& font)
     text.setString((const string&)txt.getContent());
     text.setPosition(txt.getCoordinateX(), txt.getCoordinateY());
     text.setFillColor(fillColor);
-    text.setCharacterSize(txt.getFont_size());
+    text.setCharacterSize(txt.getFont_size());                                                                                                                                                                                                  
     text.setOrigin(txt.getFont_size() - 50, txt.getFont_size());
-
+    text.setPosition(sf::Vector2f(txt.getTranslateX(), txt.getTranslateY()));
+    text.setRotation(txt.getRotate());
+    text.setScale(txt.getScaleX(), txt.getScaleY());
     return text;
 }
 
@@ -236,7 +238,10 @@ sf::RectangleShape SF_ShapeData::createRectangle(RectangleSVG rectangle)
     rect.setOutlineColor(outlineColor);
     rect.setFillColor(fillColor);
     rect.setOrigin(0, -3);
-
+    rect.setPosition(sf::Vector2f(rectangle.getTranslateX(), rectangle.getTranslateY()));
+    rect.setRotation(rectangle.getRotate());
+    rect.setScale(rectangle.getScaleX(), rectangle.getScaleY());
+    
     return rect;
 }
 
@@ -258,6 +263,9 @@ sf::CircleShape SF_ShapeData::createCircle(CircleSVG cir)
     circle.setOutlineColor(outlineColor);
     circle.setOutlineThickness(cir.getStrokeWidth());
     circle.setOrigin(circle.getRadius(), circle.getRadius());
+    circle.setPosition(sf::Vector2f(cir.getTranslateX(), cir.getTranslateY()));
+    circle.setRotation(cir.getRotate());
+    circle.setScale(cir.getScaleX(), cir.getScaleY());
 
     return circle;
 }
@@ -282,6 +290,9 @@ EllipseShape SF_ShapeData::createEllipse(EllipseSVG ellip)
     ellipse.setOutlineColor(outlineColor);
     ellipse.setOutlineThickness(ellip.getStrokeWidth());
     ellipse.setOrigin(radius.x * 0.9f, radius.y / 0.9f);
+    ellipse.setPosition(sf::Vector2f(ellip.getTranslateX(), ellip.getTranslateY()));
+    ellipse.setRotation(ellip.getRotate());
+    ellipse.setScale(ellip.getScaleX(), ellip.getScaleY());
 
     return ellipse;
 }

@@ -18,13 +18,13 @@ void EllipseSVG::buildEllipse(vector<char*> name, vector<char*> value) {
     for (int i = 0; i < name.size(); ++i) {
         temp = name[i];
         if (temp == "cx")
-            this->coordinate.setX(atoi(value[i]));
+            this->coordinate.setX(stof(value[i]));
         else if (temp == "cy")
-            this->coordinate.setY(atoi(value[i]));
+            this->coordinate.setY(stof(value[i]));
         else if (temp == "rx" || temp == "r")
-            this->setRadiusX(atoi(value[i]));
+            this->setRadiusX(stoi(value[i]));
         else if (temp == "ry")
-            this->setRadiusY(atoi(value[i]));
+            this->setRadiusY(stoi(value[i]));
     }
 }
 
