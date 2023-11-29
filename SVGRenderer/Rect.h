@@ -3,7 +3,7 @@
 
 class RectangleSVG : public Shape {
 private:
-	int width, height;
+	float width, height;
 public:
 	// Constructor
 	RectangleSVG();
@@ -15,12 +15,12 @@ public:
 	void buildRect(vector<char*>, vector<char*>);
 
 	// Setters
-	void setWidth(int);
-	void setHeight(int);
+	void setWidth(float);
+	void setHeight(float);
 
 	// Getters
-	int getWidth();
-	int getHeight();
+	float getWidth();
+	float getHeight();
 
 	// Print data of rectangle shape
 	void print() override;

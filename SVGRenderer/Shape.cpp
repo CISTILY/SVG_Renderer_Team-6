@@ -4,9 +4,10 @@ using namespace std;
 
 Shape::Shape() {
     this->flagStroke = 0;
-    this->stroke_width = 1;
+    this->stroke_width = 0;
     this->stroke_opacity = 1;
     this->fill_opacity = 1;
+    this->rotate = 0;
     this->scalePoint.setX(1);
     this->scalePoint.setY(1);
     //cout << "Shape::Constructor" << endl;
@@ -50,8 +51,10 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
         temp = name[i];
         if (temp == "stroke") {
             string stroke = value[i];
-            if (stroke == "none")
+            if (stroke == "none") {
+                this->stroke.setColor("-1, -1, -1");
                 continue;
+            }
             
             else {
                 this->flagStroke = 1;
@@ -63,7 +66,7 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
         else if (temp == "stroke-width")
         {
             this->flagStroke = 1;
-            this->stroke_width = atoi(value[i]);
+            this->stroke_width = stof(value[i]);
         }
         else if (temp == "stroke-opacity")
         {
@@ -136,7 +139,7 @@ bool Shape::getFlagStroke()
     return this->flagStroke;
 }
 
-int Shape::getStrokeWidth() {
+float Shape::getStrokeWidth() {
     return this->stroke_width;
 }
 

@@ -23,8 +23,8 @@ public:
     void setRadiusY(int);
 
     // Getters
-    int getRadiusX();
-    int getRadiusY();
+    float getRadiusX();
+    float getRadiusY();
 
     // Print data of ellipse
     virtual void print();

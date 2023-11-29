@@ -16,7 +16,7 @@ protected:
     Point2D scalePoint;
     float rotate;
     bool flagStroke;
-    int stroke_width;
+    float stroke_width;
     double fill_opacity;
     double stroke_opacity;
     Color fill;
@@ -39,7 +39,7 @@ public:
     float getScaleX();
     float getScaleY();
     bool getFlagStroke();
-    int getStrokeWidth();
+    float getStrokeWidth();
     double getStrokeOpacity();
     double getFillOpacity();
     Color getStroke();

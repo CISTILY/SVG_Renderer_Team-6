@@ -94,7 +94,16 @@ void SVGReader::ReplaceProperties(SVGReader group) {
                 shapeAttr[i] = 1;
         }
     }
-
+    cout << "Shape attr: ";
+    for (int i = 0; i < shapeAttr.size(); ++i) {
+        cout << shapeAttr[i] << " ";
+    }
+    cout << endl;
+    cout << "Group attr: ";
+    for (int i = 0; i < groupAttr.size(); ++i) {
+        cout << groupAttr[i] << " ";
+    }
+    cout << endl;
     for (int i = 0; i < shapeAttr.size(); ++i) {
         if (shapeAttr[i] != groupAttr[i]) {
             merge = true;
@@ -140,9 +149,6 @@ void SVGReader::ReplaceProperties(SVGReader group) {
                     scalePoint1.setX(scalePoint1.getX() + scalePoint2.getX());
                     scalePoint1.setY(scalePoint1.getY() + scalePoint2.getY());
                 }
-
-                
-                cout << "================" << scale;
             }
             if (isPoint == true) {
                 scale = scalePoint.ToString();
@@ -152,10 +158,9 @@ void SVGReader::ReplaceProperties(SVGReader group) {
             }
             string transform = "translate(" + translate1.ToString() + ") rotate(" + to_string(angle1) + ") scale(" + scale + ")";
             const char* temp = transform.c_str();
-
             for (int i = 0; i < group.getPropsAttrName().size(); ++i) {
                 if (strstr(group.getPropsAttrName()[i], "transform") != NULL) {
-                    strcpy_s(group.getPropsAttrValue()[i], strlen(group.getPropsAttrValue()[i]) + (strlen(temp) - strlen(group.getPropsAttrValue()[i])) + 1, temp);
+                    strcpy_s(group.getPropsAttrValue()[i], strlen(group.getPropsAttrValue()[i]) + (strlen(temp) - strlen(group.getPropsAttrValue()[i]))+1, temp);
                 }
             }
         }
@@ -170,7 +175,6 @@ void SVGReader::ReplaceProperties(SVGReader group) {
             }
         }
     }
-
 }
 
 void SVGReader::setID(xml_node<>* node) {
@@ -183,12 +187,12 @@ void SVGReader::setID(xml_node<>* node) {
 
 }
 
-void SVGReader::readContent() {
+void SVGReader::readContent(string filename) {
     if (!content.empty())
         return;
 
     ifstream fIn;
-    fIn.open("test.svg");
+    fIn.open(filename);
     string temp, text;
     while (getline(fIn, temp, '\n')) {
         if (temp.find("text") != string::npos) {

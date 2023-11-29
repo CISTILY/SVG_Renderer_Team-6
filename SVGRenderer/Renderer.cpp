@@ -113,8 +113,8 @@ sf::Vector2f SF_ShapeData::getCenter(ShapeData data) {
 }
 
 sf::Vector2f SF_ShapeData::getCenterPolyline(PolylineSVG polyline) {
-    sf::Vector2f p1 = sf::Vector2f(static_cast<float>(polyline.getPoints()[0].getX()), static_cast<float>(polyline.getPoints()[0].getY())),
-        p2 = sf::Vector2f(static_cast<float>(polyline.getPoints()[0].getX()), static_cast<float>(polyline.getPoints()[0].getY())), p;
+    sf::Vector2f p1 = sf::Vector2f(polyline.getPoints()[0].getX(), polyline.getPoints()[0].getY()),
+        p2 = sf::Vector2f(polyline.getPoints()[0].getX(), polyline.getPoints()[0].getY()), p;
     for (Point2D a : polyline.getPoints()) {
         if (a.getX() < p1.x) {
             p1.x = a.getX();
@@ -129,7 +129,7 @@ sf::Vector2f SF_ShapeData::getCenterPolyline(PolylineSVG polyline) {
             p2.y = a.getY();
         }
     }
-    return sf::Vector2f(p1.x + (p2.x - p1.x) / 2.0, p1.y + (p2.y - p1.y) / 2);
+    return sf::Vector2f(p1.x + (p2.x - p1.x) / 2, p1.y + (p2.y - p1.y) / 2);
 }
 
 void SF_ShapeData::moving(float x, float y) {
@@ -203,18 +203,29 @@ float SF_ShapeData::angle(float x1, float y1, float x2, float y2)
 
 sf::Text SF_ShapeData::createText(TextSVG txt, const sf::Font& font)
 {
-    sf::Color fillColor(txt.getFill().getRed(),
-        txt.getFill().getGreen(),
-        txt.getFill().getBlue());
+    sf::Color fillColor(0, 0, 0);
+    if (txt.getFill().getRed() != -1) {
+        fillColor.r = txt.getFill().getRed();
+        fillColor.b = txt.getFill().getBlue();
+        fillColor.g = txt.getFill().getGreen();
+    }
+
+    
+    sf::Color outlineColor(txt.getStroke().getRed(),
+        txt.getStroke().getGreen(),
+        txt.getStroke().getBlue(),
+        sf::Uint8(255 * txt.getStrokeOpacity()));
 
     sf::Text text;
     text.setFont(font);
     text.setString((const string&)txt.getContent());
-    text.setPosition(txt.getCoordinateX(), txt.getCoordinateY());
+    text.setOrigin(sf::Vector2f(-txt.getCoordinateX(), -txt.getCoordinateY() + txt.getFont_size()));
     text.setFillColor(fillColor);
+    text.setOutlineThickness(txt.getStrokeWidth());
+    text.setOutlineColor(outlineColor);
     text.setCharacterSize(txt.getFont_size());                                                                                                                                                                                                  
-    text.setOrigin(txt.getFont_size() - 50, txt.getFont_size());
-    text.setPosition(sf::Vector2f(txt.getTranslateX(), txt.getTranslateY()));
+    //text.setOrigin(txt.getFont_size() - 50, txt.getFont_size());
+    text.move(sf::Vector2f(txt.getTranslateX(), txt.getTranslateY()));
     text.setRotation(txt.getRotate());
     text.setScale(txt.getScaleX(), txt.getScaleY());
     return text;
@@ -225,20 +236,20 @@ sf::RectangleShape SF_ShapeData::createRectangle(RectangleSVG rectangle)
     sf::Color outlineColor(rectangle.getStroke().getRed(),
         rectangle.getStroke().getGreen(),
         rectangle.getStroke().getBlue(),
-        round(255 * rectangle.getStrokeOpacity()));
+        sf::Uint8(255 * rectangle.getStrokeOpacity()));
     sf::Color fillColor(rectangle.getFill().getRed(),
         rectangle.getFill().getGreen(),
         rectangle.getFill().getBlue(),
-        round(255 * rectangle.getFillOpacity()));
+        sf::Uint8(255 * rectangle.getFillOpacity()));
 
     sf::RectangleShape rect;
-    rect.setPosition(rectangle.getCoordinateX(), rectangle.getCoordinateY());
+    rect.setOrigin(sf::Vector2f(-rectangle.getCoordinateX(), -rectangle.getCoordinateY()));
     rect.setSize(sf::Vector2f(rectangle.getWidth(), rectangle.getHeight()));
     rect.setOutlineThickness(rectangle.getStrokeWidth());
     rect.setOutlineColor(outlineColor);
     rect.setFillColor(fillColor);
-    rect.setOrigin(0, -3);
-    rect.setPosition(sf::Vector2f(rectangle.getTranslateX(), rectangle.getTranslateY()));
+    //rect.setOrigin(0, -3);
+    rect.move(sf::Vector2f(rectangle.getTranslateX(), rectangle.getTranslateY()));
     rect.setRotation(rectangle.getRotate());
     rect.setScale(rectangle.getScaleX(), rectangle.getScaleY());
     
@@ -250,20 +261,19 @@ sf::CircleShape SF_ShapeData::createCircle(CircleSVG cir)
     sf::Color outlineColor(cir.getStroke().getRed(),
         cir.getStroke().getGreen(),
         cir.getStroke().getBlue(),
-        round(255 * cir.getStrokeOpacity()));
+        sf::Uint8(255 * cir.getStrokeOpacity()));
     sf::Color fillColor(cir.getFill().getRed(),
         cir.getFill().getGreen(),
         cir.getFill().getBlue(),
-        round(255 * cir.getFillOpacity()));
+        sf::Uint8(255 * cir.getFillOpacity()));
 
     sf::CircleShape circle;
-    circle.setPosition(cir.getCoordinateX(), cir.getCoordinateY());
+    circle.setOrigin(sf::Vector2f(-cir.getCoordinateX() + cir.getRadiusX(), -cir.getCoordinateY() + cir.getRadiusX()));
     circle.setRadius(cir.getRadiusX() - cir.getStrokeWidth() / 2);
     circle.setFillColor(fillColor);
     circle.setOutlineColor(outlineColor);
     circle.setOutlineThickness(cir.getStrokeWidth());
-    circle.setOrigin(circle.getRadius(), circle.getRadius());
-    circle.setPosition(sf::Vector2f(cir.getTranslateX(), cir.getTranslateY()));
+    circle.move(sf::Vector2f(cir.getTranslateX(), cir.getTranslateY()));
     circle.setRotation(cir.getRotate());
     circle.setScale(cir.getScaleX(), cir.getScaleY());
 
@@ -277,20 +287,19 @@ EllipseShape SF_ShapeData::createEllipse(EllipseSVG ellip)
     sf::Color outlineColor(ellip.getStroke().getRed(),
         ellip.getStroke().getGreen(),
         ellip.getStroke().getBlue(),
-        round(255 * ellip.getStrokeOpacity()));
+        sf::Uint8(255 * ellip.getStrokeOpacity()));
     sf::Color fillColor(ellip.getFill().getRed(),
         ellip.getFill().getGreen(),
         ellip.getFill().getBlue(),
-        round(255 * ellip.getFillOpacity()));
+        sf::Uint8(255 * ellip.getFillOpacity()));
 
     EllipseShape ellipse;
-    ellipse.setPosition(ellip.getCoordinateX(), ellip.getCoordinateY());
+    ellipse.setOrigin(sf::Vector2f(-ellip.getCoordinateX() + ellip.getRadiusX(), -ellip.getCoordinateY() + ellip.getRadiusY()));
     ellipse.setRadius(radius + sf::Vector2f(ellip.getStrokeWidth(), -ellip.getStrokeWidth() * 0.5f));
     ellipse.setFillColor(fillColor);
     ellipse.setOutlineColor(outlineColor);
     ellipse.setOutlineThickness(ellip.getStrokeWidth());
-    ellipse.setOrigin(radius.x * 0.9f, radius.y / 0.9f);
-    ellipse.setPosition(sf::Vector2f(ellip.getTranslateX(), ellip.getTranslateY()));
+    ellipse.move(sf::Vector2f(ellip.getTranslateX(), ellip.getTranslateY()));
     ellipse.setRotation(ellip.getRotate());
     ellipse.setScale(ellip.getScaleX(), ellip.getScaleY());
 
@@ -302,14 +311,17 @@ sf::RectangleShape SF_ShapeData::createLine(LineSVG l)
     sf::Color fillColor(l.getStroke().getRed(),
         l.getStroke().getGreen(),
         l.getStroke().getBlue(),
-        round(255 * l.getFillOpacity()));
+        sf::Uint8(255 * l.getFillOpacity()));
 
     sf::RectangleShape line(sf::Vector2f(length(l.getCoordinateX(), l.getCoordinateY(), l.getEnd().getX(), l.getEnd().getY()), l.getStrokeWidth()));
-
-    line.setPosition(l.getCoordinateX(), l.getCoordinateY());
+    line.setOrigin(-l.getCoordinateX(), -l.getCoordinateY());
     line.setRotation(angle(l.getCoordinateX(), l.getCoordinateY(), l.getEnd().getX(), l.getEnd().getY()));
+    
     line.setFillColor(fillColor);
-    line.setOrigin(0, 4);
+    //line.setOrigin(0, 4);
+    line.move(sf::Vector2f(l.getTranslateX(), l.getTranslateY()));
+    line.setRotation(l.getRotate());
+    line.setScale(l.getScaleX(), l.getScaleY());
 
     return line;
 }
@@ -328,15 +340,15 @@ sf::ConvexShape SF_ShapeData::createPolygon(PolygonSVG plg)
     sf::Color outlineColor(plg.getStroke().getRed(),
         plg.getStroke().getGreen(),
         plg.getStroke().getBlue(),
-        round(255 * plg.getStrokeOpacity()));
+        sf::Uint8(255 * plg.getStrokeOpacity()));
     sf::Color fillColor(plg.getFill().getRed(),
         plg.getFill().getGreen(),
         plg.getFill().getBlue(),
-        round(255 * plg.getFillOpacity()));
+        sf::Uint8(255 * plg.getFillOpacity()));
 
     vector<sf::Vector2f> points;
     for (auto& point : plg.getPoints()) {
-        points.push_back(sf::Vector2f(static_cast<float>(point.getX()), static_cast<float>(point.getY())));
+        points.push_back(sf::Vector2f(point.getX(), point.getY()));
     }
 
     sf::ConvexShape polygon;
@@ -344,11 +356,14 @@ sf::ConvexShape SF_ShapeData::createPolygon(PolygonSVG plg)
     polygon.setFillColor(fillColor);
     polygon.setOutlineColor(outlineColor);
     polygon.setOutlineThickness(plg.getStrokeWidth());
+    polygon.move(sf::Vector2f(plg.getTranslateX(), plg.getTranslateY()));
+    polygon.setRotation(plg.getRotate());
+    polygon.setScale(plg.getScaleX(), plg.getScaleY());
     int i = 0;
     vector<sf::Vector2f> newPoints = resizePolygon(points, plg.getStrokeWidth());
-    for (const sf::Vector2f& point : newPoints)
+    for (const sf::Vector2f& point : points)
     {
-        polygon.setPoint(i++, point + sf::Vector2f(plg.getStrokeWidth() - 5, plg.getStrokeWidth() - 15));
+        polygon.setPoint(i++, point - sf::Vector2f(plg.getStrokeWidth() - 15, plg.getStrokeWidth() - 15));
     }
     return polygon;
 }
@@ -521,13 +536,13 @@ vector<sf::ConvexShape> SF_ShapeData::createPolyline(PolylineSVG pll)
 {
     vector<sf::Vector2f> points;
     for (auto& point : pll.getPoints()) {
-        points.push_back(sf::Vector2f(static_cast<float>(point.getX()), static_cast<float>(point.getY())));
+        points.push_back(sf::Vector2f(point.getX(), point.getY()));
     }
     points.push_back(points[0]);
 
     vector<Line> lines;
     Line lineFromStartToEnd;
-    for (int i = 0; i < points.size() - 1; i++)
+    for (int i = 0; i < points.size() - 1; ++i)
     {
         lineFromStartToEnd = lineFromStartToEnd.createLineFrom2Points(points[i], points[i + 1]);
         lines.push_back(lineFromStartToEnd);
@@ -547,11 +562,12 @@ vector<sf::ConvexShape> SF_ShapeData::createPolyline(PolylineSVG pll)
 
     sf::Color fillColor(pll.getFill().getRed(),
         pll.getFill().getGreen(),
-        pll.getFill().getBlue(), round(255 * pll.getFillOpacity()));
+        pll.getFill().getBlue(), sf::Uint8(255 * pll.getFillOpacity()));
 
     int i = 0;
     int countPolygon = 0;
     vector<sf::ConvexShape> polygons;
+    
     while (i < tmpPoints.size())
     {
         if (i + 1 < tmpPoints.size() && lineFromStartToEnd.isStraightLine(tmpPoints[i], lineFromStartToEnd.getP1(), lineFromStartToEnd.getP2()) && lineFromStartToEnd.isStraightLine(tmpPoints[i + 1], lineFromStartToEnd.getP1(), lineFromStartToEnd.getP2()))
@@ -589,11 +605,11 @@ vector<sf::RectangleShape> SF_ShapeData::createOutlinePolyline(PolylineSVG pll)
     sf::Color outlineColor(pll.getStroke().getRed(),
         pll.getStroke().getGreen(),
         pll.getStroke().getBlue(),
-        round(255 * pll.getStrokeOpacity()));
+        sf::Uint8(255 * pll.getStrokeOpacity()));
 
     vector<sf::Vector2f> points;
     for (auto& point : pll.getPoints()) {
-        points.push_back(sf::Vector2f(static_cast<float>(point.getX()), static_cast<float>(point.getY())));
+        points.push_back(sf::Vector2f(point.getX(), point.getY()));
     }
 
     vector<Line> lines;
@@ -653,7 +669,7 @@ void Renderer::Render(vector<SF_ShapeData> print, vector<ShapeData> data) {
 
     // Set up SFML window
     sf::ContextSettings settings;
-    settings.antialiasingLevel = 8;
+    settings.antialiasingLevel = 16;
 
     sf::RenderWindow window(sf::VideoMode(1000, 500), "Sample", sf::Style::Default, settings);
     window.setFramerateLimit(60);
@@ -862,21 +878,21 @@ vector<sf::Vector2f> resizePolygon(vector<sf::Vector2f> points, float strokeWidt
         if (point.x == center.x && point.y > center.y)
         {
             newPoint.x = point.x;
-            newPoint.y = point.y - strokeWidth / 2;
+            newPoint.y = point.y - strokeWidth;
         }
         else if (point.x == center.x && point.y < center.y)
         {
             newPoint.x = point.x;
-            newPoint.y = point.y + strokeWidth / 2;
+            newPoint.y = point.y + strokeWidth;
         }
         else if (point.x < center.x && point.y == center.y)
         {
-            newPoint.x = point.x + strokeWidth / 2;
+            newPoint.x = point.x + strokeWidth;
             newPoint.y = point.y;
         }
         else if (point.x > center.x && point.y == center.y)
         {
-            newPoint.x = point.x - strokeWidth / 2;
+            newPoint.x = point.x - strokeWidth;
             newPoint.y = point.y;
         }
         else

@@ -30,7 +30,7 @@ public:
     // Setters
     void setNodeName(char*);
     void PropertiesBuilder(char*, char*);
-    static void readContent();
+    static void readContent(string);
     static void setID(xml_node<>*);
     void ReplaceProperties(SVGReader);
 

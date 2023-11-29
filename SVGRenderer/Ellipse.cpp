@@ -36,12 +36,12 @@ void EllipseSVG::setRadiusY(int y) {
     this->ry = y;
 }
 
-int EllipseSVG::getRadiusX()
+float EllipseSVG::getRadiusX()
 {
     return this->rx;
 }
 
-int EllipseSVG::getRadiusY()
+float EllipseSVG::getRadiusY()
 {
     return this->ry;
 }

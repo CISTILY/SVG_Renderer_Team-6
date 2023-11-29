@@ -26,19 +26,19 @@ void RectangleSVG::buildRect(vector<char*> name, vector<char*> value) {
     }
 }
 
-void RectangleSVG::setWidth(int w) {
+void RectangleSVG::setWidth(float w) {
     this->width = w;
 }
 
-void RectangleSVG::setHeight(int h) {
+void RectangleSVG::setHeight(float h) {
     this->height = h;
 }
 
-int RectangleSVG::getHeight() {
+float RectangleSVG::getHeight() {
     return this->height;
 }
 
-int RectangleSVG::getWidth() {
+float RectangleSVG::getWidth() {
     return this->width;
 }
 

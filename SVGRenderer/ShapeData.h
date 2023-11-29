@@ -52,5 +52,5 @@ public:
     PolylineSVG getPolyline();
     TextSVG getText();
 
-    void readFile(xml_node<>* node, vector<ShapeData>& data, SVGReader);
+    void readFile(xml_node<>* node, vector<ShapeData>& data, SVGReader, string);
 };

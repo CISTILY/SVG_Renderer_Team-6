@@ -61,17 +61,16 @@ TextSVG ShapeData::getText()
     return this->text;
 }
 
-void ShapeData::readFile(xml_node<>* node, vector<ShapeData>& data, SVGReader group)
+void ShapeData::readFile(xml_node<>* node, vector<ShapeData>& data, SVGReader group, string filename)
 {
     ShapeData temp;
-    static int j = 0;
-    int i = 0;
+    static int j = 0, i = 0;
     while (node != NULL) {
 
         SVGReader reader;
         xml_node<>* child = node->first_node();
         reader.setNodeName(node->name());
-        reader.readContent(); // read all the text content
+        reader.readContent(filename); // read all the text content
 
         // Read attributes and build properties
         for (xml_attribute<>* Attr = node->first_attribute(); Attr; Attr = Attr->next_attribute()) {
@@ -80,32 +79,42 @@ void ShapeData::readFile(xml_node<>* node, vector<ShapeData>& data, SVGReader gr
             reader.PropertiesBuilder(attributeName, attributeValue);
         }
 
+        cout << "---------------- FIRST ------------------" << endl;
+        cout << reader.getNodeName() << " ";
+        for (int i = 0; i < reader.getPropsAttrName().size(); ++i)
+            cout << reader.getPropsAttrName()[i] << " " << reader.getPropsAttrValue()[i] << " ";
+
+        for (int i = 0; i < reader.getOtherAttrName().size(); ++i)
+            cout << reader.getOtherAttrName()[i] << " " << reader.getOtherAttrValue()[i] << " ";
+
+        cout << endl;
+
         reader.ReplaceProperties(group);
 
-        /*cout << reader.getNodeName() << " ";
+        cout << "----------------- AFTER -----------------" << endl;
+        cout << reader.getNodeName() << " ";
         for (int i = 0; i < reader.getPropsAttrName().size(); ++i)
             cout << reader.getPropsAttrName()[i] << " " << reader.getPropsAttrValue()[i] << " ";
 
         for (int i = 0; i < reader.getOtherAttrName().size(); ++i)
             cout << reader.getOtherAttrName()[i] << " " << reader.getOtherAttrValue()[i] << " ";
         
-        cout << endl;*/
+        cout << endl;
 
-        if (!reader.getOtherAttrName().empty()) {
+        /*if (!reader.getOtherAttrName().empty()) {
             data.push_back(temp);
             data[j].buildAndPrintShapeInfo(reader, i);
             j++;
-        }
+        }*/
 
         if (strstr(reader.getNodeName(), "g") != NULL) {
+            cout << "replace group" << endl;
             group.ReplaceProperties(reader);
         }
 
         if (child != NULL)
         {
-            this->readFile(child, data, group);
-            if (strstr(reader.getNodeName(), "g") != NULL)
-                group.resetNode();
+            this->readFile(child, data, group, filename);
         }
         node = node->next_sibling();
     }

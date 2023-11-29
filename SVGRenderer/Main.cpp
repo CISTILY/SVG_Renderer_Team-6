@@ -13,13 +13,14 @@ using namespace rapidxml;
 
 int main() {
     Renderer pen;
+    string filename = "sample3.svg";
 
     // Read XML
     xml_document<> doc;
     xml_node<>* rootNode;
 
     // Read the xml file into a vector
-    ifstream file("test.svg");
+    ifstream file(filename);
     vector<char> buffer((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
     buffer.push_back('\0');
     // Parse the buffer using the xml file parsing library into doc 
@@ -32,7 +33,7 @@ int main() {
     ShapeData temp;
     SF_ShapeData tempRen;
     vector<ShapeData> data;
-    //vector<SF_ShapeData> print;
+    vector<SF_ShapeData> print;
     SVGReader a;
 
     // Load font for text rendering
@@ -42,7 +43,7 @@ int main() {
         cout << "Error";
     }
 
-    temp.readFile(node, data, a);
+    temp.readFile(node, data, a, filename);
 
     // Parse SVG file and create shapes
     //while (node != NULL) {
@@ -68,7 +69,10 @@ int main() {
 
     //    node = node->next_sibling();
     //}
-    //
+    //for (int i = 0; i < data.size(); ++i) {
+    //    print.push_back(tempRen);
+    //    print[i].buildSFShape(data[i], font);
+    //}
     //// Render shape
     //pen.Render(print, data);
     return 0;
