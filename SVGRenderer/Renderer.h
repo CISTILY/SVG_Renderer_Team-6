@@ -11,7 +11,7 @@
 using namespace std;
 
 const double infinity = INFINITY;
-const double M_PI = 3.14159265358979323846;
+#define M_PI 3.14159265358979323846;
 
 class EllipseShape : public sf::Shape {
 private:
@@ -29,8 +29,8 @@ public:
 
     // Getters
     const sf::Vector2f& getRadius() const;
-    virtual std::size_t getPointCount() const;
-    virtual sf::Vector2f getPoint(std::size_t) const;
+    virtual size_t getPointCount() const;
+    virtual sf::Vector2f getPoint(size_t) const;
 };
 
 class Line {
@@ -81,10 +81,10 @@ private:
     vector<sf::RectangleShape> SF_outlinePolylines;
 public:
     // Constructor
-    SF_ShapeData();
+    //SF_ShapeData();
 
     // Destructor
-    ~SF_ShapeData();
+    //~SF_ShapeData();
 
     // Assign data to SF format shapes
     void buildSFShape(ShapeData, const sf::Font&);

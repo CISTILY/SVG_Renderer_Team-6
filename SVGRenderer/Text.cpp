@@ -5,11 +5,11 @@ using namespace std;
 TextSVG::TextSVG() {
     this->font_size = 0;
 
-    cout << "Text::Constructor" << endl;
+    //cout << "Text::Constructor" << endl;
 }
 
 TextSVG::~TextSVG() {
-    cout << "Text::Destructor" << endl;
+    //cout << "Text::Destructor" << endl;
 }
 
 string TextSVG::getContent()
@@ -22,17 +22,21 @@ int TextSVG::getFont_size()
     return this->font_size;
 }
 
-void TextSVG::buildText(vector<char*> name, vector<char*> value, string content) {
+void TextSVG::buildShape(vector<char*> name, vector<char*> value) {
     string temp;
     for (int i = 0; i < name.size(); ++i) {
         temp = name[i];
         if (temp == "x")
-            this->coordinate.setX(atoi(value[i]));
+            this->coordinate.setX(stof(value[i]));
         else if (temp == "y")
-            this->coordinate.setY(atoi(value[i]));
+            this->coordinate.setY(stof(value[i]));
         else if (temp == "font-size")
             this->setFontSize(atoi(value[i]));
     }
+    
+}
+
+void TextSVG::setContent(string content) {
     this->content = content;
 }
 

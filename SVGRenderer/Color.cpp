@@ -4,12 +4,12 @@ using namespace std;
 
 Color::Color() {
     red = blue = green = 0;
-    cout << "Color::Default Constructor" << endl;
+    //cout << "Color::Default Constructor" << endl;
 }
 
 Color::~Color()
 {
-    cout << "Color::Destructor" << endl;
+    //cout << "Color::Destructor" << endl;
 }
 
 void Color::setColor(string s) {
@@ -23,6 +23,10 @@ void Color::setColor(string s) {
 
     this->blue = stoi(s.substr(0, s.length()));
 }
+
+bool Color::operator!= (const Color& other) {
+    return !(this->red == other.red && this->green == other.green && this->blue == other.blue);
+} 
 
 void Color::print() {
     cout << this->red << ", " << this->green << ", " << this->blue;

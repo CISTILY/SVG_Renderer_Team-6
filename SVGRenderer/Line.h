@@ -14,7 +14,7 @@ public:
     ~LineSVG();
 
     // Build line
-    void buildLine(vector<char*>, vector<char*>);
+    void buildShape(vector<char*>, vector<char*>) override;
 
     // Getters
     Point2D getEnd();

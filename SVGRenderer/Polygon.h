@@ -12,5 +12,5 @@ public:
     ~PolygonSVG();
 
     // Build polygon shape
-    void buildPolygon(vector<char*>, vector<char*>);
+    void buildShape(vector<char*>, vector<char*>) override;
 };

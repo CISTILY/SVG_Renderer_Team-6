@@ -6,24 +6,28 @@ using namespace std;
 
 class Point2D {
 private:
-	int x;
-	int y;
+	float x;
+	float y;
 public:
 	// Constructor
 	Point2D();
+	Point2D(float, float);
 	Point2D(string);
 
 	// Destructor
 	~Point2D();
 
 	// Setters
-	void setX(int);
-	void setY(int);
+	void setX(float);
+	void setY(float);
 
 	// Getters
-	int getX();
-	int getY();
+	float getX();
+	float getY();
 
-	// Print data of Point2D
+	// Print data of 
+
 	void print();
+
+	string ToString();
 };

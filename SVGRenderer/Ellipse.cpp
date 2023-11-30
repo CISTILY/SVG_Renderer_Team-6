@@ -6,25 +6,25 @@ EllipseSVG::EllipseSVG() {
     this->rx = 0;
     this->ry = 0;
 
-    cout << "Ellipse::Default Constructor" << endl;
+    //cout << "Ellipse::Default Constructor" << endl;
 }
 
 EllipseSVG::~EllipseSVG() {
-    cout << "Ellipse::Destructor" << endl;
+    //cout << "Ellipse::Destructor" << endl;
 }
 
-void EllipseSVG::buildEllipse(vector<char*> name, vector<char*> value) {
+void EllipseSVG::buildShape(vector<char*> name, vector<char*> value) {
     string temp;
     for (int i = 0; i < name.size(); ++i) {
         temp = name[i];
         if (temp == "cx")
-            this->coordinate.setX(atoi(value[i]));
+            this->coordinate.setX(stof(value[i]));
         else if (temp == "cy")
-            this->coordinate.setY(atoi(value[i]));
+            this->coordinate.setY(stof(value[i]));
         else if (temp == "rx" || temp == "r")
-            this->setRadiusX(atoi(value[i]));
+            this->setRadiusX(stoi(value[i]));
         else if (temp == "ry")
-            this->setRadiusY(atoi(value[i]));
+            this->setRadiusY(stoi(value[i]));
     }
 }
 
@@ -36,12 +36,12 @@ void EllipseSVG::setRadiusY(int y) {
     this->ry = y;
 }
 
-int EllipseSVG::getRadiusX()
+float EllipseSVG::getRadiusX()
 {
     return this->rx;
 }
 
-int EllipseSVG::getRadiusY()
+float EllipseSVG::getRadiusY()
 {
     return this->ry;
 }

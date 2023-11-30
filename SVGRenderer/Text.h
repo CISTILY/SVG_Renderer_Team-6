@@ -18,10 +18,11 @@ public:
     int getFont_size();
 
     // Setters
+    void setContent(string);
     void setFontSize(int);
 
     // Assign data function
-    void buildText(vector<char*>, vector<char*>, string);
+    void buildShape(vector<char*>, vector<char*>) override;
     
     // Print data of Text
     void print() override;

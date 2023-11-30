@@ -3,7 +3,7 @@
 using namespace std;
 
 PolylineSVG::PolylineSVG() {
-    cout << "Polyline::Default Constructor" << endl;
+    //cout << "Polyline::Default Constructor" << endl;
 }
 
 vector<Point2D> PolylineSVG::getPoints()
@@ -11,7 +11,7 @@ vector<Point2D> PolylineSVG::getPoints()
     return this->points;
 }
 
-void PolylineSVG::buildPolyline(vector<char*> name, vector<char*> value) {
+void PolylineSVG::buildShape(vector<char*> name, vector<char*> value) {
     string temp;
     this->points.clear();
     for (int i = 0; i < name.size(); ++i) {
@@ -38,7 +38,7 @@ void PolylineSVG::buildPolyline(vector<char*> name, vector<char*> value) {
 }
 
 PolylineSVG::~PolylineSVG() {
-    cout << "Polyline::Destructor" << endl;
+    //cout << "Polyline::Destructor" << endl;
 }
 
 void PolylineSVG::print() {

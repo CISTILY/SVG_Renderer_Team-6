@@ -16,15 +16,15 @@ public:
     virtual ~EllipseSVG();
 
     // Build ellipse shape
-    void buildEllipse(vector<char*>, vector<char*>);
+    void buildShape(vector<char*>, vector<char*>) override;
 
     // Setters
     void setRadiusX(int);
     void setRadiusY(int);
 
     // Getters
-    int getRadiusX();
-    int getRadiusY();
+    float getRadiusX();
+    float getRadiusY();
 
     // Print data of ellipse
     virtual void print();

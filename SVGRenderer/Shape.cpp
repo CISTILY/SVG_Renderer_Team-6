@@ -4,14 +4,51 @@ using namespace std;
 
 Shape::Shape() {
     this->flagStroke = 0;
-    this->stroke_width = 1;
+    this->flagStrokeWidth = 0;
+    this->flagStrokeOpacity = 0;
+    this->flagFill = 0;
+    this->flagFillOpacity = 0;
+    this->flagTransform = 0;
+
+    this->stroke_width = 0;
     this->stroke_opacity = 1;
     this->fill_opacity = 1;
-    cout << "Shape::Constructor" << endl;
+    this->rotate = 0;
+    this->scalePoint.setX(1);
+    this->scalePoint.setY(1);
+    //cout << "Shape::Constructor" << endl;
 }
 
 Shape::~Shape() {
-    cout << "Shape::Destructor" << endl;
+    //cout << "Shape::Destructor" << endl;
+}
+
+void Shape::splitWord(string str, Point2D& translate, float& rotate, Point2D& scalePoint) {
+    string value;
+    while (str != "") {
+        if (str.find("translate") != string::npos) {
+            int pos = str.find(')');
+            value = str.substr(str.find("translate") + 10, pos - 1 - 9);
+            Point2D* temp = new Point2D(value);
+            translate = *temp;
+            str.erase(0, pos + 1);
+            delete temp;
+        }
+        else if (str.find("rotate") != string::npos) {
+            int pos = str.find(')');
+            value = str.substr(str.find("rotate") + 7, pos - 1 - 6);
+            rotate = stof(value);
+            str.erase(0, pos + 1);
+        }
+        else if (str.find("scale") != string::npos) {
+            int pos = str.find(')');
+            value = str.substr(str.find("scale") + 6, pos - 1 - 5);
+            Point2D* temp = new Point2D(value);
+            scalePoint = *temp;
+            delete temp;
+            str.erase(0, pos + 1);
+        }
+    }
 }
 
 void Shape::buildProperties(vector<char*> name, vector<char*> value) {
@@ -19,43 +56,122 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
     for (int i = 0; i < name.size(); ++i) {
         temp = name[i];
         if (temp == "stroke") {
-            this->flagStroke = 1;
             string stroke = value[i];
-            this->stroke.setColor(stroke);
+            if (stroke == "none") {
+                this->flagStroke = 1;
+                this->stroke.setColor("-1, -1, -1");
+                continue;
+            }
+            
+            else {
+                this->flagStroke = 1;
+                this->stroke.setColor(stroke);
+            }
+            
         }
         else if (temp == "stroke-width")
         {
-            this->flagStroke = 1;
-            this->stroke_width = atoi(value[i]);
+            this->flagStrokeWidth = 1;
+            this->stroke_width = stof(value[i]);
         }
         else if (temp == "stroke-opacity")
         {
-            this->flagStroke = 1;
-            this->stroke_opacity = atof(value[i]);
+            this->flagStrokeOpacity = 1;
+            this->stroke_opacity = stof(value[i]);
         }
         else if (temp == "fill") {
             string fill = value[i];
-            this->fill.setColor(fill);
+            if (fill == "none") {
+                this->flagStroke = 1;
+                this->stroke.setColor("-1, -1, -1");
+                continue;
+            }
+
+            else {
+                this->flagFill = 1;
+                this->fill.setColor(fill);
+            }
         }
-        else if (temp == "fill-opacity")
-            this->fill_opacity = atof(value[i]);
+        else if (temp == "fill-opacity") {
+            this->fill_opacity = 1;
+            this->fill_opacity = stof(value[i]);
+        }
+            
+
+        else if (temp == "transform") {
+            this->flagTransform = 1;
+            this->splitWord(value[i], this->translate, this->rotate, this->scalePoint);
+        }
     }
 }
 
 void Shape::print() {
+    cout << "Properties flag: ";
+    cout << this->flagStroke << " " << this->flagStrokeWidth << " " << this->flagStrokeOpacity << " " << this->flagFill << " " << this->flagFillOpacity << " " << this->flagTransform;
     cout << "(fill-opacity: " << this->fill_opacity << "), (fill: ";
     this->fill.print();
     cout << "), (stroke: ";
     this->stroke.print();
-    cout << "), (stroke-width: " << this->stroke_width << "), (stroke-opacity:" << this->stroke_opacity << ")" << endl;
+    cout << "), (stroke-width: " << this->stroke_width << "), (stroke-opacity: " << this->stroke_opacity << ")" << endl;
+    cout << "transform ("; this->translate.print(); cout << ") rotate (" << this->rotate << ") scale (";
+    this->scalePoint.print();
+    cout << ")";
 }
 
-int Shape::getCoordinateX() {
+void Shape::setStroke(Color stroke) {
+    this->flagStroke = 1;
+    this->stroke = stroke;
+}
+
+void Shape::setStrokeWidth(float strokeWidth) {
+    this->flagStrokeWidth = 1;
+    this->stroke_width = strokeWidth;
+}
+
+void Shape::setStrokeOpacity(double strokeOpacity) {
+    this->flagStrokeOpacity = 1;
+    this->stroke_opacity = strokeOpacity;
+}
+
+void Shape::setFill(Color fill) {
+    this->flagFill = 1;
+    this->fill = fill;
+}
+
+void Shape::setFillOpacity(double fillOpacity) {
+    this->flagFillOpacity = 1;
+    this->fill_opacity = fillOpacity;
+}
+
+void Shape::setTransform(Point2D translate, float rotate, Point2D scalePoint) {
+    this->flagTransform = 1;
+    this->translate = translate;
+    this->rotate = rotate;
+    this->scalePoint = scalePoint;
+}
+
+float Shape::getCoordinateX() {
     return this->coordinate.getX();
 }
 
-int Shape::getCoordinateY() {
+float Shape::getCoordinateY() {
     return this->coordinate.getY();
+}
+
+float Shape::getTranslateX() {
+    return this->translate.getX();
+}
+
+float Shape::getTranslateY() {
+    return this->translate.getY();
+}
+
+float Shape::getScaleX() {
+    return this->scalePoint.getX();
+}
+
+float Shape::getScaleY() {
+    return this->scalePoint.getY();
 }
 
 Color Shape::getStroke() {
@@ -71,7 +187,28 @@ bool Shape::getFlagStroke()
     return this->flagStroke;
 }
 
-int Shape::getStrokeWidth() {
+bool Shape::getFlagStrokeWidth() {
+    return this->flagStrokeWidth;
+}
+
+bool Shape::getFlagStrokeOpacity() {
+    return this->flagStrokeOpacity;
+}
+
+bool Shape::getFlagFill() {
+    return this->flagFill;
+}
+
+bool Shape::getFlagFillOpacity() {
+    return this->flagFillOpacity;
+}
+
+bool Shape::getFlagTransform() {
+    return this->flagTransform;
+}
+
+
+float Shape::getStrokeWidth() {
     return this->stroke_width;
 }
 
@@ -81,4 +218,8 @@ double Shape::getFillOpacity() {
 
 double Shape::getStrokeOpacity() {
     return this->stroke_opacity;
+}
+
+float Shape::getRotate() {
+    return this->rotate;
 }

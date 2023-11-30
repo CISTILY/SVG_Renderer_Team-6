@@ -12,22 +12,19 @@
 #include "Line.h"
 #include "Ellipse.h"
 #include "Polyline.h"
+#include "SVG.h"
+#include "rapidxml.hpp"
 
+using namespace rapidxml;
 using namespace std;
 
 class ShapeData {
 private:
     char* typeName;
-    bool flagStroke;
+    Shape* group;
 
     // shape variables
-    RectangleSVG rect;
-    CircleSVG cir;
-    EllipseSVG ellip;
-    PolygonSVG polygon;
-    LineSVG line;
-    PolylineSVG polyline;
-    TextSVG text;
+    Shape* shapeSVG;
 public:
     // Constructor
     ShapeData();
@@ -40,12 +37,16 @@ public:
 
     // Getters
     string getTypeName();
-    bool getFlagStroke();
-    RectangleSVG getRect();
-    CircleSVG getCir();
-    EllipseSVG getEllip();
-    PolygonSVG getPolygon();
-    LineSVG getLine();
-    PolylineSVG getPolyline();
-    TextSVG getText();
+    Shape* getShape();
+
+    // Setters
+    void setStroke(Color stroke);
+    void setStrokeWidth(float strokeWidth);
+    void setStrokeOpacity(double strokeOpacity);
+    void setFill(Color fill);
+    void setFillOpacity(double fillOpacity);
+    void setTransform(Point2D, float, Point2D);
+
+    void readFile(xml_node<>* node, vector<ShapeData>& data, string);
+    void ReplaceProperties(vector<ShapeData>&);
 };

@@ -13,7 +13,7 @@ public:
     ~CircleSVG();
 
     // Build circle
-    void buildCircle(vector<char*>, vector<char*>);
+    void buildShape(vector<char*>, vector<char*>) override;
 
     // Print data of circle
     void print() override;
