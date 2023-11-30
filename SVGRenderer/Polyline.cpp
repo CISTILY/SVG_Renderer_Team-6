@@ -11,7 +11,7 @@ vector<Point2D> PolylineSVG::getPoints()
     return this->points;
 }
 
-void PolylineSVG::buildPolyline(vector<char*> name, vector<char*> value) {
+void PolylineSVG::buildShape(vector<char*> name, vector<char*> value) {
     string temp;
     this->points.clear();
     for (int i = 0; i < name.size(); ++i) {

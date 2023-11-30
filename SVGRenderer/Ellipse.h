@@ -16,7 +16,7 @@ public:
     virtual ~EllipseSVG();
 
     // Build ellipse shape
-    void buildEllipse(vector<char*>, vector<char*>);
+    void buildShape(vector<char*>, vector<char*>) override;
 
     // Setters
     void setRadiusX(int);

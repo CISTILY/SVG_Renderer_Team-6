@@ -24,4 +24,6 @@ public:
 
 	// Print data of color
 	void print();
+
+	bool operator!= (const Color&);
 };

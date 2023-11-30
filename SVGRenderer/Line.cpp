@@ -15,7 +15,7 @@ Point2D LineSVG::getEnd()
     return this->end;
 }
 
-void LineSVG::buildLine(vector<char*> name, vector<char*> value) {
+void LineSVG::buildShape(vector<char*> name, vector<char*> value) {
     string temp;
     for (int i = 0; i < name.size(); ++i) {
         temp = name[i];

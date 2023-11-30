@@ -10,8 +10,8 @@ CircleSVG::~CircleSVG() {
     //cout << "Cricle::Destructor" << endl;
 }
 
-void CircleSVG::buildCircle(vector<char*> name, vector<char*> value) {
-    this->buildEllipse(name, value);
+void CircleSVG::buildShape(vector<char*> name, vector<char*> value) {
+    EllipseSVG::buildShape(name, value);
 }
 
 void CircleSVG::print() {

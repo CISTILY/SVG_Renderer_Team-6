@@ -13,7 +13,7 @@ EllipseSVG::~EllipseSVG() {
     //cout << "Ellipse::Destructor" << endl;
 }
 
-void EllipseSVG::buildEllipse(vector<char*> name, vector<char*> value) {
+void EllipseSVG::buildShape(vector<char*> name, vector<char*> value) {
     string temp;
     for (int i = 0; i < name.size(); ++i) {
         temp = name[i];

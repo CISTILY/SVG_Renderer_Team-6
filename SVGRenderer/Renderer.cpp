@@ -12,32 +12,39 @@ using namespace std;
 
 void SF_ShapeData::buildSFShape(ShapeData data, const sf::Font& font) {
     if (data.getTypeName() == "rect") {
-        this->SF_rect = createRectangle(data.getRect());
+        RectangleSVG* rect = dynamic_cast<RectangleSVG*> (data.getShape());
+        this->SF_rect = createRectangle(*rect);
     }
 
     else if (data.getTypeName() == "circle") {
-        this->SF_cir = createCircle(data.getCir());
+        CircleSVG* cir = dynamic_cast<CircleSVG*> (data.getShape());
+        this->SF_cir = createCircle(*cir);
     }
 
     else if (data.getTypeName() == "text") {
-        this->SF_text = createText(data.getText(), font);
+        TextSVG* txt = dynamic_cast<TextSVG*> (data.getShape());
+        this->SF_text = createText(*txt, font);
     }
 
     else if (data.getTypeName() == "line") {
-        this->SF_line = createLine(data.getLine());;
+        LineSVG* line = dynamic_cast<LineSVG*> (data.getShape());
+        this->SF_line = createLine(*line);
     }
 
     else if (data.getTypeName() == "ellipse") {
-        this->SF_ellip = createEllipse(data.getEllip());
+        EllipseSVG* ellip = dynamic_cast<EllipseSVG*> (data.getShape());
+        this->SF_ellip = createEllipse(*ellip);
     }
 
     else if (data.getTypeName() == "polygon") {
-        this->SF_polygon = createPolygon(data.getPolygon());
+        PolygonSVG* polygon = dynamic_cast<PolygonSVG*> (data.getShape());
+        this->SF_polygon = createPolygon(*polygon);
     }
 
     else if (data.getTypeName() == "polyline") {
-        this->SF_fillPolylines = createPolyline(data.getPolyline());
-        this->SF_outlinePolylines = createOutlinePolyline(data.getPolyline());
+        PolylineSVG* polyline = dynamic_cast<PolylineSVG*> (data.getShape());
+        this->SF_fillPolylines = createPolyline(*polyline);
+        this->SF_outlinePolylines = createOutlinePolyline(*polyline);
     }
 }
 
@@ -107,8 +114,8 @@ sf::Vector2f SF_ShapeData::getCenter(ShapeData data) {
     }
 
     else if (temp == "polyline") {
-
-        return this->getCenterPolyline(data.getPolyline());
+        PolylineSVG* polyline = dynamic_cast<PolylineSVG*> (data.getShape());
+        return this->getCenterPolyline(*polyline);
     }
 }
 
@@ -197,8 +204,8 @@ float SF_ShapeData::length(float x1, float y1, float x2, float y2)
 
 float SF_ShapeData::angle(float x1, float y1, float x2, float y2)
 {
-    double angle = atan2(y2 - y1, x2 - x1) * 180 / M_PI;
-    return (float)angle;
+    float angle = atan2(y2 - y1, x2 - x1) * 180 / M_PI;
+    return angle;
 }
 
 sf::Text SF_ShapeData::createText(TextSVG txt, const sf::Font& font)
@@ -269,7 +276,7 @@ sf::CircleShape SF_ShapeData::createCircle(CircleSVG cir)
 
     sf::CircleShape circle;
     circle.setOrigin(sf::Vector2f(-cir.getCoordinateX() + cir.getRadiusX(), -cir.getCoordinateY() + cir.getRadiusX()));
-    circle.setRadius(cir.getRadiusX() - cir.getStrokeWidth() / 2);
+    circle.setRadius(cir.getRadiusX());
     circle.setFillColor(fillColor);
     circle.setOutlineColor(outlineColor);
     circle.setOutlineThickness(cir.getStrokeWidth());
@@ -295,7 +302,7 @@ EllipseShape SF_ShapeData::createEllipse(EllipseSVG ellip)
 
     EllipseShape ellipse;
     ellipse.setOrigin(sf::Vector2f(-ellip.getCoordinateX() + ellip.getRadiusX(), -ellip.getCoordinateY() + ellip.getRadiusY()));
-    ellipse.setRadius(radius + sf::Vector2f(ellip.getStrokeWidth(), -ellip.getStrokeWidth() * 0.5f));
+    ellipse.setRadius(radius);
     ellipse.setFillColor(fillColor);
     ellipse.setOutlineColor(outlineColor);
     ellipse.setOutlineThickness(ellip.getStrokeWidth());
@@ -314,11 +321,10 @@ sf::RectangleShape SF_ShapeData::createLine(LineSVG l)
         sf::Uint8(255 * l.getFillOpacity()));
 
     sf::RectangleShape line(sf::Vector2f(length(l.getCoordinateX(), l.getCoordinateY(), l.getEnd().getX(), l.getEnd().getY()), l.getStrokeWidth()));
-    line.setOrigin(-l.getCoordinateX(), -l.getCoordinateY());
-    line.setRotation(angle(l.getCoordinateX(), l.getCoordinateY(), l.getEnd().getX(), l.getEnd().getY()));
+    line.setOrigin(sf::Vector2f(- l.getCoordinateX(), -l.getCoordinateY()));
+    //line.setRotation(angle(l.getCoordinateX(), l.getCoordinateY(), l.getEnd().getX(), l.getEnd().getY()));
     
     line.setFillColor(fillColor);
-    //line.setOrigin(0, 4);
     line.move(sf::Vector2f(l.getTranslateX(), l.getTranslateY()));
     line.setRotation(l.getRotate());
     line.setScale(l.getScaleX(), l.getScaleY());
@@ -356,15 +362,16 @@ sf::ConvexShape SF_ShapeData::createPolygon(PolygonSVG plg)
     polygon.setFillColor(fillColor);
     polygon.setOutlineColor(outlineColor);
     polygon.setOutlineThickness(plg.getStrokeWidth());
+    int i = 0;
+    vector<sf::Vector2f> newPoints = resizePolygon(points, plg.getStrokeWidth());
+    for (int j = 0; j < plg.getPoints().size(); ++j)
+    {
+        polygon.setPoint(i++, sf::Vector2f(plg.getPoints()[j].getX(), plg.getPoints()[j].getY()));
+    }
     polygon.move(sf::Vector2f(plg.getTranslateX(), plg.getTranslateY()));
     polygon.setRotation(plg.getRotate());
     polygon.setScale(plg.getScaleX(), plg.getScaleY());
-    int i = 0;
-    vector<sf::Vector2f> newPoints = resizePolygon(points, plg.getStrokeWidth());
-    for (const sf::Vector2f& point : points)
-    {
-        polygon.setPoint(i++, point - sf::Vector2f(plg.getStrokeWidth() - 15, plg.getStrokeWidth() - 15));
-    }
+    
     return polygon;
 }
 
@@ -706,7 +713,7 @@ void Renderer::Render(vector<SF_ShapeData> print, vector<ShapeData> data) {
             }
 
             // Event handling for key presses
-            if (event.type == sf::Event::KeyReleased) {
+            /*if (event.type == sf::Event::KeyReleased) {
                 if (event.key.code == sf::Keyboard::M) {
                     allMove = 0;
                     num++;
@@ -727,7 +734,7 @@ void Renderer::Render(vector<SF_ShapeData> print, vector<ShapeData> data) {
                     }
                     cout << Type[type] << endl;
                 }
-            }
+            }*/
         }
 
         window.clear(sf::Color::White);
@@ -751,7 +758,7 @@ void Renderer::Render(vector<SF_ShapeData> print, vector<ShapeData> data) {
             {
                 for (const sf::ConvexShape& filPolyline : print[i].getSF_fillPolylines())
                     window.draw(filPolyline);
-                if (data[i].getFlagStroke())
+                if (data[i].getShape()->getFlagStroke())
                 {
                     for (const sf::RectangleShape& outline : print[i].getSF_outlinePolylines())
                         window.draw(outline);
@@ -760,7 +767,7 @@ void Renderer::Render(vector<SF_ShapeData> print, vector<ShapeData> data) {
         }
 
         // Handle Keyboard input for various actions (moving, zooming, rotating)
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
+        /*if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
             view.reset(sf::FloatRect(0, 0, 1000, 500));
             window.setView(window.getDefaultView());
             zoomDis = 5;
@@ -849,7 +856,7 @@ void Renderer::Render(vector<SF_ShapeData> print, vector<ShapeData> data) {
                         print[l].rotating(-5);
                 }
             }
-        }
+        }*/
 
         window.display();
     }

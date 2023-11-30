@@ -11,7 +11,7 @@
 using namespace std;
 
 const double infinity = INFINITY;
-const double M_PI = 3.14159265358979323846;
+#define M_PI 3.14159265358979323846;
 
 class EllipseShape : public sf::Shape {
 private:

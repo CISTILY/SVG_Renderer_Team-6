@@ -12,7 +12,7 @@ public:
 	~RectangleSVG();
 
 	// Build rectangle Shape
-	void buildRect(vector<char*>, vector<char*>);
+	void buildShape(vector<char*>, vector<char*>) override;
 
 	// Setters
 	void setWidth(float);

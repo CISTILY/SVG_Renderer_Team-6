@@ -14,7 +14,7 @@ public:
     virtual ~PolylineSVG();
 
     // Build polyline shape
-    void buildPolyline(vector<char*>, vector<char*>);
+    void buildShape(vector<char*>, vector<char*>) override;
 
     // Getters
     vector<Point2D> getPoints();

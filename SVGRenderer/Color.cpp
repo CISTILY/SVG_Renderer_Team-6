@@ -24,6 +24,10 @@ void Color::setColor(string s) {
     this->blue = stoi(s.substr(0, s.length()));
 }
 
+bool Color::operator!= (const Color& other) {
+    return !(this->red == other.red && this->green == other.green && this->blue == other.blue);
+} 
+
 void Color::print() {
     cout << this->red << ", " << this->green << ", " << this->blue;
 }
