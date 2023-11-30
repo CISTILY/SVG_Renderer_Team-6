@@ -13,6 +13,7 @@
 #include "Ellipse.h"
 #include "Polyline.h"
 #include "SVG.h"
+#include "Path.h"
 #include "rapidxml.hpp"
 
 using namespace rapidxml;

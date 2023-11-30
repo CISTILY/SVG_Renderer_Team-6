@@ -105,72 +105,6 @@ void ShapeData::ReplaceProperties(vector<ShapeData>& data) {
             cout << endl;
         }
     }
-
-    /*if (merge == true) {
-        if (shapeAttr[5] == groupAttr[5]) {
-            string temp1 = "", temp2 = "";
-            Point2D translate1, scalePoint1("1, 1"), translate2, scalePoint2("1, 1"), scalePoint;
-            float angle1 = 0, angle2 = 0, scaleAngle1 = 1, scaleAngle2 = 1;
-            vector<int> type1 = { 0, 0, 0 }, type2 = { 0, 0, 0 };
-            bool isPoint = false;
-            string scale;
-
-            for (int i = 0; i < group.getPropsAttrName().size(); ++i)
-                if (type[5] == group.getPropsAttrName()[i])
-                    temp1 = group.getPropsAttrValue()[i];
-
-            for (int i = 0; i < this->getPropsAttrName().size(); ++i)
-                if (type[5] == this->getPropsAttrName()[i])
-                    temp2 = this->getPropsAttrValue()[i];
-
-            this->getTransformValue(temp2, translate2, angle2, scalePoint2, scaleAngle2, type2);
-            this->getTransformValue(temp1, translate1, angle1, scalePoint1, scaleAngle1, type1);
-            if (type1[0] == type2[0]) {
-                translate1.setX(translate1.getX() + translate2.getX());
-                translate1.setY(translate1.getY() + translate2.getY());
-            }
-            if (type1[1] == type2[1]) {
-                angle1 += angle2;
-            }
-            if (type1[2] == type2[2]) {
-
-                if (scaleAngle1 != 1 || scaleAngle2 != 1) {
-                    scaleAngle1 += scaleAngle2;
-                    isPoint = true;
-                    scalePoint.setX(scaleAngle1);
-                    scalePoint.setY(scaleAngle1);
-                }
-
-                else if (scalePoint1.getX() != 1 || scalePoint1.getY() != 1 || scalePoint2.getX() != 1 || scalePoint2.getY() != 1) {
-                    scalePoint1.setX(scalePoint1.getX() + scalePoint2.getX());
-                    scalePoint1.setY(scalePoint1.getY() + scalePoint2.getY());
-                }
-            }
-            if (isPoint == true) {
-                scale = scalePoint.ToString();
-            }
-            else {
-                scale = scalePoint1.ToString();
-            }
-            string transform = "translate(" + translate1.ToString() + ") rotate(" + to_string(angle1) + ") scale(" + scale + ")";
-            const char* temp = transform.c_str();
-            for (int i = 0; i < group.getPropsAttrName().size(); ++i) {
-                if (strstr(group.getPropsAttrName()[i], "transform") != NULL) {
-                    strcpy_s(group.getPropsAttrValue()[i], strlen(group.getPropsAttrValue()[i]) + (strlen(temp) - strlen(group.getPropsAttrValue()[i])) + 1, temp);
-                }
-            }
-        }
-    }
-
-    for (int i = 0; i < groupAttr.size(); ++i) {
-        if (groupAttr[i] == shapeAttr[i] || groupAttr[i] < shapeAttr[i])
-            continue;
-        for (int j = 0; j < group.getPropsAttrName().size(); ++j) {
-            if (type[i] == group.getPropsAttrName()[j]) {
-                this->PropertiesBuilder(group.getPropsAttrName()[j], group.getPropsAttrValue()[j]);
-            }
-        }
-    }*/
 }
 
 void ShapeData::setStroke(Color stroke) {
@@ -263,6 +197,14 @@ void ShapeData::buildAndPrintShapeInfo(SVGReader reader, int& i) {
         Shape* group = new RectangleSVG();
         group->buildProperties(reader.getPropsAttrName(), reader.getPropsAttrValue());
         this->shapeSVG = group;
+        this->shapeSVG->print();
+    }
+
+    else if (temp == "path") {
+        Shape* path = new Path();
+        path->buildProperties(reader.getPropsAttrName(), reader.getPropsAttrValue());
+        path->buildShape(reader.getOtherAttrName(), reader.getOtherAttrValue());
+        this->shapeSVG = path;
         this->shapeSVG->print();
     }
     cout << endl;
