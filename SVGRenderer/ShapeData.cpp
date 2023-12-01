@@ -91,13 +91,9 @@ void ShapeData::ReplaceProperties(vector<ShapeData>& data) {
                 data[j].setFillOpacity(data[group[i]].getShape()->getFillOpacity());
             }
             if (data[group[i]].getShape()->getFlagTransform() == 1 && data[j].getShape()->getFlagTransform() == 0 || data[j].getShape()->getFlagTransform() == 1) {
-                Point2D translate(data[group[i]].getShape()->getTranslateX() + data[j].getShape()->getTranslateX(), data[group[i]].getShape()->getTranslateY() + data[j].getShape()->getTranslateY());
-                float rotate(data[group[i]].getShape()->getRotate() + data[j].getShape()->getRotate());
-                Point2D scalePoint("1, 1");
-                if (data[group[i]].getShape()->getScaleX() > 1 && data[group[i]].getShape()->getScaleY() > 1) {
-                    scalePoint.setX(data[group[i]].getShape()->getScaleX() + data[j].getShape()->getScaleX() - 1);
-                    scalePoint.setY(data[group[i]].getShape()->getScaleY() + data[j].getShape()->getScaleY() - 1);
-                }
+                Point2D translate;
+                translate.setX(data[group[i]].getShape()->getTranslateX());
+                translate.setY(data[group[i]].getShape()->getTranslateY());
                 data[j].setTransform(translate, rotate, scalePoint);
             }
             cout << "After: ";

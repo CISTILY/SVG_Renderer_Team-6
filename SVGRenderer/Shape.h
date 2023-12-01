@@ -12,9 +12,9 @@ using namespace std;
 class Shape {
 protected:
     Point2D coordinate;
-    Point2D translate;
-    Point2D scalePoint;
-    float rotate;
+    vector<Point2D> translate;
+    vector<Point2D> scalePoint;
+    vector<float> rotate;
 
     bool flagStroke;
     bool flagStrokeWidth;
@@ -47,10 +47,10 @@ public:
     // Getters
     float getCoordinateX(); 
     float getCoordinateY();
-    float getTranslateX();
-    float getTranslateY();
-    float getScaleX();
-    float getScaleY();
+    float getTranslateX(int i);
+    float getTranslateY(int i);
+    float getScaleX(int i);
+    float getScaleY(int i);
 
     bool getFlagStroke();
     bool getFlagStrokeWidth();
@@ -64,7 +64,7 @@ public:
     double getFillOpacity();
     Color getStroke();
     Color getFill();
-    float getRotate();
+    float getRotate(int i);
     
 
     // Print out attributes

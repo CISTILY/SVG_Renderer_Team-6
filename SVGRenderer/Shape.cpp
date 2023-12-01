@@ -145,9 +145,9 @@ void Shape::setFillOpacity(double fillOpacity) {
 
 void Shape::setTransform(Point2D translate, float rotate, Point2D scalePoint) {
     this->flagTransform = 1;
-    this->translate = translate;
-    this->rotate = rotate;
-    this->scalePoint = scalePoint;
+    this->translate.push_back(translate);
+    this->rotate.push_back(rotate);
+    this->scalePoint.push_back(scalePoint);
 }
 
 float Shape::getCoordinateX() {
@@ -158,20 +158,20 @@ float Shape::getCoordinateY() {
     return this->coordinate.getY();
 }
 
-float Shape::getTranslateX() {
-    return this->translate.getX();
+float Shape::getTranslateX(int i) {
+    return this->translate[i].getX();
 }
 
-float Shape::getTranslateY() {
-    return this->translate.getY();
+float Shape::getTranslateY(int i) {
+    return this->translate[i].getY();
 }
 
-float Shape::getScaleX() {
-    return this->scalePoint.getX();
+float Shape::getScaleX(int i) {
+    return this->scalePoint[i].getX();
 }
 
-float Shape::getScaleY() {
-    return this->scalePoint.getY();
+float Shape::getScaleY(int i) {
+    return this->scalePoint[i].getY();
 }
 
 Color Shape::getStroke() {
@@ -220,6 +220,6 @@ double Shape::getStrokeOpacity() {
     return this->stroke_opacity;
 }
 
-float Shape::getRotate() {
-    return this->rotate;
+float Shape::getRotate(int i) {
+    return this->rotate[i];
 }
