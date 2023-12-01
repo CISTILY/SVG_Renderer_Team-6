@@ -46,7 +46,7 @@ public:
     void setStrokeOpacity(double strokeOpacity);
     void setFill(Color fill);
     void setFillOpacity(double fillOpacity);
-    void setTransform(Point2D, float, Point2D);
+    void setTransform(vector<string>);
 
     void readFile(xml_node<>* node, vector<ShapeData>& data, string);
     void ReplaceProperties(vector<ShapeData>&);

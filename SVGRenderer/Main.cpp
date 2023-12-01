@@ -13,7 +13,7 @@ using namespace rapidxml;
 
 int main() {
     Renderer pen;
-    string filename = "sample2.svg";
+    string filename = "testOrigin.svg";
 
     // Read XML
     xml_document<> doc;
@@ -43,13 +43,13 @@ int main() {
     }
 
     temp.readFile(node, data, filename);
-    //temp.ReplaceProperties(data);
+    temp.ReplaceProperties(data);
 
-    //for (int i = 0; i < data.size(); ++i) {
-    //    print.push_back(tempRen);
-    //    print[i].buildSFShape(data[i], font);
-    //}
-    //// Render shape
-    //pen.Render(print, data);
+    for (int i = 0; i < data.size(); ++i) {
+        print.push_back(tempRen);
+        print[i].buildSFShape(data[i], font);
+    }
+    // Render shape
+    pen.Render(print, data);
     return 0;
 }
