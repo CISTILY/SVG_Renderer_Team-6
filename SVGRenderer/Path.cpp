@@ -28,7 +28,6 @@ vector<Point2D> Path::getPoints() {
 
 void Path::buildShape(vector<char*> name, vector<char*> value)
 {
-	vector<char> CommandType = { 'M', 'L', 'H', 'V', 'C', 'S', 'Q', 'T', 'A', 'Z' };
 	string temp;
 	this->Points.clear();
 	for (int i = 0; i < name.size(); ++i)
@@ -40,7 +39,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 
 			for (int j = 0; j < point.length(); ++j)
 			{
-				if (point[j] < '0' || point[j] > '9')
+				if ((point[j] < '0' || point[j] > '9') && point[j] != '.')
 				{
 					command.push_back(point[j]);
 					if (j + 1 < point.length() && point[j + 1] == ' ')
@@ -57,7 +56,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 				{
 					for (; j < point.length(); ++j)
 					{
-						if (point[j] < '0' || point[j] > '9')
+						if ((point[j] < '0' || point[j] > '9') && point[j] != '.')
 							++count;
 						if (count == 6)
 						{
@@ -72,7 +71,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 				{
 					for (; j < point.length(); ++j)
 					{
-						if (point[j] < '0' || point[j] > '9')
+						if ((point[j] < '0' || point[j] > '9') && point[j] != '.')
 							++count;
 						if (count == 2)
 						{
@@ -92,7 +91,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 				{
 					for (; j < point.length(); ++j)
 					{
-						if (point[j] < '0' || point[j] > '9')
+						if ((point[j] < '0' || point[j] > '9') && point[j] != '.')
 							++count;
 						if (count == 1)
 						{
@@ -149,15 +148,15 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 		}
 	}
 }
-
 void Path::print() {
 	for (int i = 0; i < this->command.size(); ++i) {
 		cout << this->command[i] << " ";
-		for (int j = 0; j < this->Points.size(); ++j) {
-			this->Points[j].print();
-			cout << "; ";
-		}
-		cout << endl;
 	}
-		
+	cout << endl;
+	for (int j = 0; j < this->Points.size(); ++j) {
+		this->Points[j].print();
+		cout << "; ";
+	}
+	cout << endl;
+	Shape::print();
 }
