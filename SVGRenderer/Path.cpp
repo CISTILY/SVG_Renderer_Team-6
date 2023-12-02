@@ -36,26 +36,37 @@ void Path::buildShape(vector<char*> name, vector<char*> value) {
 			string point = value[i];
 
 			for (int j = 0; j < point.length(); ++j)
-			{
 				for (int k = 0; k < CommandType.size(); ++k)
-				{
-					if (point[j] == CommandType[k]) {
-						this->command.push_back(CommandType[k]);
-						point.erase(point.begin() + j);
+					if (point[j] == CommandType[k])
+					{
+						command.push_back(CommandType[k]);
+						if (j + 1 < point.length() && point[j + 1] == ' ')
+							point.erase(j, 2);
+						else
+							point.erase(point.begin() + j);
+						--j;
+
 						break;
 					}
-				}
-			}
+			
+			if(point[point.length() - 1] == ' ')
+				point.erase(point.end());
 
 			while (true) {
 				string dup;
 				int pos = point.find(' ');
+
+				if (point.find(',') == string::npos)
+				{
+					pos = point.find(' ', pos + 1);
+				}
+
 				if (pos == string::npos) {
 					Point2D a(point);
 					this->Points.push_back(a);
 					break;
 				}
-
+				
 				dup = point.substr(0, pos);
 				point.erase(0, pos + 1);
 				Point2D a(dup);
