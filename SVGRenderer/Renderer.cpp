@@ -372,7 +372,7 @@ sf::RectangleShape SF_ShapeData::createRectangle(RectangleSVG rectangle)
     rect.setFillColor(fillColor);
     //rect.setOrigin(0, -3);
     for (int i = 0; i < rectangle.getTransform().size(); ++i) {
-        this->findOrderTransform(txt.getTransform()[i]);
+        this->findOrderTransform(rectangle.getTransform()[i]);
         this->splitString(rectangle.getTransform()[i]);
 
         for (int j = 0; j < 3; ++j)
@@ -486,7 +486,7 @@ sf::RectangleShape SF_ShapeData::createLine(LineSVG l)
 
     line.setFillColor(fillColor);
     for (int i = 0; i < l.getTransform().size(); ++i) {
-        this->findOrderTransform(txt.getTransform()[i]);
+        this->findOrderTransform(l.getTransform()[i]);
         this->splitString(l.getTransform()[i]);
 
         for (int j = 0; j < 3; ++j)
