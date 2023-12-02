@@ -129,6 +129,58 @@ void SF_ShapeData::splitString(string str) {
     }
 }
 
+void SF_ShapeData::findOrderTransform(string transform)
+{
+    int posTranslate = transform.find("translate");
+    int posRotate = transform.find("rotate");
+    int posScale = transform.find("scale");
+    
+    if(posTranslate == string::npos)
+        posTranslate = transform.length();
+    if(posRotate == string::npos)
+        posRotate = transform.length();
+    if(posScale == string::npos)
+        posScale = transform.length();
+        
+    if (posTranslate <= posRotate && posTranslate <= posScale) 
+    {
+        TranslateRotateScale[0] = 0;
+        if (posRotate <= posScale) 
+        {
+            TranslateRotateScale[1] = 1;
+            TranslateRotateScale[2] = 2;
+        } else 
+        {
+            TranslateRotateScale[1] = 2;
+            TranslateRotateScale[2] = 1;
+        }
+    } else if (posRotate <= posTranslate && posRotate <= posScale) 
+    {
+        TranslateRotateScale[0] = 1;
+        if (posTranslate <= posScale) 
+        {
+            TranslateRotateScale[1] = 0;
+            TranslateRotateScale[2] = 2;
+        } else 
+        {
+            TranslateRotateScale[1] = 2;
+            TranslateRotateScale[2] = 0;
+        }
+    } else 
+    {
+        TranslateRotateScale[0] = 2;
+        if (posTranslate <= posRotate) 
+        {
+            TranslateRotateScale[1] = 0;
+            TranslateRotateScale[2] = 1;
+        } else 
+        {
+            TranslateRotateScale[1] = 1;
+            TranslateRotateScale[2] = 0;
+        }
+    }
+}
+
 sf::Vector2f SF_ShapeData::getCenter(ShapeData data) {
     string temp = data.getTypeName();
     if (temp == "rect") {
