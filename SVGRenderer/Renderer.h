@@ -83,7 +83,7 @@ private:
 
     //vector<int> order;
     Point2D translate;
-    float rotate = 0;
+    float rotate;
     Point2D scalePoint;
     int TranslateRotateScale[3];
 public:
