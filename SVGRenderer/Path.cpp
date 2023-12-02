@@ -28,47 +28,52 @@ vector<Point2D> Path::getPoints() {
 
 void Path::buildShape(vector<char*> name, vector<char*> value) {
 	vector<char> CommandType = { 'M', 'L', 'H', 'V', 'C', 'S', 'Q', 'T', 'A', 'Z' };
-	vector<int> sentinel;
-	string temp = value[0];
-	for (int i = 0; i < CommandType.size(); ++i) {
-		for (int j = 0; j < temp.length(); ++j) {
-			if (value[0][j] == CommandType[i]) {
-				this->command.push_back(CommandType[i]);
+	string temp;
+	this->Points.clear();
+	for (int i = 0; i < name.size(); ++i) {
+		temp = name[i];
+		if (temp == "d") {
+			string point = value[i];
+
+			for (int j = 0; j < point.length(); ++j)
+			{
+				for (int k = 0; k < CommandType.size(); ++k)
+				{
+					if (point[j] == CommandType[k]) {
+						this->command.push_back(CommandType[k]);
+						point.erase(point.begin() + j);
+						break;
+					}
+				}
 			}
-		}
-	}
 
-	for (int i = 0; i < temp.length(); ++i) {
-		if (temp[i] >= 'A' && temp[i] <= 'Z' || temp[i] >= 'a' && temp[i] <= 'z')
-			sentinel.push_back(i);
-	}
-	sentinel.push_back(temp.length() - 1);
-	
-	for (int i = 0; i < sentinel.size(); ++i) {
-		cout << sentinel[i] << " ";
-	}
+			while (true) {
+				string dup;
+				int pos = point.find(' ');
+				if (pos == string::npos) {
+					Point2D a(point);
+					this->Points.push_back(a);
+					break;
+				}
 
-	for (int i = 0; i < sentinel.size() - 1; ++i) {
-		string point = temp.substr(sentinel[i] + 1, sentinel[i + 1]);
-		cout << point << "-------------";
-		/*while (true) {
-			string dup;
-			int pos = point.find(' ');
-			if (pos == string::npos) {
-				Point2D a(point);
+				dup = point.substr(0, pos);
+				point.erase(0, pos + 1);
+				Point2D a(dup);
 				this->Points.push_back(a);
-				break;
 			}
-
-			dup = point.substr(0, pos);
-			point.erase(0, pos + 1);
-			Point2D a(dup);
-			this->Points.push_back(a);
-		}*/
+			break;
+		}
 	}
 }
 
 void Path::print() {
-	for (int i = 0; i < this->command.size(); ++i)
+	for (int i = 0; i < this->command.size(); ++i) {
 		cout << this->command[i] << " ";
+		for (int j = 0; j < this->Points.size(); ++j) {
+			this->Points[j].print();
+			cout << "; ";
+		}
+		cout << endl;
+	}
+		
 }
