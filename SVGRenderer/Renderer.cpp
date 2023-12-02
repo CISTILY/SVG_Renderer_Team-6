@@ -269,7 +269,7 @@ sf::Text SF_ShapeData::createText(TextSVG txt, const sf::Font& font)
         const sf::Vector2f a = text.getPosition();
         cout << endl;
         cout << a.x << " " << a.y << endl;
-        text.tra(this->rotate);
+        text.rotate(this->rotate);
         text.setScale(this->scalePoint.getX(), this->scalePoint.getX());
     }
     
@@ -1231,7 +1231,6 @@ vector<sf::Vector2f> findNewPoints(vector<sf::Vector2f> points, float strokeWidt
     newPoints.push_back(tmp2);
     return newPoints;
 }
-
 
 vector<sf::VertexArray> createPath(vector<char> commands, vector<sf::Vector2f> points, sf::Color color, float strokeWidth)
 {
