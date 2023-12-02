@@ -80,10 +80,12 @@ private:
     vector<sf::ConvexShape> SF_fillPolylines;
     vector<sf::RectangleShape> SF_outlinePolylines;
     vector<sf::VertexArray> SF_path;
+
     //vector<int> order;
     Point2D translate;
     float rotate = 0;
     Point2D scalePoint;
+    int TranslateRotateScale[3];
 public:
     // Constructor
     SF_ShapeData();
