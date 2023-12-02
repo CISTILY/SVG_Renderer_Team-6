@@ -25,6 +25,7 @@ int main(int argc, char** argv) {
 
     cout << filename;
 
+
     // Read XML
     xml_document<> doc;
     xml_node<>* rootNode;

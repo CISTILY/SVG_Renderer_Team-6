@@ -24,6 +24,6 @@ public:
 
 	// Print data of color
 	void print();
-
+	int HexadecimalToDecimal(string);
 	bool operator!= (const Color&);
 };

@@ -2,10 +2,12 @@
 
 using namespace std;
 
-//SF_ShapeData::SF_ShapeData() {
-//    cout << "SF_ShapeData::Default Constructor" << endl;
-//}
-//
+SF_ShapeData::SF_ShapeData() {
+    this->scalePoint.setX(1);
+    this->scalePoint.setY(1);
+    //cout << "SF_ShapeData::Default Constructor" << endl;
+}
+
 //SF_ShapeData::~SF_ShapeData() {
 //    cout << "SF_ShapeData::Destructor" << endl;
 //}
@@ -86,6 +88,34 @@ vector<sf::RectangleShape> SF_ShapeData::getSF_outlinePolylines()
 sf::Text SF_ShapeData::getSF_text()
 {
     return this->SF_text;
+}
+
+void SF_ShapeData::splitString(string str) {
+    string value;
+    while (str != "") {
+        if (str.find("translate") != string::npos) {
+            int pos = str.find(')');
+            value = str.substr(str.find("translate") + 10, pos - 1 - 9);
+            Point2D* temp = new Point2D(value);
+            this->translate = *temp;
+            str.erase(0, pos + 1);
+            delete temp;
+        }
+        else if (str.find("rotate") != string::npos) {
+            int pos = str.find(')');
+            value = str.substr(str.find("rotate") + 7, pos - 1 - 6);
+            this->rotate = stof(value);
+            str.erase(0, pos + 1);
+        }
+        else if (str.find("scale") != string::npos) {
+            int pos = str.find(')');
+            value = str.substr(str.find("scale") + 6, pos - 1 - 5);
+            Point2D* temp = new Point2D(value);
+            this->scalePoint = *temp;
+            delete temp;
+            str.erase(0, pos + 1);
+        }
+    }
 }
 
 sf::Vector2f SF_ShapeData::getCenter(ShapeData data) {
@@ -232,9 +262,17 @@ sf::Text SF_ShapeData::createText(TextSVG txt, const sf::Font& font)
     text.setOutlineColor(outlineColor);
     text.setCharacterSize(txt.getFont_size());                                                                                                                                                                                                  
     //text.setOrigin(txt.getFont_size() - 50, txt.getFont_size());
-    text.move(sf::Vector2f(txt.getTranslateX(), txt.getTranslateY()));
-    text.setRotation(txt.getRotate());
-    text.setScale(txt.getScaleX(), txt.getScaleY());
+    for (int i = 0; i < txt.getTransform().size(); ++i) {
+        this->splitString(txt.getTransform()[i]);
+        cout << "Attemp: " << i;
+        text.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
+        const sf::Vector2f a = text.getPosition();
+        cout << endl;
+        cout << a.x << " " << a.y << endl;
+        text.rotate(this->rotate);
+        text.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+    }
+    
     return text;
 }
 
@@ -256,9 +294,12 @@ sf::RectangleShape SF_ShapeData::createRectangle(RectangleSVG rectangle)
     rect.setOutlineColor(outlineColor);
     rect.setFillColor(fillColor);
     //rect.setOrigin(0, -3);
-    rect.move(sf::Vector2f(rectangle.getTranslateX(), rectangle.getTranslateY()));
-    rect.setRotation(rectangle.getRotate());
-    rect.setScale(rectangle.getScaleX(), rectangle.getScaleY());
+    for (int i = 0; i < rectangle.getTransform().size(); ++i) {
+        this->splitString(rectangle.getTransform()[i]);
+        rect.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
+        rect.rotate(this->rotate);
+        rect.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+    }
     
     return rect;
 }
@@ -280,9 +321,9 @@ sf::CircleShape SF_ShapeData::createCircle(CircleSVG cir)
     circle.setFillColor(fillColor);
     circle.setOutlineColor(outlineColor);
     circle.setOutlineThickness(cir.getStrokeWidth());
-    circle.move(sf::Vector2f(cir.getTranslateX(), cir.getTranslateY()));
+    /*circle.move(sf::Vector2f(cir.getTranslateX(), cir.getTranslateY()));
     circle.setRotation(cir.getRotate());
-    circle.setScale(cir.getScaleX(), cir.getScaleY());
+    circle.setScale(cir.getScaleX(), cir.getScaleY());*/
 
     return circle;
 }
@@ -306,9 +347,9 @@ EllipseShape SF_ShapeData::createEllipse(EllipseSVG ellip)
     ellipse.setFillColor(fillColor);
     ellipse.setOutlineColor(outlineColor);
     ellipse.setOutlineThickness(ellip.getStrokeWidth());
-    ellipse.move(sf::Vector2f(ellip.getTranslateX(), ellip.getTranslateY()));
+    /*ellipse.move(sf::Vector2f(ellip.getTranslateX(), ellip.getTranslateY()));
     ellipse.setRotation(ellip.getRotate());
-    ellipse.setScale(ellip.getScaleX(), ellip.getScaleY());
+    ellipse.setScale(ellip.getScaleX(), ellip.getScaleY());*/
 
     return ellipse;
 }
@@ -325,9 +366,12 @@ sf::RectangleShape SF_ShapeData::createLine(LineSVG l)
     //line.setRotation(angle(l.getCoordinateX(), l.getCoordinateY(), l.getEnd().getX(), l.getEnd().getY()));
     
     line.setFillColor(fillColor);
-    line.move(sf::Vector2f(l.getTranslateX(), l.getTranslateY()));
-    line.setRotation(l.getRotate());
-    line.setScale(l.getScaleX(), l.getScaleY());
+    for (int i = 0; i < l.getTransform().size(); ++i) {
+        this->splitString(l.getTransform()[i]);
+        line.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
+        line.rotate(this->rotate);
+        line.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+    }
 
     return line;
 }
@@ -368,9 +412,9 @@ sf::ConvexShape SF_ShapeData::createPolygon(PolygonSVG plg)
     {
         polygon.setPoint(i++, sf::Vector2f(plg.getPoints()[j].getX(), plg.getPoints()[j].getY()));
     }
-    polygon.move(sf::Vector2f(plg.getTranslateX(), plg.getTranslateY()));
+    /*polygon.move(sf::Vector2f(plg.getTranslateX(), plg.getTranslateY()));
     polygon.setRotation(plg.getRotate());
-    polygon.setScale(plg.getScaleX(), plg.getScaleY());
+    polygon.setScale(plg.getScaleX(), plg.getScaleY());*/
     
     return polygon;
 }
@@ -945,4 +989,287 @@ sf::Vector2f findNewPoint(sf::Vector2f A, sf::Vector2f B, float strokeWidth)
         newPoint.y = AB.getA() * newPoint.x + AB.getB();
     }
     return newPoint;
+}
+
+// Path=============================================================
+sf::VertexArray commandL(sf::Vector2f p0, sf::Vector2f p1, sf::Vector2f p2, sf::Vector2f p3, sf::Color color, float strokeWidth)
+{ 
+    sf::VertexArray path(sf::Quads);
+
+    path.append(sf::Vertex(p0, color));
+    path.append(sf::Vertex(p2, color));
+    path.append(sf::Vertex(p3, color));
+    path.append(sf::Vertex(p1, color));
+
+    return path;
+}
+
+sf::VertexArray commandH(sf::Vector2f p0, float x, sf::Vector2f p2, sf::Vector2f p3, sf::Color color, float strokeWidth)
+{
+    sf::VertexArray path(sf::Quads);
+
+    path.append(sf::Vertex(p0, color));
+    path.append(sf::Vertex(p2, color));
+    path.append(sf::Vertex(p3, color));
+    path.append(sf::Vertex(sf::Vector2f(x, p0.y), color));
+
+    return path;
+}
+
+sf::VertexArray commandV(sf::Vector2f p0, float y, sf::Vector2f p2, sf::Vector2f p3, sf::Color color, float strokeWidth)
+{
+    sf::VertexArray path(sf::Quads);
+
+    path.append(sf::Vertex(p0, color));
+    path.append(sf::Vertex(p2, color));
+    path.append(sf::Vertex(p3, color));
+    path.append(sf::Vertex(sf::Vector2f(p0.x, y), color));
+
+    return path;
+}
+
+sf::Vector2f cubicBeizer(sf::Vector2f p0, sf::Vector2f p1, sf::Vector2f p2, sf::Vector2f p3, float t)
+{
+    sf::Vector2f point;
+    point.x = pow(1 - t, 3) * p0.x + 3 * pow(1 - t, 2) * t * p1.x + 3 * (1 - t) * t * t * p2.x + t * t * t * p3.x;
+    point.y = pow(1 - t, 3) * p0.y + 3 * pow(1 - t, 2) * t * p1.y + 3 * (1 - t) * t * t * p2.y + t * t * t * p3.y;
+    return point;
+}
+
+sf::VertexArray commandC(sf::Vector2f p0, sf::Vector2f p1, sf::Vector2f p2, sf::Vector2f p3, sf::Vector2f p4, sf::Vector2f p5, sf::Vector2f p6, sf::Vector2f p7, sf::Color color, float strokeWidth)
+{
+    sf::VertexArray path(sf::Quads);
+    int numPoint = round(abs(p0.x - p0.y));
+    for (int i = 0; i < numPoint - 1; i++)
+    {
+        float t1 = (float)i / numPoint;
+        float t2 = (float)(i + 1) / numPoint;
+        sf::Vector2f point1 = cubicBeizer(p0, p1, p2, p3, t1);
+        sf::Vector2f point2 = cubicBeizer(p0, p1, p2, p3, t2);
+        sf::Vector2f point3 = cubicBeizer(p4, p5, p6, p7, t2);
+        sf::Vector2f point4 = cubicBeizer(p4, p5, p6, p7, t1);
+
+        path.append(sf::Vertex(point1, color));
+        path.append(sf::Vertex(point2, color));
+        path.append(sf::Vertex(point3, color));
+        path.append(sf::Vertex(point4, color));
+    }
+    return path;
+}
+
+
+vector<sf::Vector2f> findNewPoints(vector<sf::Vector2f> points, float strokeWidth)
+{
+    vector<sf::Vector2f> newPoints;
+
+    int numPoints = points.size();
+    for (int i = 0; i < numPoints - 2; i++)
+    {
+        sf::Vector2f tmp(0, 0);
+        if (points[i].x == points[i + 1].x && points[i].y <= points[i + 1].y)
+        {
+            tmp.x = points[i].x + strokeWidth;
+            tmp.y = points[i].y;
+        }
+        else if (points[i].x == points[i + 1].x && points[i].y > points[i + 1].y)
+        {
+            tmp.x = points[i].x - strokeWidth;
+            tmp.y = points[i].y;
+        }
+        else if (points[i].y == points[i + 1].y && points[i].x <= points[i + 1].x)
+        {
+            tmp.x = points[i].x;
+            tmp.y = points[i].y + strokeWidth;
+        }
+        else if (points[i].y == points[i + 1].y && points[i].x > points[i + 1].x)
+        {
+            tmp.x = points[i].x;
+            tmp.y = points[i].y - strokeWidth;
+        }
+        else if (points[i].x < points[i + 1].x && points[i].y < points[i + 1].y && points[i].x <= points[i + 2].x)
+        {
+            tmp.x = points[i].x - strokeWidth;
+            tmp.y = points[i].y + strokeWidth;
+        }
+        else if (points[i].x < points[i + 1].x && points[i].y < points[i + 1].y && points[i].x > points[i + 2].x)
+        {
+            tmp.x = points[i].x + strokeWidth;
+            tmp.y = points[i].y - strokeWidth;
+        }
+        else if (points[i].x > points[i + 1].x && points[i].y < points[i + 1].y && points[i].x <= points[i + 2].x)
+        {
+            tmp.x = points[i].x + strokeWidth;
+            tmp.y = points[i].y + strokeWidth;
+        }
+        else if (points[i].x > points[i + 1].x && points[i].y < points[i + 1].y && points[i].x > points[i + 2].x)
+        {
+            tmp.x = points[i].x - strokeWidth;
+            tmp.y = points[i].y - strokeWidth;
+        }
+        else if (points[i].x < points[i + 1].x && points[i].y > points[i + 1].y && points[i].x <= points[i + 2].x)
+        {
+            tmp.x = points[i].x + strokeWidth;
+            tmp.y = points[i].y + strokeWidth;
+        }
+        else if (points[i].x < points[i + 1].x && points[i].y > points[i + 1].y && points[i].x > points[i + 2].x)
+        {
+            tmp.x = points[i].x - strokeWidth;
+            tmp.y = points[i].y - strokeWidth;
+        }
+        else if (points[i].x > points[i + 1].x && points[i].y > points[i + 1].y && points[i].x <= points[i + 2].x)
+        {
+            tmp.x = points[i].x + strokeWidth;
+            tmp.y = points[i].y - strokeWidth;
+        }
+        else if (points[i].x > points[i + 1].x && points[i].y > points[i + 1].y && points[i].x > points[i + 2].x)
+        {
+            tmp.x = points[i].x - strokeWidth;
+            tmp.y = points[i].y + strokeWidth;
+        }
+        newPoints.push_back(tmp);
+    }
+
+    sf::Vector2f tmp1(0, 0);
+    sf::Vector2f tmp2(0, 0);
+    if (points[numPoints - 3].x == points[numPoints - 2].x && points[numPoints - 3].y <= points[numPoints - 1].y)
+    {
+        tmp1.x = points[numPoints - 2].x + strokeWidth;
+        tmp1.y = points[numPoints - 2].y;
+
+        tmp2.x = points[numPoints - 1].x + strokeWidth;
+        tmp2.y = points[numPoints - 1].y;
+    }
+    else if (points[numPoints - 3].x == points[numPoints - 2].x && points[numPoints - 3].y > points[numPoints - 1].y)
+    {
+        tmp1.x = points[numPoints - 2].x - strokeWidth;
+        tmp1.y = points[numPoints - 2].y;
+
+        tmp2.x = points[numPoints - 1].x - strokeWidth;
+        tmp2.y = points[numPoints - 1].y;
+    }
+    else if (points[numPoints - 3].y == points[numPoints - 2].y && points[numPoints - 3].x <= points[numPoints - 1].x)
+    {
+        tmp1.x = points[numPoints - 2].x;
+        tmp1.y = points[numPoints - 2].y + strokeWidth;
+
+        tmp2.x = points[numPoints - 1].x;
+        tmp2.y = points[numPoints - 1].y + strokeWidth;
+    }
+    else if (points[numPoints - 3].y == points[numPoints - 2].y && points[numPoints - 3].x > points[numPoints - 1].x)
+    {
+        tmp1.x = points[numPoints - 2].x;
+        tmp1.y = points[numPoints - 2].y - strokeWidth;
+
+        tmp2.x = points[numPoints - 1].x;
+        tmp2.y = points[numPoints - 1].y - strokeWidth;
+    }
+    else if (points[numPoints - 3].x < points[numPoints - 2].x && points[numPoints - 3].y < points[numPoints - 2].y && points[numPoints - 3].x <= points[numPoints - 1].x)
+    {
+        tmp1.x = points[numPoints - 2].x - strokeWidth;
+        tmp1.y = points[numPoints - 2].y + strokeWidth;
+
+        tmp2.x = points[numPoints - 1].x - strokeWidth;
+        tmp2.y = points[numPoints - 1].y + strokeWidth;
+    }
+    else if (points[numPoints - 3].x < points[numPoints - 2].x && points[numPoints - 3].y < points[numPoints - 2].y && points[numPoints - 3].x > points[numPoints - 1].x)
+    {
+        tmp1.x = points[numPoints - 2].x + strokeWidth;
+        tmp1.y = points[numPoints - 2].y - strokeWidth;
+
+        tmp2.x = points[numPoints - 1].x + strokeWidth;
+        tmp2.y = points[numPoints - 1].y - strokeWidth;
+    }
+    else if (points[numPoints - 3].x > points[numPoints - 2].x && points[numPoints - 3].y < points[numPoints - 2].y && points[numPoints - 3].x <= points[numPoints - 1].x)
+    {
+        tmp1.x = points[numPoints - 2].x + strokeWidth;
+        tmp1.y = points[numPoints - 2].y + strokeWidth;
+
+        tmp2.x = points[numPoints - 1].x + strokeWidth;
+        tmp2.y = points[numPoints - 1].y + strokeWidth;
+    }
+    else if (points[numPoints - 3].x > points[numPoints - 2].x && points[numPoints - 3].y < points[numPoints - 2].y && points[numPoints - 3].x > points[numPoints - 1].x)
+    {
+        tmp1.x = points[numPoints - 2].x - strokeWidth;
+        tmp1.y = points[numPoints - 2].y - strokeWidth;
+
+        tmp2.x = points[numPoints - 1].x - strokeWidth;
+        tmp2.y = points[numPoints - 1].y - strokeWidth;
+    }
+    else if (points[numPoints - 3].x < points[numPoints - 2].x && points[numPoints - 3].y > points[numPoints - 2].y && points[numPoints - 3].x <= points[numPoints - 1].x)
+    {
+        tmp1.x = points[numPoints - 2].x + strokeWidth;
+        tmp1.y = points[numPoints - 2].y + strokeWidth;
+
+        tmp2.x = points[numPoints - 1].x + strokeWidth;
+        tmp2.y = points[numPoints - 1].y + strokeWidth;
+    }
+    else if (points[numPoints - 3].x < points[numPoints - 2].x && points[numPoints - 3].y > points[numPoints - 2].y && points[numPoints - 3].x > points[numPoints - 1].x)
+    {
+        tmp1.x = points[numPoints - 2].x - strokeWidth;
+        tmp1.y = points[numPoints - 2].y - strokeWidth;
+
+        tmp2.x = points[numPoints - 1].x - strokeWidth;
+        tmp2.y = points[numPoints - 1].y - strokeWidth;
+    }
+    else if (points[numPoints - 3].x > points[numPoints - 2].x && points[numPoints - 3].y > points[numPoints - 2].y && points[numPoints - 3].x <= points[numPoints - 1].x)
+    {
+        tmp1.x = points[numPoints - 2].x + strokeWidth;
+        tmp1.y = points[numPoints - 2].y - strokeWidth;
+
+        tmp2.x = points[numPoints - 1].x + strokeWidth;
+        tmp2.y = points[numPoints - 1].y - strokeWidth;
+    }
+    else if (points[numPoints - 3].x > points[numPoints - 2].x && points[numPoints - 3].y > points[numPoints - 2].y && points[numPoints - 3].x > points[numPoints - 1].x)
+    {
+        tmp1.x = points[numPoints - 2].x - strokeWidth;
+        tmp1.y = points[numPoints - 2].y + strokeWidth;
+
+        tmp2.x = points[numPoints - 1].x - strokeWidth;
+        tmp2.y = points[numPoints - 1].y + strokeWidth;
+    }
+    newPoints.push_back(tmp1);
+    newPoints.push_back(tmp2);
+    return newPoints;
+}
+
+vector<sf::VertexArray> createPath(vector<char> commands, vector<sf::Vector2f> points, sf::Color color, float strokeWidth)
+{
+    vector<sf::VertexArray> paths(sf::Quads);
+
+    vector<sf::Vector2f> newPoints = findNewPoints(points, strokeWidth);
+    int i = 0;
+    for (const char& command : commands)
+    {
+        if (command == 'M')
+        {
+            i++;
+        }
+        else if (command == 'L')
+        {
+            paths.push_back(commandL(points[i - 1], points[i], newPoints[i - 1], newPoints[i], color, strokeWidth));
+            i++;
+        }
+        else if (command == 'H')
+        {
+            paths.push_back(commandH(points[i - 1], points[i].x, newPoints[i - 1], newPoints[i], color, strokeWidth));
+            i++;
+        }
+        else if (command == 'V')
+        {
+            paths.push_back(commandV(points[i - 1], points[i].y, newPoints[i - 1], newPoints[i], color, strokeWidth));
+            i++;
+        }
+        else if (command == 'C')
+        {
+            paths.push_back(commandC(points[i - 1], points[i], points[i + 1], points[i + 2], newPoints[i - 1], newPoints[i], newPoints[i + 1], newPoints[i + 2], color, strokeWidth));
+            i += 3;
+        }
+        else if (command == 'Z')
+        {
+            paths.push_back(commandL(points[0], points[i - 1], newPoints[0], newPoints[i - 1], color, strokeWidth));
+            break;
+        }
+    }
+
+    return paths;
 }
