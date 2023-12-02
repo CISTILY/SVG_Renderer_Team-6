@@ -12,6 +12,10 @@ Point2D::Point2D() {
 Point2D::Point2D(string s) {
     string temp;
     int p = s.find(',');
+
+    if (p == string::npos)
+        p = s.find(' ');
+
     temp = s.substr(0, p);
     this->x = stof(temp);
     temp = s.substr(p + 1, s.length());
