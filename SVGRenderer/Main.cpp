@@ -13,7 +13,7 @@ using namespace rapidxml;
 
 int main() {
     Renderer pen;
-    string filename = "sample3.svg";
+    string filename = "testOrigin.svg";
 
     // Read XML
     xml_document<> doc;

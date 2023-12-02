@@ -13,9 +13,6 @@ Shape::Shape() {
     this->stroke_width = 0;
     this->stroke_opacity = 1;
     this->fill_opacity = 1;
-    this->rotate = 0;
-    this->scalePoint.setX(1);
-    this->scalePoint.setY(1);
     //cout << "Shape::Constructor" << endl;
 }
 
@@ -23,28 +20,28 @@ Shape::~Shape() {
     //cout << "Shape::Destructor" << endl;
 }
 
-void Shape::splitWord(string str, Point2D& translate, float& rotate, Point2D& scalePoint) {
+void Shape::splitWord(string str, vector<Point2D>& translate, vector<float>& rotate, vector<Point2D>& scalePoint) {
     string value;
     while (str != "") {
         if (str.find("translate") != string::npos) {
             int pos = str.find(')');
             value = str.substr(str.find("translate") + 10, pos - 1 - 9);
             Point2D* temp = new Point2D(value);
-            translate = *temp;
+            translate.push_back(*temp);
             str.erase(0, pos + 1);
             delete temp;
         }
         else if (str.find("rotate") != string::npos) {
             int pos = str.find(')');
             value = str.substr(str.find("rotate") + 7, pos - 1 - 6);
-            rotate = stof(value);
+            rotate.push_back(stof(value));
             str.erase(0, pos + 1);
         }
         else if (str.find("scale") != string::npos) {
             int pos = str.find(')');
             value = str.substr(str.find("scale") + 6, pos - 1 - 5);
             Point2D* temp = new Point2D(value);
-            scalePoint = *temp;
+            scalePoint.push_back(*temp);
             delete temp;
             str.erase(0, pos + 1);
         }
@@ -100,7 +97,7 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
 
         else if (temp == "transform") {
             this->flagTransform = 1;
-            this->splitWord(value[i], this->translate, this->rotate, this->scalePoint);
+            this->transform.push_back(value[i]);
         }
     }
 }
@@ -113,9 +110,9 @@ void Shape::print() {
     cout << "), (stroke: ";
     this->stroke.print();
     cout << "), (stroke-width: " << this->stroke_width << "), (stroke-opacity: " << this->stroke_opacity << ")" << endl;
-    cout << "transform ("; this->translate.print(); cout << ") rotate (" << this->rotate << ") scale (";
-    this->scalePoint.print();
-    cout << ")";
+    cout << "transform: ";
+    for (int i = 0; i < this->transform.size(); ++i)
+        cout << "No. " << i << this->transform[i] << " ";
 }
 
 void Shape::setStroke(Color stroke) {
@@ -143,11 +140,9 @@ void Shape::setFillOpacity(double fillOpacity) {
     this->fill_opacity = fillOpacity;
 }
 
-void Shape::setTransform(Point2D translate, float rotate, Point2D scalePoint) {
+void Shape::setTransform(string transform) {
     this->flagTransform = 1;
-    this->translate = translate;
-    this->rotate = rotate;
-    this->scalePoint = scalePoint;
+    this->transform.push_back(transform);
 }
 
 float Shape::getCoordinateX() {
@@ -156,22 +151,6 @@ float Shape::getCoordinateX() {
 
 float Shape::getCoordinateY() {
     return this->coordinate.getY();
-}
-
-float Shape::getTranslateX() {
-    return this->translate.getX();
-}
-
-float Shape::getTranslateY() {
-    return this->translate.getY();
-}
-
-float Shape::getScaleX() {
-    return this->scalePoint.getX();
-}
-
-float Shape::getScaleY() {
-    return this->scalePoint.getY();
 }
 
 Color Shape::getStroke() {
@@ -220,6 +199,6 @@ double Shape::getStrokeOpacity() {
     return this->stroke_opacity;
 }
 
-float Shape::getRotate() {
-    return this->rotate;
+vector<string> Shape::getTransform() {
+    return this->transform;
 }

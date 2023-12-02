@@ -79,12 +79,18 @@ private:
     sf::RectangleShape SF_line;
     vector<sf::ConvexShape> SF_fillPolylines;
     vector<sf::RectangleShape> SF_outlinePolylines;
+
+    Point2D translate;
+    float rotate = 0;
+    Point2D scalePoint;
 public:
     // Constructor
-    //SF_ShapeData();
+    SF_ShapeData();
 
     // Destructor
     //~SF_ShapeData();
+
+    void splitString(string);
 
     // Assign data to SF format shapes
     void buildSFShape(ShapeData, const sf::Font&);

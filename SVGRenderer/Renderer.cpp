@@ -2,10 +2,12 @@
 
 using namespace std;
 
-//SF_ShapeData::SF_ShapeData() {
-//    cout << "SF_ShapeData::Default Constructor" << endl;
-//}
-//
+SF_ShapeData::SF_ShapeData() {
+    this->scalePoint.setX(1);
+    this->scalePoint.setY(1);
+    //cout << "SF_ShapeData::Default Constructor" << endl;
+}
+
 //SF_ShapeData::~SF_ShapeData() {
 //    cout << "SF_ShapeData::Destructor" << endl;
 //}
@@ -86,6 +88,34 @@ vector<sf::RectangleShape> SF_ShapeData::getSF_outlinePolylines()
 sf::Text SF_ShapeData::getSF_text()
 {
     return this->SF_text;
+}
+
+void SF_ShapeData::splitString(string str) {
+    string value;
+    while (str != "") {
+        if (str.find("translate") != string::npos) {
+            int pos = str.find(')');
+            value = str.substr(str.find("translate") + 10, pos - 1 - 9);
+            Point2D* temp = new Point2D(value);
+            this->translate = *temp;
+            str.erase(0, pos + 1);
+            delete temp;
+        }
+        else if (str.find("rotate") != string::npos) {
+            int pos = str.find(')');
+            value = str.substr(str.find("rotate") + 7, pos - 1 - 6);
+            this->rotate = stof(value);
+            str.erase(0, pos + 1);
+        }
+        else if (str.find("scale") != string::npos) {
+            int pos = str.find(')');
+            value = str.substr(str.find("scale") + 6, pos - 1 - 5);
+            Point2D* temp = new Point2D(value);
+            this->scalePoint = *temp;
+            delete temp;
+            str.erase(0, pos + 1);
+        }
+    }
 }
 
 sf::Vector2f SF_ShapeData::getCenter(ShapeData data) {
@@ -232,9 +262,17 @@ sf::Text SF_ShapeData::createText(TextSVG txt, const sf::Font& font)
     text.setOutlineColor(outlineColor);
     text.setCharacterSize(txt.getFont_size());                                                                                                                                                                                                  
     //text.setOrigin(txt.getFont_size() - 50, txt.getFont_size());
-    text.move(sf::Vector2f(txt.getTranslateX(), txt.getTranslateY()));
-    text.setRotation(txt.getRotate());
-    text.setScale(txt.getScaleX(), txt.getScaleY());
+    for (int i = 0; i < txt.getTransform().size(); ++i) {
+        this->splitString(txt.getTransform()[i]);
+        cout << "Attemp: " << i;
+        text.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
+        const sf::Vector2f a = text.getPosition();
+        cout << endl;
+        cout << a.x << " " << a.y << endl;
+        text.tra(this->rotate);
+        text.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+    }
+    
     return text;
 }
 
@@ -256,9 +294,12 @@ sf::RectangleShape SF_ShapeData::createRectangle(RectangleSVG rectangle)
     rect.setOutlineColor(outlineColor);
     rect.setFillColor(fillColor);
     //rect.setOrigin(0, -3);
-    rect.move(sf::Vector2f(rectangle.getTranslateX(), rectangle.getTranslateY()));
-    rect.setRotation(rectangle.getRotate());
-    rect.setScale(rectangle.getScaleX(), rectangle.getScaleY());
+    for (int i = 0; i < rectangle.getTransform().size(); ++i) {
+        this->splitString(rectangle.getTransform()[i]);
+        rect.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
+        rect.rotate(this->rotate);
+        rect.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+    }
     
     return rect;
 }
@@ -280,9 +321,9 @@ sf::CircleShape SF_ShapeData::createCircle(CircleSVG cir)
     circle.setFillColor(fillColor);
     circle.setOutlineColor(outlineColor);
     circle.setOutlineThickness(cir.getStrokeWidth());
-    circle.move(sf::Vector2f(cir.getTranslateX(), cir.getTranslateY()));
+    /*circle.move(sf::Vector2f(cir.getTranslateX(), cir.getTranslateY()));
     circle.setRotation(cir.getRotate());
-    circle.setScale(cir.getScaleX(), cir.getScaleY());
+    circle.setScale(cir.getScaleX(), cir.getScaleY());*/
 
     return circle;
 }
@@ -306,9 +347,9 @@ EllipseShape SF_ShapeData::createEllipse(EllipseSVG ellip)
     ellipse.setFillColor(fillColor);
     ellipse.setOutlineColor(outlineColor);
     ellipse.setOutlineThickness(ellip.getStrokeWidth());
-    ellipse.move(sf::Vector2f(ellip.getTranslateX(), ellip.getTranslateY()));
+    /*ellipse.move(sf::Vector2f(ellip.getTranslateX(), ellip.getTranslateY()));
     ellipse.setRotation(ellip.getRotate());
-    ellipse.setScale(ellip.getScaleX(), ellip.getScaleY());
+    ellipse.setScale(ellip.getScaleX(), ellip.getScaleY());*/
 
     return ellipse;
 }
@@ -325,9 +366,12 @@ sf::RectangleShape SF_ShapeData::createLine(LineSVG l)
     //line.setRotation(angle(l.getCoordinateX(), l.getCoordinateY(), l.getEnd().getX(), l.getEnd().getY()));
     
     line.setFillColor(fillColor);
-    line.move(sf::Vector2f(l.getTranslateX(), l.getTranslateY()));
-    line.setRotation(l.getRotate());
-    line.setScale(l.getScaleX(), l.getScaleY());
+    for (int i = 0; i < l.getTransform().size(); ++i) {
+        this->splitString(l.getTransform()[i]);
+        line.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
+        line.rotate(this->rotate);
+        line.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+    }
 
     return line;
 }
@@ -368,9 +412,9 @@ sf::ConvexShape SF_ShapeData::createPolygon(PolygonSVG plg)
     {
         polygon.setPoint(i++, sf::Vector2f(plg.getPoints()[j].getX(), plg.getPoints()[j].getY()));
     }
-    polygon.move(sf::Vector2f(plg.getTranslateX(), plg.getTranslateY()));
+    /*polygon.move(sf::Vector2f(plg.getTranslateX(), plg.getTranslateY()));
     polygon.setRotation(plg.getRotate());
-    polygon.setScale(plg.getScaleX(), plg.getScaleY());
+    polygon.setScale(plg.getScaleX(), plg.getScaleY());*/
     
     return polygon;
 }
