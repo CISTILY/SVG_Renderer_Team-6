@@ -94,6 +94,7 @@ public:
     //~SF_ShapeData();
 
     void splitString(string);
+    void findOrderTransform(string);
 
     // Assign data to SF format shapes
     void buildSFShape(ShapeData, const sf::Font&);
