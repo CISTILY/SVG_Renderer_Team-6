@@ -5,8 +5,12 @@ using namespace std;
 SF_ShapeData::SF_ShapeData() {
     this->scalePoint.setX(1);
     this->scalePoint.setY(1);
+    this->rotate = 0;
     this->translate.setX(0);
     this->translate.setY(0);
+    for(int i = 0; i < 3; ++i)
+        this->TranslateRotateScale[i] = 0;
+    
     //cout << "SF_ShapeData::Default Constructor" << endl;
 }
 
