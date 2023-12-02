@@ -330,14 +330,24 @@ sf::Text SF_ShapeData::createText(TextSVG txt, const sf::Font& font)
     text.setCharacterSize(txt.getFont_size());
     //text.setOrigin(txt.getFont_size() - 50, txt.getFont_size());
     for (int i = 0; i < txt.getTransform().size(); ++i) {
+        this->findOrderTransform(txt.getTransform()[i]);
         this->splitString(txt.getTransform()[i]);
+        
         cout << "Attemp: " << i;
-        text.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
-        const sf::Vector2f a = text.getPosition();
-        cout << endl;
-        cout << a.x << " " << a.y << endl;
-        text.rotate(this->rotate);
-        text.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+        for (int j = 0; j < 3; ++j)
+        {
+            if(this->TranslateRotateScale[0] == j)
+            {
+                text.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
+                const sf::Vector2f a = text.getPosition();
+                cout << endl;
+                cout << a.x << " " << a.y << endl;
+            }
+            if(this->TranslateRotateScale[1] == j)
+                text.rotate(this->rotate);
+            if(this->TranslateRotateScale[2] == j)
+                text.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+        }
     }
 
     return text;
@@ -362,10 +372,18 @@ sf::RectangleShape SF_ShapeData::createRectangle(RectangleSVG rectangle)
     rect.setFillColor(fillColor);
     //rect.setOrigin(0, -3);
     for (int i = 0; i < rectangle.getTransform().size(); ++i) {
+        this->findOrderTransform(txt.getTransform()[i]);
         this->splitString(rectangle.getTransform()[i]);
-        rect.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
-        rect.rotate(this->rotate);
-        rect.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+
+        for (int j = 0; j < 3; ++j)
+        {
+            if (this->TranslateRotateScale[0] == j)
+                rect.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
+            if (this->TranslateRotateScale[1] == j)
+                rect.rotate(this->rotate);
+            if (this->TranslateRotateScale[2] == j)
+                rect.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+        }
     }
 
     return rect;
@@ -392,6 +410,23 @@ sf::CircleShape SF_ShapeData::createCircle(CircleSVG cir)
     circle.setRotation(cir.getRotate());
     circle.setScale(cir.getScaleX(), cir.getScaleY());*/
 
+    /*
+    for (int i = 0; i < cir.getTransform().size(); ++i) {
+        this->findOrderTransform(txt.getTransform()[i]);
+        this->splitString(cir.getTransform()[i]);
+
+        for (int j = 0; j < 3; ++j)
+        {
+            if (this->TranslateRotateScale[0] == j)
+                circle.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
+            if (this->TranslateRotateScale[1] == j)
+                circle.rotate(this->rotate);
+            if (this->TranslateRotateScale[2] == j)
+                circle.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+        }
+    }
+    */
+    
     return circle;
 }
 
@@ -418,6 +453,23 @@ EllipseShape SF_ShapeData::createEllipse(EllipseSVG ellip)
     ellipse.setRotation(ellip.getRotate());
     ellipse.setScale(ellip.getScaleX(), ellip.getScaleY());*/
 
+    /*
+    for (int i = 0; i < ellip.getTransform().size(); ++i) {
+        this->findOrderTransform(txt.getTransform()[i]);
+        this->splitString(ellip.getTransform()[i]);
+
+        for (int j = 0; j < 3; ++j)
+        {
+            if (this->TranslateRotateScale[0] == j)
+                ellipse.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
+            if (this->TranslateRotateScale[1] == j)
+                ellipse.rotate(this->rotate);
+            if (this->TranslateRotateScale[2] == j)
+                ellipse.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+        }
+    }
+    */
+    
     return ellipse;
 }
 
@@ -434,10 +486,18 @@ sf::RectangleShape SF_ShapeData::createLine(LineSVG l)
 
     line.setFillColor(fillColor);
     for (int i = 0; i < l.getTransform().size(); ++i) {
+        this->findOrderTransform(txt.getTransform()[i]);
         this->splitString(l.getTransform()[i]);
-        line.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
-        line.rotate(this->rotate);
-        line.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+
+        for (int j = 0; j < 3; ++j)
+        {
+            if (this->TranslateRotateScale[0] == j)
+                line.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
+            if (this->TranslateRotateScale[1] == j)
+                line.rotate(this->rotate);
+            if (this->TranslateRotateScale[2] == j)
+                line.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+        }
     }
 
     return line;
@@ -482,6 +542,23 @@ sf::ConvexShape SF_ShapeData::createPolygon(PolygonSVG plg)
     /*polygon.move(sf::Vector2f(plg.getTranslateX(), plg.getTranslateY()));
     polygon.setRotation(plg.getRotate());
     polygon.setScale(plg.getScaleX(), plg.getScaleY());*/
+
+    /*
+    for (int i = 0; i < plg.getTransform().size(); ++i) {
+        this->findOrderTransform(txt.getTransform()[i]);
+        this->splitString(plg.getTransform()[i]);
+
+        for (int j = 0; j < 3; ++j)
+        {
+            if (this->TranslateRotateScale[0] == j)
+                polygon.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
+            if (this->TranslateRotateScale[1] == j)
+                polygon.rotate(this->rotate);
+            if (this->TranslateRotateScale[2] == j)
+                polygon.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+        }
+    }
+    */
 
     return polygon;
 }
@@ -715,6 +792,24 @@ vector<sf::ConvexShape> SF_ShapeData::createPolyline(PolylineSVG pll)
         }
         else i++;
     }
+
+    /*
+    for (int i = 0; i < pll.getTransform().size(); ++i) {
+        this->findOrderTransform(txt.getTransform()[i]);
+        this->splitString(pll.getTransform()[i]);
+
+        for (int j = 0; j < 3; ++j)
+        {
+            if (this->TranslateRotateScale[0] == j)
+                polygons.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
+            if (this->TranslateRotateScale[1] == j)
+                polygons.rotate(this->rotate);
+            if (this->TranslateRotateScale[2] == j)
+                polygons.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+        }
+    }
+    */
+    
     return polygons;
 }
 
@@ -771,6 +866,24 @@ vector<sf::RectangleShape> SF_ShapeData::createOutlinePolyline(PolylineSVG pll)
             outlinePolylines.push_back(outline);
         }
     }
+
+    /*
+    for (int i = 0; i < pll.getTransform().size(); ++i) {
+        this->findOrderTransform(txt.getTransform()[i]);
+        this->splitString(pll.getTransform()[i]);
+
+        for (int j = 0; j < 3; ++j)
+        {
+            if (this->TranslateRotateScale[0] == j)
+                outlinePolylines.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
+            if (this->TranslateRotateScale[1] == j)
+                outlinePolylines.rotate(this->rotate);
+            if (this->TranslateRotateScale[2] == j)
+                outlinePolylines.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+        }
+    }
+    */
+    
     return outlinePolylines;
 }
 
@@ -1411,6 +1524,23 @@ vector<sf::VertexArray> SF_ShapeData::createPath(Path path)
             }
         }
     }
+
+    /*
+    for (int i = 0; i < path.getTransform().size(); ++i) {
+        this->findOrderTransform(txt.getTransform()[i]);
+        this->splitString(path.getTransform()[i]);
+
+        for (int j = 0; j < 3; ++j)
+        {
+            if (this->TranslateRotateScale[0] == j)
+                paths.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
+            if (this->TranslateRotateScale[1] == j)
+                paths.rotate(this->rotate);
+            if (this->TranslateRotateScale[2] == j)
+                paths.setScale(this->scalePoint.getX(), this->scalePoint.getX());
+        }
+    }
+    */
 
     return paths;
 }
