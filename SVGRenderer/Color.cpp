@@ -39,6 +39,29 @@ void Color::setColor(string s) {
         this->blue = HexadecimalToDecimal(s.substr(4, 2));
     }
 
+    else if (s == "black")
+        this->red = this->blue = this->green = 0;
+
+    else if (s == "yellow") {
+        this->red = this->green = 255;
+        this->blue = 0;;
+    }
+
+    else if (s == "blue") {
+        this->red = this->green = 0;
+        this->blue = 255;
+    }
+
+    else if (s == "green") {
+        this->red = this->blue = 0;
+        this->green = 255;
+    }
+        
+    else if (s == "red") {
+        this->green = this->blue = 0;
+        this->red = 255;
+    }
+
     else {
         int pos = s.find(',');
         this->red = stoi(s.substr(4, pos));
