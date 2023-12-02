@@ -79,7 +79,8 @@ private:
     sf::RectangleShape SF_line;
     vector<sf::ConvexShape> SF_fillPolylines;
     vector<sf::RectangleShape> SF_outlinePolylines;
-
+    vector<sf::VertexArray> SF_path;
+    //vector<int> order;
     Point2D translate;
     float rotate = 0;
     Point2D scalePoint;
@@ -106,6 +107,7 @@ public:
     sf::ConvexShape createPolygon(int, sf::Color, sf::Color, float, vector<sf::Vector2f>);
     vector<sf::ConvexShape> createPolyline(PolylineSVG);
     vector<sf::RectangleShape> createOutlinePolyline(PolylineSVG);
+    vector<sf::VertexArray> createPath(Path);
 
     // Getters
     sf::RectangleShape getSF_rect();
@@ -116,6 +118,7 @@ public:
     vector<sf::ConvexShape> getSF_fillPolylines();
     vector<sf::RectangleShape> getSF_outlinePolylines();
     sf::Text getSF_text();
+    vector<sf::VertexArray> getSF_path();
     sf::Vector2f getCenter(ShapeData);
     sf::Vector2f getCenterPolyline(PolylineSVG);
 
@@ -146,10 +149,10 @@ public:
 };
 
 // Path
-sf::VertexArray commandL(sf::Vector2f p0, sf::Vector2f p1, sf::Vector2f p2, sf::Vector2f p3, sf::Color color, float strokeWidth);
-sf::VertexArray commandH(sf::Vector2f p0, float x, sf::Vector2f p2, sf::Vector2f p3, sf::Color color, float strokeWidth);
-sf::VertexArray commandV(sf::Vector2f p0, float y, sf::Vector2f p2, sf::Vector2f p3, sf::Color color, float strokeWidth);
-sf::Vector2f cubicBeizer(sf::Vector2f p0, sf::Vector2f p1, sf::Vector2f p2, sf::Vector2f p3, float t);
-sf::VertexArray commandC(sf::Vector2f p0, sf::Vector2f p1, sf::Vector2f p2, sf::Vector2f p3, sf::Vector2f p4, sf::Vector2f p5, sf::Vector2f p6, sf::Vector2f p7, sf::Color color, float strokeWidth);
+sf::VertexArray commandL(sf::Vector2f, sf::Vector2f, sf::Color, float);
+sf::VertexArray commandH(sf::Vector2f, float, sf::Color, float);
+sf::VertexArray commandV(sf::Vector2f, float, sf::Color, float);
+sf::Vector2f cubicBeizer(sf::Vector2f, sf::Vector2f, sf::Vector2f, sf::Vector2f, float);
+sf::VertexArray commandC(sf::Vector2f, sf::Vector2f, sf::Vector2f, sf::Vector2f, sf::Color, float);
 vector<sf::Vector2f> findNewPoints(vector<sf::Vector2f> points, float strokeWidth);
-vector<sf::VertexArray> createPath(vector<char> commands, vector<sf::Vector2f> points, sf::Color color, float strokeWidth);
+//vector<sf::VertexArray> createPath(vector<char> commands, vector<sf::Vector2f> points, sf::Color color, float strokeWidth);

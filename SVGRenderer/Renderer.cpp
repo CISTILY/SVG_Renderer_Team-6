@@ -5,6 +5,8 @@ using namespace std;
 SF_ShapeData::SF_ShapeData() {
     this->scalePoint.setX(1);
     this->scalePoint.setY(1);
+    this->translate.setX(0);
+    this->translate.setY(0);
     //cout << "SF_ShapeData::Default Constructor" << endl;
 }
 
@@ -48,6 +50,10 @@ void SF_ShapeData::buildSFShape(ShapeData data, const sf::Font& font) {
         this->SF_fillPolylines = createPolyline(*polyline);
         this->SF_outlinePolylines = createOutlinePolyline(*polyline);
     }
+    else if (data.getTypeName() == "path") {
+        Path* path = dynamic_cast<Path*> (data.getShape());
+        this->SF_path = createPath(*path);
+    }
 }
 
 sf::RectangleShape SF_ShapeData::getSF_rect()
@@ -88,6 +94,11 @@ vector<sf::RectangleShape> SF_ShapeData::getSF_outlinePolylines()
 sf::Text SF_ShapeData::getSF_text()
 {
     return this->SF_text;
+}
+
+vector<sf::VertexArray> SF_ShapeData::getSF_path()
+{
+    return this->SF_path;
 }
 
 void SF_ShapeData::splitString(string str) {
@@ -247,7 +258,7 @@ sf::Text SF_ShapeData::createText(TextSVG txt, const sf::Font& font)
         fillColor.g = txt.getFill().getGreen();
     }
 
-    
+
     sf::Color outlineColor(txt.getStroke().getRed(),
         txt.getStroke().getGreen(),
         txt.getStroke().getBlue(),
@@ -260,7 +271,7 @@ sf::Text SF_ShapeData::createText(TextSVG txt, const sf::Font& font)
     text.setFillColor(fillColor);
     text.setOutlineThickness(txt.getStrokeWidth());
     text.setOutlineColor(outlineColor);
-    text.setCharacterSize(txt.getFont_size());                                                                                                                                                                                                  
+    text.setCharacterSize(txt.getFont_size());
     //text.setOrigin(txt.getFont_size() - 50, txt.getFont_size());
     for (int i = 0; i < txt.getTransform().size(); ++i) {
         this->splitString(txt.getTransform()[i]);
@@ -272,7 +283,7 @@ sf::Text SF_ShapeData::createText(TextSVG txt, const sf::Font& font)
         text.rotate(this->rotate);
         text.setScale(this->scalePoint.getX(), this->scalePoint.getX());
     }
-    
+
     return text;
 }
 
@@ -300,7 +311,7 @@ sf::RectangleShape SF_ShapeData::createRectangle(RectangleSVG rectangle)
         rect.rotate(this->rotate);
         rect.setScale(this->scalePoint.getX(), this->scalePoint.getX());
     }
-    
+
     return rect;
 }
 
@@ -362,9 +373,9 @@ sf::RectangleShape SF_ShapeData::createLine(LineSVG l)
         sf::Uint8(255 * l.getFillOpacity()));
 
     sf::RectangleShape line(sf::Vector2f(length(l.getCoordinateX(), l.getCoordinateY(), l.getEnd().getX(), l.getEnd().getY()), l.getStrokeWidth()));
-    line.setOrigin(sf::Vector2f(- l.getCoordinateX(), -l.getCoordinateY()));
+    line.setOrigin(sf::Vector2f(-l.getCoordinateX(), -l.getCoordinateY()));
     //line.setRotation(angle(l.getCoordinateX(), l.getCoordinateY(), l.getEnd().getX(), l.getEnd().getY()));
-    
+
     line.setFillColor(fillColor);
     for (int i = 0; i < l.getTransform().size(); ++i) {
         this->splitString(l.getTransform()[i]);
@@ -415,7 +426,7 @@ sf::ConvexShape SF_ShapeData::createPolygon(PolygonSVG plg)
     /*polygon.move(sf::Vector2f(plg.getTranslateX(), plg.getTranslateY()));
     polygon.setRotation(plg.getRotate());
     polygon.setScale(plg.getScaleX(), plg.getScaleY());*/
-    
+
     return polygon;
 }
 
@@ -618,7 +629,7 @@ vector<sf::ConvexShape> SF_ShapeData::createPolyline(PolylineSVG pll)
     int i = 0;
     int countPolygon = 0;
     vector<sf::ConvexShape> polygons;
-    
+
     while (i < tmpPoints.size())
     {
         if (i + 1 < tmpPoints.size() && lineFromStartToEnd.isStraightLine(tmpPoints[i], lineFromStartToEnd.getP1(), lineFromStartToEnd.getP2()) && lineFromStartToEnd.isStraightLine(tmpPoints[i + 1], lineFromStartToEnd.getP1(), lineFromStartToEnd.getP2()))
@@ -749,7 +760,7 @@ void Renderer::Render(vector<SF_ShapeData> print, vector<ShapeData> data) {
                     zoomDis = ZOOMDIS * (view.getSize().x / 1000);
                     window.setView(view);
                 }
-                else {
+                else if (event.mouseWheel.delta < 0) {
                     view.zoom(1.1f);
                     zoomDis = ZOOMDIS * (view.getSize().x / 1000);
                     window.setView(view);
@@ -807,6 +818,10 @@ void Renderer::Render(vector<SF_ShapeData> print, vector<ShapeData> data) {
                     for (const sf::RectangleShape& outline : print[i].getSF_outlinePolylines())
                         window.draw(outline);
                 }
+            }
+            if (data[i].getTypeName() == "path") {
+                for (const sf::VertexArray& path : print[i].getSF_path())
+                    window.draw(path);
             }
         }
 
@@ -992,38 +1007,38 @@ sf::Vector2f findNewPoint(sf::Vector2f A, sf::Vector2f B, float strokeWidth)
 }
 
 // Path=============================================================
-sf::VertexArray commandL(sf::Vector2f p0, sf::Vector2f p1, sf::Vector2f p2, sf::Vector2f p3, sf::Color color, float strokeWidth)
-{ 
+sf::VertexArray commandL(sf::Vector2f p0, sf::Vector2f p1, sf::Color color, float strokeWidth)
+{
     sf::VertexArray path(sf::Quads);
 
-    path.append(sf::Vertex(p0, color));
-    path.append(sf::Vertex(p2, color));
-    path.append(sf::Vertex(p3, color));
-    path.append(sf::Vertex(p1, color));
+    path.append(sf::Vertex(sf::Vector2f(p0.x - strokeWidth / 2, p0.y), color));
+    path.append(sf::Vertex(sf::Vector2f(p0.x + strokeWidth / 2, p0.y), color));
+    path.append(sf::Vertex(sf::Vector2f(p1.x + strokeWidth / 2, p1.y), color));
+    path.append(sf::Vertex(sf::Vector2f(p1.x - strokeWidth / 2, p1.y), color));
 
     return path;
 }
 
-sf::VertexArray commandH(sf::Vector2f p0, float x, sf::Vector2f p2, sf::Vector2f p3, sf::Color color, float strokeWidth)
+sf::VertexArray commandH(sf::Vector2f p0, float x, sf::Color color, float strokeWidth)
 {
     sf::VertexArray path(sf::Quads);
 
-    path.append(sf::Vertex(p0, color));
-    path.append(sf::Vertex(p2, color));
-    path.append(sf::Vertex(p3, color));
-    path.append(sf::Vertex(sf::Vector2f(x, p0.y), color));
+    path.append(sf::Vertex(sf::Vector2f(p0.x, p0.y - strokeWidth / 2), color));
+    path.append(sf::Vertex(sf::Vector2f(x, p0.y - strokeWidth / 2), color));
+    path.append(sf::Vertex(sf::Vector2f(x, p0.y + strokeWidth / 2), color));
+    path.append(sf::Vertex(sf::Vector2f(p0.x, p0.y + strokeWidth / 2), color));
 
     return path;
 }
 
-sf::VertexArray commandV(sf::Vector2f p0, float y, sf::Vector2f p2, sf::Vector2f p3, sf::Color color, float strokeWidth)
+sf::VertexArray commandV(sf::Vector2f p0, float y, sf::Color color, float strokeWidth)
 {
     sf::VertexArray path(sf::Quads);
 
-    path.append(sf::Vertex(p0, color));
-    path.append(sf::Vertex(p2, color));
-    path.append(sf::Vertex(p3, color));
-    path.append(sf::Vertex(sf::Vector2f(p0.x, y), color));
+    path.append(sf::Vertex(sf::Vector2f(p0.x - strokeWidth / 2, p0.y), color));
+    path.append(sf::Vertex(sf::Vector2f(p0.x + strokeWidth / 2, p0.y), color));
+    path.append(sf::Vertex(sf::Vector2f(p0.x + strokeWidth / 2, y), color));
+    path.append(sf::Vertex(sf::Vector2f(p0.x - strokeWidth / 2, y), color));
 
     return path;
 }
@@ -1036,7 +1051,7 @@ sf::Vector2f cubicBeizer(sf::Vector2f p0, sf::Vector2f p1, sf::Vector2f p2, sf::
     return point;
 }
 
-sf::VertexArray commandC(sf::Vector2f p0, sf::Vector2f p1, sf::Vector2f p2, sf::Vector2f p3, sf::Vector2f p4, sf::Vector2f p5, sf::Vector2f p6, sf::Vector2f p7, sf::Color color, float strokeWidth)
+sf::VertexArray commandC(sf::Vector2f p0, sf::Vector2f p1, sf::Vector2f p2, sf::Vector2f p3, sf::Color color, float strokeWidth)
 {
     sf::VertexArray path(sf::Quads);
     int numPoint = round(abs(p0.x - p0.y));
@@ -1046,8 +1061,8 @@ sf::VertexArray commandC(sf::Vector2f p0, sf::Vector2f p1, sf::Vector2f p2, sf::
         float t2 = (float)(i + 1) / numPoint;
         sf::Vector2f point1 = cubicBeizer(p0, p1, p2, p3, t1);
         sf::Vector2f point2 = cubicBeizer(p0, p1, p2, p3, t2);
-        sf::Vector2f point3 = cubicBeizer(p4, p5, p6, p7, t2);
-        sf::Vector2f point4 = cubicBeizer(p4, p5, p6, p7, t1);
+        sf::Vector2f point3 = cubicBeizer(sf::Vector2f(p0.x, p0.y + strokeWidth), sf::Vector2f(p1.x, p1.y + strokeWidth), sf::Vector2f(p2.x, p2.y + strokeWidth), sf::Vector2f(p3.x, p3.y + strokeWidth), t2);
+        sf::Vector2f point4 = cubicBeizer(sf::Vector2f(p0.x, p0.y + strokeWidth), sf::Vector2f(p1.x, p1.y + strokeWidth), sf::Vector2f(p2.x, p2.y + strokeWidth), sf::Vector2f(p3.x, p3.y + strokeWidth), t1);
 
         path.append(sf::Vertex(point1, color));
         path.append(sf::Vertex(point2, color));
@@ -1056,7 +1071,6 @@ sf::VertexArray commandC(sf::Vector2f p0, sf::Vector2f p1, sf::Vector2f p2, sf::
     }
     return path;
 }
-
 
 vector<sf::Vector2f> findNewPoints(vector<sf::Vector2f> points, float strokeWidth)
 {
@@ -1232,7 +1246,7 @@ vector<sf::Vector2f> findNewPoints(vector<sf::Vector2f> points, float strokeWidt
     return newPoints;
 }
 
-vector<sf::VertexArray> createPath(vector<char> commands, vector<sf::Vector2f> points, sf::Color color, float strokeWidth)
+/*vector<sf::VertexArray> createPath(vector<char> commands, vector<sf::Vector2f> points, sf::Color color, float strokeWidth)
 {
     vector<sf::VertexArray> paths(sf::Quads);
 
@@ -1268,6 +1282,77 @@ vector<sf::VertexArray> createPath(vector<char> commands, vector<sf::Vector2f> p
         {
             paths.push_back(commandL(points[0], points[i - 1], newPoints[0], newPoints[i - 1], color, strokeWidth));
             break;
+        }
+    }
+
+    return paths;
+}*/
+
+vector<sf::VertexArray> SF_ShapeData::createPath(Path path)
+{
+    sf::Color color(path.getStroke().getRed(),
+        path.getStroke().getGreen(),
+        path.getStroke().getBlue(),
+        sf::Uint8(255 * path.getStrokeOpacity()));
+
+    vector<sf::Vector2f> points;
+    for (auto& point : path.getPoints()) {
+        points.push_back(sf::Vector2f(point.getX(), point.getY()));
+    }
+
+    vector<sf::VertexArray> paths(sf::Quads);
+
+    int i = 0;
+    for (const char& command : path.getCommand())
+    {
+        if (command == 'M')
+        {
+            i++;
+        }
+        else if (command == 'L')
+        {
+            paths.push_back(commandL(points[i - 1], points[i], color, path.getStrokeWidth()));
+            i++;
+        }
+        else if (command == 'H')
+        {
+            paths.push_back(commandH(points[i - 1], points[i].x, color, path.getStrokeWidth()));
+            i++;
+        }
+        else if (command == 'V')
+        {
+            paths.push_back(commandV(points[i - 1], points[i].y, color, path.getStrokeWidth()));
+            i++;
+        }
+        else if (command == 'C')
+        {
+            paths.push_back(commandC(points[i - 1], points[i], points[i + 1], points[i + 2], color, path.getStrokeWidth()));
+            i += 3;
+        }
+        else if (command == 'Z')
+        {
+            paths.push_back(commandL(points[0], points[i - 1], color, path.getStrokeWidth()));
+            break;
+        }
+    }
+
+    for (int i = 0; i < path.getTransform().size(); ++i) {
+        this->splitString(path.getTransform()[i]);
+        sf::Transform transform;
+
+        transform.translate(this->translate.getX(), this->translate.getY());
+        transform.rotate(this->rotate);
+        transform.scale(this->scalePoint.getX(), this->scalePoint.getX());/*
+        paths.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
+        paths.rotate(this->rotate);
+        paths.setScale(this->scalePoint.getX(), this->scalePoint.getX());*/
+        for (sf::VertexArray& path : paths) {
+            int j = 0;
+            while (j < 1) {
+                sf::Vector2f origin = path[j].position;
+                path[j].position = transform.transformPoint(origin);
+                j++;
+            }
         }
     }
 

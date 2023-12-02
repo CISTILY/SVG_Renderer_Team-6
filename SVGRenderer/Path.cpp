@@ -39,6 +39,9 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 			string point = value[i];
 
 			for (int j = 0; j < point.length(); ++j)
+			{
+				point[j] = toupper(point[j]);
+
 				for (int k = 0; k < CommandType.size(); ++k)
 					if (point[j] == CommandType[k])
 					{
@@ -98,6 +101,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 
 						break;
 					}
+			}
 
 			if (point[point.length() - 1] == ' ')
 				point.erase(point.begin() + point.length() - 1);
