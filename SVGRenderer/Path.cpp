@@ -39,7 +39,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 
 			for (int j = 0; j < point.length(); ++j)
 			{
-				if ((point[j] < '0' || point[j] > '9') && point[j] != '.')
+				if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
 				{
 					command.push_back(point[j]);
 					if (j + 1 < point.length() && point[j + 1] == ' ')
@@ -56,7 +56,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 				{
 					for (; j < point.length(); ++j)
 					{
-						if ((point[j] < '0' || point[j] > '9') && point[j] != '.')
+						if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
 							++count;
 						if (count == 6)
 						{
@@ -71,7 +71,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 				{
 					for (; j < point.length(); ++j)
 					{
-						if ((point[j] < '0' || point[j] > '9') && point[j] != '.')
+						if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
 							++count;
 						if (count == 2)
 						{
@@ -91,7 +91,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 				{
 					for (; j < point.length(); ++j)
 					{
-						if ((point[j] < '0' || point[j] > '9') && point[j] != '.')
+						if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
 							++count;
 						if (count == 1)
 						{
