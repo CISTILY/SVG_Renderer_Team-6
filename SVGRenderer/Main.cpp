@@ -11,9 +11,20 @@
 using namespace std;
 using namespace rapidxml;
 
-int main() {
+int main(int argc, char** argv) {
+    string filename;
+    if (argc == 1) {
+        cout << "Enter file name: ";
+        getline(cin, filename);
+        filename += ".svg";
+    }
+    if (argc >= 2) {
+        filename = argv[1];
+    }
     Renderer pen;
-    string filename = "testOrigin.svg";
+
+    cout << filename;
+
 
     // Read XML
     xml_document<> doc;
