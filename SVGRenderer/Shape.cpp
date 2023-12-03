@@ -79,7 +79,7 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
         else if (temp == "fill") {
             string fill = value[i];
             if (fill == "none") {
-                this->flagStroke = 1;
+                this->flagFill = 1;
                 this->fill.setColor("-1, -1, -1");
                 continue;
             }
@@ -90,7 +90,7 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
             }
         }
         else if (temp == "fill-opacity") {
-            this->fill_opacity = 1;
+            this->flagFillOpacity = 1;
             this->fill_opacity = stof(value[i]);
         }
             
