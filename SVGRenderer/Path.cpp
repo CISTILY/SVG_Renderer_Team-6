@@ -39,6 +39,10 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 
 			for (int j = 0; j < point.length(); ++j)
 			{
+				point[j] = toupper(point[j]);
+				if(point[j] == ' ' || point[j] == ',' || point[j] == '\n')
+					continue;
+				
 				if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
 				{
 					command.push_back(point[j]);
