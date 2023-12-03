@@ -39,6 +39,10 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 
 			for (int j = 0; j < point.length(); ++j)
 			{
+				point[j] = toupper(point[j]);
+				if(point[j] == ' ' || point[j] == ',' || point[j] == '\n')
+					continue;
+				
 				if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
 				{
 					command.push_back(point[j]);
@@ -61,7 +65,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 						if (count == 6)
 						{
 							markEnd = j - 1;
-							if (point[j] != ' ' && point[j] != ',')
+							if (point[j] != ' ' && point[j] != ',' && point[j] != '\n')
 								--j;
 							break;
 						}
@@ -76,7 +80,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 						if (count == 2)
 						{
 							markEnd = j - 1;
-							if (point[j] != ' ' && point[j] != ',')
+							if (point[j] != ' ' && point[j] != ',' && point[j] != '\n')
 								--j;
 							break;
 						}
@@ -96,7 +100,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 						if (count == 1)
 						{
 							markEnd = j - 1;
-							if (point[j] != ' ' && point[j] != ',')
+							if (point[j] != ' ' && point[j] != ',' && point[j] != '\n')
 								--j;
 							break;
 						}
