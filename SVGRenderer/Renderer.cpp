@@ -410,9 +410,9 @@ sf::CircleShape SF_ShapeData::createCircle(CircleSVG cir)
     circle.setRotation(cir.getRotate());
     circle.setScale(cir.getScaleX(), cir.getScaleY());*/
 
-    /*
+    
     for (int i = 0; i < cir.getTransform().size(); ++i) {
-        this->findOrderTransform(txt.getTransform()[i]);
+        this->findOrderTransform(cir.getTransform()[i]);
         this->splitString(cir.getTransform()[i]);
 
         for (int j = 0; j < 3; ++j)
@@ -425,7 +425,6 @@ sf::CircleShape SF_ShapeData::createCircle(CircleSVG cir)
                 circle.setScale(this->scalePoint.getX(), this->scalePoint.getX());
         }
     }
-    */
     
     return circle;
 }
@@ -453,9 +452,9 @@ EllipseShape SF_ShapeData::createEllipse(EllipseSVG ellip)
     ellipse.setRotation(ellip.getRotate());
     ellipse.setScale(ellip.getScaleX(), ellip.getScaleY());*/
 
-    /*
+    
     for (int i = 0; i < ellip.getTransform().size(); ++i) {
-        this->findOrderTransform(txt.getTransform()[i]);
+        this->findOrderTransform(ellip.getTransform()[i]);
         this->splitString(ellip.getTransform()[i]);
 
         for (int j = 0; j < 3; ++j)
@@ -468,7 +467,7 @@ EllipseShape SF_ShapeData::createEllipse(EllipseSVG ellip)
                 ellipse.setScale(this->scalePoint.getX(), this->scalePoint.getX());
         }
     }
-    */
+    
     
     return ellipse;
 }
@@ -543,9 +542,9 @@ sf::ConvexShape SF_ShapeData::createPolygon(PolygonSVG plg)
     polygon.setRotation(plg.getRotate());
     polygon.setScale(plg.getScaleX(), plg.getScaleY());*/
 
-    /*
+    
     for (int i = 0; i < plg.getTransform().size(); ++i) {
-        this->findOrderTransform(txt.getTransform()[i]);
+        this->findOrderTransform(plg.getTransform()[i]);
         this->splitString(plg.getTransform()[i]);
 
         for (int j = 0; j < 3; ++j)
@@ -558,7 +557,7 @@ sf::ConvexShape SF_ShapeData::createPolygon(PolygonSVG plg)
                 polygon.setScale(this->scalePoint.getX(), this->scalePoint.getX());
         }
     }
-    */
+    
 
     return polygon;
 }
@@ -795,7 +794,7 @@ vector<sf::ConvexShape> SF_ShapeData::createPolyline(PolylineSVG pll)
 
     /*
     for (int i = 0; i < pll.getTransform().size(); ++i) {
-        this->findOrderTransform(txt.getTransform()[i]);
+        this->findOrderTransform(pll.getTransform()[i]);
         this->splitString(pll.getTransform()[i]);
 
         for (int j = 0; j < 3; ++j)
@@ -869,7 +868,7 @@ vector<sf::RectangleShape> SF_ShapeData::createOutlinePolyline(PolylineSVG pll)
 
     /*
     for (int i = 0; i < pll.getTransform().size(); ++i) {
-        this->findOrderTransform(txt.getTransform()[i]);
+        this->findOrderTransform(pll.getTransform()[i]);
         this->splitString(pll.getTransform()[i]);
 
         for (int j = 0; j < 3; ++j)
@@ -1527,7 +1526,7 @@ vector<sf::VertexArray> SF_ShapeData::createPath(Path path)
 
     /*
     for (int i = 0; i < path.getTransform().size(); ++i) {
-        this->findOrderTransform(txt.getTransform()[i]);
+        this->findOrderTransform(path.getTransform()[i]);
         this->splitString(path.getTransform()[i]);
 
         for (int j = 0; j < 3; ++j)
