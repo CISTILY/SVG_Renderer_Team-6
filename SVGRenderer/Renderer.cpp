@@ -994,7 +994,7 @@ void Renderer::Render(vector<SF_ShapeData> print, vector<ShapeData> data) {
         }
 
         // Handle Keyboard input for various actions (moving, zooming, rotating)
-        /*if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
             view.reset(sf::FloatRect(0, 0, 1000, 500));
             window.setView(window.getDefaultView());
             zoomDis = 5;
@@ -1083,7 +1083,7 @@ void Renderer::Render(vector<SF_ShapeData> print, vector<ShapeData> data) {
                         print[l].rotating(-5);
                 }
             }
-        }*/
+        }
 
         window.display();
     }
@@ -1507,19 +1507,21 @@ vector<sf::VertexArray> SF_ShapeData::createPath(Path path)
     for (int i = 0; i < path.getTransform().size(); ++i) {
         this->splitString(path.getTransform()[i]);
         sf::Transform transform;
-
-        transform.translate(this->translate.getX(), this->translate.getY());
-        transform.rotate(this->rotate);
-        transform.scale(this->scalePoint.getX(), this->scalePoint.getX());/*
+        if (this->TranslateRotateScale[0] == i)
+            transform.translate(this->translate.getX(), this->translate.getY());
+        if (this->TranslateRotateScale[1] == i)
+            transform.rotate(this->rotate);
+        if (this->TranslateRotateScale[2] == i)
+            transform.scale(this->scalePoint.getX(), this->scalePoint.getX());
+        
+        /*
         paths.move(sf::Vector2f(this->translate.getX(), this->translate.getY()));
         paths.rotate(this->rotate);
         paths.setScale(this->scalePoint.getX(), this->scalePoint.getX());*/
         for (sf::VertexArray& path : paths) {
-            int j = 0;
-            while (j < 1) {
+            for (int j = 0; j < path.getVertexCount(); ++j) {
                 sf::Vector2f origin = path[j].position;
                 path[j].position = transform.transformPoint(origin);
-                j++;
             }
         }
     }

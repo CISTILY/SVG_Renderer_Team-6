@@ -106,6 +106,25 @@ void Color::setColor(string s) {
         this->green = 0;
         this->blue = 139;
     }
+
+    else if (s == "purple") {
+        this->red = 128;
+        this->green = 0;
+        this->blue = 128;
+    }
+
+    else if (s == "white") {
+        this->red = 255;
+        this->blue = 255;
+        this->green = 255;
+    }
+
+    else if (s == "skyblue") {
+        this->red = 135;
+        this->green = 206;
+        this->blue = 235;
+    }
+
     else {
         int pos = s.find(',');
         this->red = stoi(s.substr(4, pos));
