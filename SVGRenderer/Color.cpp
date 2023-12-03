@@ -94,7 +94,18 @@ void Color::setColor(string s) {
         this->green = 0;
         this->blue = 128;
     }
+  
+    else if (s == "deepskyblue") {
+        this->red = 0;
+        this->green = 191;
+        this->blue = 255;
+    }
 
+    else if (s == "darkmagenta") {
+        this->red = 139;
+        this->green = 0;
+        this->blue = 139;
+    }
     else {
         int pos = s.find(',');
         this->red = stoi(s.substr(4, pos));
