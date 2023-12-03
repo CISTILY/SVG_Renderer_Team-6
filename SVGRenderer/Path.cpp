@@ -40,7 +40,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 			for (int j = 0; j < point.length(); ++j)
 			{
 				point[j] = toupper(point[j]);
-				if(point[j] == ' ' || point[j] == ',' || point[j] == '\n')
+				if(point[j] == ' ' || point[j] == ',' || point[j] == '\n' || point[j] == '\t')
 					continue;
 				
 				if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
@@ -65,13 +65,13 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 						if (count == 6)
 						{
 							markEnd = j - 1;
-							if (point[j] != ' ' && point[j] != ',' && point[j] != '\n')
+							if (point[j] != ' ' && point[j] != ',' && point[j] != '\n' && point[j] != '\t')
 								--j;
 							break;
 						}
 					}
 				}
-				if (toupper(command[n]) == 'M' || toupper(command[n]) == 'L')
+				if (toupper(command[n]) == 'M' || toupper(command[n]) == 'L' || toupper(command[n]) == 'S')
 				{
 					for (; j < point.length(); ++j)
 					{
@@ -80,7 +80,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 						if (count == 2)
 						{
 							markEnd = j - 1;
-							if (point[j] != ' ' && point[j] != ',' && point[j] != '\n')
+							if (point[j] != ' ' && point[j] != ',' && point[j] != '\n' && point[j] != '\t')
 								--j;
 							break;
 						}
@@ -100,7 +100,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 						if (count == 1)
 						{
 							markEnd = j - 1;
-							if (point[j] != ' ' && point[j] != ',' && point[j] != '\n')
+							if (point[j] != ' ' && point[j] != ',' && point[j] != '\n' && point[j] != '\t')
 								--j;
 							break;
 						}
@@ -128,14 +128,21 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 				while (true)
 				{
 					string dup;
-					int pos = temp.find(' ');
+					int pos = 0, flag = 0;
 
-					if (temp.find(',') == string::npos)
-					{
-						pos = temp.find(' ', pos + 1);
-					}
+					for (int i = 0; i < temp.length(); ++i) {
+						if (temp[i] == ' ' || temp[i] == ',' || temp[i] == '\n' || temp[i] == '\t') {
+							if (flag == 0)
+								++flag;
+							else
+							{
+								pos = i;
+								break;
+							}
+						}
+					}						
 
-					if (pos == string::npos)
+					if (pos == 0)
 					{
 						Point2D a(temp);
 						this->Points.push_back(a);
@@ -152,6 +159,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 		}
 	}
 }
+
 void Path::print() {
 	for (int i = 0; i < this->command.size(); ++i) {
 		cout << this->command[i] << " ";
