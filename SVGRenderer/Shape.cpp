@@ -80,7 +80,7 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
             string fill = value[i];
             if (fill == "none") {
                 this->flagStroke = 1;
-                this->stroke.setColor("-1, -1, -1");
+                this->fill.setColor("-1, -1, -1");
                 continue;
             }
 

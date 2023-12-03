@@ -28,7 +28,6 @@ vector<Point2D> Path::getPoints() {
 
 void Path::buildShape(vector<char*> name, vector<char*> value)
 {
-	vector<char> CommandType = { 'M', 'L', 'H', 'V', 'C', 'S', 'Q', 'T', 'A', 'Z' };
 	string temp;
 	this->Points.clear();
 	for (int i = 0; i < name.size(); ++i)
@@ -39,105 +38,125 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 			string point = value[i];
 
 			for (int j = 0; j < point.length(); ++j)
-				for (int k = 0; k < CommandType.size(); ++k)
-					if (point[j] == CommandType[k])
+			{
+				if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
+				{
+					command.push_back(point[j]);
+					if (j + 1 < point.length() && point[j + 1] == ' ')
+						point.erase(point.begin() + j + 1);
+					++j;
+				}
+				else
+					command.push_back('L');
+
+
+				int n = command.size() - 1, markStart = j, markEnd = 0, count = 0;
+
+				if (toupper(command[n]) == 'C')
+				{
+					for (; j < point.length(); ++j)
 					{
-						command.push_back(CommandType[k]);
-
-						if (point[j] == 'H')
+						if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
+							++count;
+						if (count == 6)
 						{
-							string duplicateY;
-							int mark, posInsert = j;
-
-							for (int l = j - 2; l >= 0; --l)
-								if (point[l] == ',' || point[l] == ' ')
-								{
-									mark = l;
-									break;
-								}
-
-							duplicateY = point.substr(mark, j - 1 - mark);
-
-							for (; posInsert < point.length(); ++posInsert)
-								if (point[posInsert] == ' ' && posInsert > j + 1)
-									break;
-							point.insert(posInsert, duplicateY);
+							markEnd = j - 1;
+							if (point[j] != ' ' && point[j] != ',')
+								--j;
+							break;
 						}
-
-						if (point[j] == 'V')
+					}
+				}
+				if (toupper(command[n]) == 'M' || toupper(command[n]) == 'L')
+				{
+					for (; j < point.length(); ++j)
+					{
+						if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
+							++count;
+						if (count == 2)
 						{
-							string duplicateX;
-							int markStart, markEnd = 0;
-
-							for (int l = j - 2; l >= 0; --l)
-								if (point[l] == ',' || point[l] == ' ')
-								{
-									if (markEnd == 0)
-										markEnd = l;
-									else
-									{
-										markStart = l + 1;
-										break;
-									}
-								}
-
-							duplicateX = point.substr(markStart, markEnd - markStart + 1);
-
-							if (point[j + 1] == ' ')
-								point.insert(j + 2, duplicateX);
-							else
-								point.insert(j + 1, duplicateX);
+							markEnd = j - 1;
+							if (point[j] != ' ' && point[j] != ',')
+								--j;
+							break;
 						}
+					}
+				}
+				if (toupper(command[n]) == 'Z')
+				{
+					--j;
+					continue;
+				}
+				if (toupper(command[n]) == 'H' || toupper(command[n]) == 'V')
+				{
+					for (; j < point.length(); ++j)
+					{
+						if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
+							++count;
+						if (count == 1)
+						{
+							markEnd = j - 1;
+							if (point[j] != ' ' && point[j] != ',')
+								--j;
+							break;
+						}
+					}
+				}
 
+				string temp = point.substr(markStart, markEnd - markStart + 1);
+				if (toupper(command[n]) == 'H')
+				{
+					if (temp.find(',') == string::npos)
+						temp += " " + to_string(this->Points[this->Points.size() - 1].getY());
+					else
+						temp += "," + to_string(this->Points[this->Points.size() - 1].getY());
+				}
+					
+				if (toupper(command[n]) == 'V')
+				{
+					if (temp.find(',') == string::npos)
+						temp = to_string(this->Points[this->Points.size() - 1].getX()) + " " + temp;
+					else
+						temp = to_string(this->Points[this->Points.size() - 1].getX()) + "," + temp;
+				}
+					
 
-						if (j + 1 < point.length() && point[j + 1] == ' ')
-							point.erase(j, 2);
-						else
-							point.erase(point.begin() + j);
-						--j;
+				while (true)
+				{
+					string dup;
+					int pos = temp.find(' ');
 
+					if (temp.find(',') == string::npos)
+					{
+						pos = temp.find(' ', pos + 1);
+					}
+
+					if (pos == string::npos)
+					{
+						Point2D a(temp);
+						this->Points.push_back(a);
 						break;
 					}
 
-			if (point[point.length() - 1] == ' ')
-				point.erase(point.begin() + point.length() - 1);
-
-
-			while (true)
-			{
-				string dup;
-				int pos = point.find(' ');
-
-				if (point.find(',') == string::npos)
-				{
-					pos = point.find(' ', pos + 1);
-				}
-
-				if (pos == string::npos)
-				{
-					Point2D a(point);
+					dup = temp.substr(0, pos);
+					temp.erase(0, pos + 1);
+					Point2D a(dup);
 					this->Points.push_back(a);
-					break;
 				}
-
-				dup = point.substr(0, pos);
-				point.erase(0, pos + 1);
-				Point2D a(dup);
-				this->Points.push_back(a);
 			}
 			break;
 		}
 	}
 }
-
 void Path::print() {
 	for (int i = 0; i < this->command.size(); ++i) {
 		cout << this->command[i] << " ";
-		for (int j = 0; j < this->Points.size(); ++j) {
-			this->Points[j].print();
-			cout << "; ";
-		}
-		cout << endl;
 	}
-		
+	cout << endl;
+	for (int j = 0; j < this->Points.size(); ++j) {
+		this->Points[j].print();
+		cout << "; ";
+	}
+	cout << endl;
+	Shape::print();
 }
