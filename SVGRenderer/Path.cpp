@@ -61,7 +61,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 						if (count == 6)
 						{
 							markEnd = j - 1;
-							if (point[j] != ' ' && point[j] != ',')
+							if (point[j] != ' ' && point[j] != ',' && point[j] != '\n')
 								--j;
 							break;
 						}
@@ -76,7 +76,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 						if (count == 2)
 						{
 							markEnd = j - 1;
-							if (point[j] != ' ' && point[j] != ',')
+							if (point[j] != ' ' && point[j] != ',' && point[j] != '\n')
 								--j;
 							break;
 						}
@@ -96,7 +96,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 						if (count == 1)
 						{
 							markEnd = j - 1;
-							if (point[j] != ' ' && point[j] != ',')
+							if (point[j] != ' ' && point[j] != ',' && point[j] != '\n')
 								--j;
 							break;
 						}
