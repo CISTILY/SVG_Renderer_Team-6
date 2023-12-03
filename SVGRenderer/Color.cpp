@@ -62,6 +62,51 @@ void Color::setColor(string s) {
         this->red = 255;
     }
 
+    else if (s == "darkslategray") {
+        this->green = this->blue = 79;
+        this->red = 47;
+    }
+
+    else if (s == "grey") {
+        this->red = this->green = this->blue = 128;
+    }
+
+    else if (s == "blueviolet") {
+        this->red = 138;
+        this->green = 43;
+        this->blue = 226;
+    }
+
+    else if (s == "midnightblue") {
+        this->red = 25;
+        this->green = 25;
+        this->blue = 112;
+    }
+
+    else if (s == "CYAN") {
+        this->red = 0;
+        this->green = 255;
+        this->blue = 255;
+    }
+
+    else if (s == "navy") {
+        this->red = 0;
+        this->green = 0;
+        this->blue = 128;
+    }
+
+    else if (s == "deepskyblue") {
+        this->red = 0;
+        this->green = 191;
+        this->blue = 255;
+    }
+
+    else if (s == "darkmagenta") {
+        this->red = 139;
+        this->green = 0;
+        this->blue = 139;
+    }
+
     else {
         int pos = s.find(',');
         this->red = stoi(s.substr(4, pos));
