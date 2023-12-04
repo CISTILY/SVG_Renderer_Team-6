@@ -41,10 +41,10 @@ public:
     Shape* getShape();
 
     // Setters
-    void setStroke(Color stroke);
+    void setStroke(ColorSVG stroke);
     void setStrokeWidth(float strokeWidth);
     void setStrokeOpacity(double strokeOpacity);
-    void setFill(Color fill);
+    void setFill(ColorSVG fill);
     void setFillOpacity(double fillOpacity);
     void setTransform(vector<string>);
 

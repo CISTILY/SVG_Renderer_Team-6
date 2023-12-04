@@ -4,15 +4,15 @@
 
 using namespace std;
 
-class Color {
+class ColorSVG {
 private:
 	int red, green, blue;
 public:
 	// Constructor
-	Color();
+	ColorSVG();
 
 	// Destructor
-	~Color();
+	~ColorSVG();
 
 	// Setters
 	void setColor(string);
@@ -25,5 +25,5 @@ public:
 	// Print data of color
 	void print();
 	int HexadecimalToDecimal(string);
-	bool operator!= (const Color&);
+	bool operator!= (const ColorSVG&);
 };

@@ -2,7 +2,6 @@
 
 #include "Color.h"
 #include "Point2D.h"
-#include "SFML/Graphics.hpp"
 #include <vector>
 #include <iostream>
 #include <sstream>
@@ -24,8 +23,8 @@ protected:
     float stroke_width;
     double fill_opacity;
     double stroke_opacity;
-    Color fill;
-    Color stroke;
+    ColorSVG fill;
+    ColorSVG stroke;
 public:
     // Constructor
     Shape();
@@ -35,10 +34,10 @@ public:
 
     // Setters
     void buildProperties(vector<char*>, vector<char*>);
-    void setStroke(Color);
+    void setStroke(ColorSVG);
     void setStrokeWidth(float);
     void setStrokeOpacity(double);
-    void setFill(Color);
+    void setFill(ColorSVG);
     void setFillOpacity(double);
     void setTransform(string);
 
@@ -56,8 +55,8 @@ public:
     float getStrokeWidth();
     double getStrokeOpacity();
     double getFillOpacity();
-    Color getStroke();
-    Color getFill();
+    ColorSVG getStroke();
+    ColorSVG getFill();
     vector<string> getTransform();
     
 
