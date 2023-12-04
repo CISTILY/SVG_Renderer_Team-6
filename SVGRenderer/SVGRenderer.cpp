@@ -5,6 +5,7 @@
 #include <gdiplus.h>
 #include <vector>
 #include <fstream>
+#include <shellapi.h>
 using namespace std;
 using namespace rapidxml;
 using namespace Gdiplus;
@@ -20,6 +21,24 @@ VOID OnPaint(HDC hdc)
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
+string ConvertLPCWSTRToString(LPCWSTR lpcwszStr)
+{
+    // Determine the length of the converted string 
+    int strLength
+        = WideCharToMultiByte(CP_UTF8, 0, lpcwszStr, -1,
+            nullptr, 0, nullptr, nullptr);
+
+    // Create a std::string with the determined length 
+    string str(strLength, 0);
+
+    // Perform the conversion from LPCWSTR to std::string 
+    WideCharToMultiByte(CP_UTF8, 0, lpcwszStr, -1, &str[0],
+        strLength, nullptr, nullptr);
+
+    // Return the converted std::string 
+    return str;
+}
+
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 {
     HWND                hWnd;
@@ -28,30 +47,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
     GdiplusStartupInput gdiplusStartupInput;
     ULONG_PTR           gdiplusToken;
 
-    //string filename;
-    //
-    //// Read XML
-    //xml_document<> doc;
-    //xml_node<>* rootNode;
-    //
-    //// Read the xml file into a vector
-    //ifstream file(filename);
-    //vector<char> buffer((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
-    //buffer.push_back('\0');
-    //// Parse the buffer using the xml file parsing library into doc 
-    //doc.parse<0>(&buffer[0]);
-    //
-    //rootNode = doc.first_node("svg");
-    //xml_node<>* node = rootNode->first_node();
-    //int i = 0, j = 0;
-    //SVGReader::setID(node);
-    //ShapeData temp;
-    //vector<ShapeData> data;
-    //
-    //// Load font for text rendering
-    //
-    //temp.readFile(node, data, filename);
-    //temp.ReplaceProperties(data);
+    
 
 
     //// Read XML
@@ -142,3 +138,54 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
 } // WndProc
+
+int __cdecl main()
+{
+    string filename;
+    LPWSTR* szArglist;
+    int nArgs;
+    int k;
+
+    szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+    if (NULL == szArglist)
+    {
+        wprintf(L"CommandLineToArgvW failed\n");
+        return 0;
+    }
+    else for (k = 0; k < nArgs; k++) printf("%d: %ws\n", k, szArglist[k]);
+
+    // Free memory allocated for CommandLineToArgvW arguments.
+    if (nArgs > 1)
+        filename = ConvertLPCWSTRToString(szArglist[1]);
+    else {
+        getline(cin, filename);
+        filename += ".svg";
+        cout << filename;
+    }
+    LocalFree(szArglist);
+
+    // Read XML
+    xml_document<> doc;
+    xml_node<>* rootNode;
+    
+    // Read the xml file into a vector
+    ifstream file(filename);
+    vector<char> buffer((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
+    buffer.push_back('\0');
+    // Parse the buffer using the xml file parsing library into doc 
+    doc.parse<0>(&buffer[0]);
+    
+    rootNode = doc.first_node("svg");
+    xml_node<>* node = rootNode->first_node();
+    int i = 0, j = 0;
+    SVGReader::setID(node);
+    ShapeData temp;
+    vector<ShapeData> data;
+    
+    // Load font for text rendering
+    
+    temp.readFile(node, data, filename);
+    temp.ReplaceProperties(data);
+
+    return(1);
+}
