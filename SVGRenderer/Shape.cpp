@@ -115,7 +115,7 @@ void Shape::print() {
         cout << "No. " << i << this->transform[i] << " ";
 }
 
-void Shape::setStroke(Color stroke) {
+void Shape::setStroke(ColorSVG stroke) {
     this->flagStroke = 1;
     this->stroke = stroke;
 }
@@ -130,7 +130,7 @@ void Shape::setStrokeOpacity(double strokeOpacity) {
     this->stroke_opacity = strokeOpacity;
 }
 
-void Shape::setFill(Color fill) {
+void Shape::setFill(ColorSVG fill) {
     this->flagFill = 1;
     this->fill = fill;
 }
@@ -153,11 +153,11 @@ float Shape::getCoordinateY() {
     return this->coordinate.getY();
 }
 
-Color Shape::getStroke() {
+ColorSVG Shape::getStroke() {
     return this->stroke;
 }
 
-Color Shape::getFill() {
+ColorSVG Shape::getFill() {
     return this->fill;
 }
 

@@ -1,4 +1,4 @@
-#include "Renderer.h"
+#include "ShapeData.h"
 
 using namespace std;
 
@@ -100,7 +100,7 @@ void ShapeData::ReplaceProperties(vector<ShapeData>& data) {
     }
 }
 
-void ShapeData::setStroke(Color stroke) {
+void ShapeData::setStroke(ColorSVG stroke) {
     this->shapeSVG->setStroke(stroke);
 }
 
@@ -112,7 +112,7 @@ void ShapeData::setStrokeOpacity(double strokeOpacity) {
     this->shapeSVG->setStrokeOpacity(strokeOpacity);
 }
 
-void ShapeData::setFill(Color fill) {
+void ShapeData::setFill(ColorSVG fill) {
     this->shapeSVG->setFill(fill);
 }
 

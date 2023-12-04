@@ -2,16 +2,16 @@
 
 using namespace std;
 
-Color::Color() {
+ColorSVG::ColorSVG() {
     red = blue = green = 0;
     //cout << "Color::Default Constructor" << endl;
 }
 
-Color::~Color()
+ColorSVG::~ColorSVG()
 {
     //cout << "Color::Destructor" << endl;
 }
-int Color::HexadecimalToDecimal(string hex) {
+int ColorSVG::HexadecimalToDecimal(string hex) {
         int hexLength = hex.length();
         double dec = 0;
 
@@ -30,7 +30,7 @@ int Color::HexadecimalToDecimal(string hex) {
         return (int)dec;
 }
 
-void Color::setColor(string s) {
+void ColorSVG::setColor(string s) {
     if (s[0] == '#') {
         s = s.erase(0, 1);
 
@@ -138,22 +138,22 @@ void Color::setColor(string s) {
     }
 }
 
-bool Color::operator!= (const Color& other) {
+bool ColorSVG::operator!= (const ColorSVG& other) {
     return !(this->red == other.red && this->green == other.green && this->blue == other.blue);
 } 
 
-void Color::print() {
+void ColorSVG::print() {
     cout << this->red << ", " << this->green << ", " << this->blue;
 }
 
-int Color::getRed() {
+int ColorSVG::getRed() {
     return this->red;
 }
 
-int Color::getBlue() {
+int ColorSVG::getBlue() {
     return this->blue;
 }
 
-int Color::getGreen() {
+int ColorSVG::getGreen() {
     return this->green;
 }
