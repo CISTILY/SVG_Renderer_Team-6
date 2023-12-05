@@ -14,6 +14,7 @@
 #include "Polyline.h"
 #include "SVG.h"
 #include "Path.h"
+#include "Group.h"
 #include "rapidxml.hpp"
 
 using namespace rapidxml;
@@ -22,7 +23,6 @@ using namespace std;
 class ShapeData {
 private:
     char* typeName;
-    Shape* group;
 
     // shape variables
     Shape* shapeSVG;

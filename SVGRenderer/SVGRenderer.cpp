@@ -158,9 +158,10 @@ int __cdecl main()
     if (nArgs > 1)
         filename = ConvertLPCWSTRToString(szArglist[1]);
     else {
+        cout << "Enter file name: ";
         getline(cin, filename);
         filename += ".svg";
-        cout << filename;
+        cout << filename << endl;
     }
     LocalFree(szArglist);
 

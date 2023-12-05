@@ -47,6 +47,6 @@ void TextSVG::setFontSize(int size) {
 void TextSVG::print() {
     this->coordinate.print();
     cout << " " << this->font_size << " ";
-    cout << this->content;
+    cout << this->content << " ";
     Shape::print();
 }
