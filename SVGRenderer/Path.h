@@ -3,13 +3,13 @@
 
 using namespace std;
 
-class Path : public Shape {
+class PathSVG : public Shape {
 private:
 	vector<char> command;
 	vector<Point2D> Points;
 public:
-	Path();
-	~Path();
+	PathSVG();
+	~PathSVG();
 
 	void buildShape(vector<char*>, vector<char*>) override;
 

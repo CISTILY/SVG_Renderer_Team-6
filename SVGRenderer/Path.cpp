@@ -2,31 +2,31 @@
 
 using namespace std;
 
-Path::Path() {
+PathSVG::PathSVG() {
 	cout << "Path::Constructor" << endl;
 }
 
-Path::~Path() {
+PathSVG::~PathSVG() {
 	cout << "Path::Destructor" << endl;
 }
 
-void Path::setCommand(vector<char> command) {
+void PathSVG::setCommand(vector<char> command) {
 	this->command = command;
 }
 
-void Path::setPoints(vector<Point2D> point) {
+void PathSVG::setPoints(vector<Point2D> point) {
 	this->Points = point;
 }
 
-vector<char> Path::getCommand() {
+vector<char> PathSVG::getCommand() {
 	return this->command;
 }
 
-vector<Point2D> Path::getPoints() {
+vector<Point2D> PathSVG::getPoints() {
 	return this->Points;
 }
 
-void Path::buildShape(vector<char*> name, vector<char*> value)
+void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 {
 	string temp;
 	this->Points.clear();
@@ -160,7 +160,7 @@ void Path::buildShape(vector<char*> name, vector<char*> value)
 	}
 }
 
-void Path::print() {
+void PathSVG::print() {
 	for (int i = 0; i < this->command.size(); ++i) {
 		cout << this->command[i] << " ";
 	}
