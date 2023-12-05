@@ -6,10 +6,79 @@
 #include <vector>
 #include <fstream>
 #include <shellapi.h>
+#include <locale>
+#include <codecvt>
 using namespace std;
 using namespace rapidxml;
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
+
+VOID DrawCircle(Graphics& graphics, CircleSVG circle)
+{
+    Rect rect(circle.getCoordinateY(), circle.getCoordinateY(), circle.getRadiusX(), circle.getRadiusY());
+
+    SolidBrush brush(Color(circle.getFill().getRed(), circle.getFill().getGreen(), circle.getFill().getBlue(), circle.getFillOpacity()));
+    graphics.FillEllipse(&brush, rect);
+
+    Pen pen(Color(circle.getStroke().getRed(), circle.getStroke().getGreen(), circle.getStroke().getBlue(), circle.getStrokeOpacity()), circle.getStrokeWidth());
+    graphics.DrawEllipse(&pen, rect);
+}
+
+VOID DrawRectangle(Graphics& graphics, RectangleSVG rect)
+{
+    Rect rectangle(rect.getCoordinateX(), rect.getCoordinateY(), rect.getHeight(), rect.getWidth());
+
+    SolidBrush brush(Color(rect.getFill().getRed(), rect.getFill().getGreen(), rect.getFill().getBlue(), rect.getFillOpacity()));
+    graphics.FillRectangle(&brush, rectangle);
+
+    Pen pen(Color(rect.getStroke().getRed(), rect.getStroke().getGreen(), rect.getStroke().getBlue(), rect.getStrokeOpacity()), rect.getStrokeWidth());
+    graphics.DrawRectangle(&pen, rectangle);
+}
+
+VOID DrawEllipse(Graphics& graphics, EllipseSVG ellip)
+{
+    Rect rect(ellip.getCoordinateX(), ellip.getCoordinateY(), ellip.getRadiusX(), ellip.getRadiusY());
+
+    SolidBrush brush(Color(ellip.getFill().getRed(), ellip.getFill().getGreen(), ellip.getFill().getBlue(), ellip.getFillOpacity()));
+    graphics.FillEllipse(&brush, rect);
+
+    Pen pen(Color(ellip.getStroke().getRed(), ellip.getStroke().getGreen(), ellip.getStroke().getBlue(), ellip.getStrokeOpacity()), ellip.getStrokeWidth());
+    graphics.DrawEllipse(&pen, rect);
+}
+
+VOID DrawLine(Graphics& graphics, LineSVG line)
+{
+    Pen pen(Color(line.getStroke().getRed(), line.getStroke().getGreen(), line.getStroke().getBlue(), line.getStrokeOpacity()), line.getStrokeWidth());
+    graphics.DrawLine(&pen, line.getCoordinateX(), line.getCoordinateY(), line.getEnd().getX(), line.getEnd().getY());
+}
+
+VOID DrawText(Graphics& graphics, TextSVG text)
+{
+    SolidBrush brush(Color(text.getFill().getRed(), text.getFill().getGreen(), text.getFill().getBlue(), text.getFillOpacity()));
+    FontFamily fontFamily(L"Times New Roman");
+    Font font(&fontFamily, text.getFont_size(), 0, UnitPixel);
+    PointF pointF(text.getCoordinateX(), text.getCoordinateY());
+    wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
+    wstring content = converter.from_bytes(text.getContent());
+    graphics.DrawString(content.c_str(), -1, &font, pointF, &brush);
+}
+
+VOID DrawPolygon(Graphics& graphics, PolygonSVG plg)
+{
+    int nPoint = plg.getPoints().size();
+    Point* points = new Point[nPoint];
+    for (int i = 0; i < plg.getPoints().size(); i++)
+    {
+        points[i].X = plg.getPoints()[i].getX();
+        points[i].Y = plg.getPoints()[i].getY();
+    }
+
+    SolidBrush brush(Color(plg.getStroke().getRed(), plg.getStroke().getGreen(), plg.getStroke().getBlue(), plg.getStrokeOpacity()));
+    graphics.FillPolygon(&brush, points, nPoint);
+ 
+    Pen pen(Color(plg.getStroke().getRed(), plg.getStroke().getGreen(), plg.getStroke().getBlue(), plg.getStrokeOpacity()), plg.getStrokeWidth());
+    graphics.DrawPolygon(&pen, points, nPoint);
+}
 
 VOID OnPaint(HDC hdc)
 {
