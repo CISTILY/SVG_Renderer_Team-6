@@ -1,11 +1,11 @@
 #pragma once
 #include "Shape.h"
 
-class ShapeData;
+#include"Final.h"
 
 class GroupSVG : public Shape {
 private:
-	vector<ShapeData>* g;
+	FinalSVG g;
 public:
 	// Constructor
 	GroupSVG();
@@ -18,7 +18,7 @@ public:
 	void buildShape(vector<char*>, vector<char*>) override {};
 
 	// Getters
-	vector<ShapeData>* getG() override;
+	FinalSVG getG() override;
 
 	// Print data of group shape
 	void print() override;

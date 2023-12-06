@@ -8,7 +8,7 @@
 
 using namespace std;
 
-class ShapeData;
+class FinalSVG;
 
 class Shape {
 protected:
@@ -62,7 +62,7 @@ public:
     vector<string> getTransform();
 
     //
-    virtual vector<class ShapeData>* getG();
+    virtual FinalSVG getG();
     
 
     // Print out attributes

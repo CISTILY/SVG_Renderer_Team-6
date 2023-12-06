@@ -203,8 +203,8 @@ vector<string> Shape::getTransform() {
     return this->transform;
 }
 
-vector<ShapeData>* Shape::getG()
+FinalSVG Shape::getG()
 {
-    return nullptr;
+    return FinalSVG();
 }
 

@@ -14,7 +14,7 @@ GroupSVG::~GroupSVG()
 	cout << "Group::Destructor" << endl;
 }
 
-vector<ShapeData>* GroupSVG::getG()
+FinalSVG GroupSVG::getG()
 {
 	return this->g;
 }
