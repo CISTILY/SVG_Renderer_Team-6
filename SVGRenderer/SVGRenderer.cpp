@@ -80,6 +80,41 @@ VOID DrawPolygon(Graphics& graphics, PolygonSVG plg)
     graphics.DrawPolygon(&pen, points, nPoint);
 }
 
+VOID DrawPath(Graphics& graphics, PathSVG path)
+{
+    int nPath = path.getCommand().size();
+    GraphicsPath* graphicsPath = new GraphicsPath[nPath];
+
+    int j = 0;
+    for (int i = 0; i < nPath; i++)
+    {
+        if (path.getCommand()[i] == 'M')
+        {
+            j++;
+        }
+        else if (path.getCommand()[i] == 'L' || path.getCommand()[i] == 'H' || path.getCommand()[i] == 'V')
+        {
+            graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(), path.getPoints()[j].getX(), path.getPoints()[j].getY());
+            j++;
+        }
+        else if (path.getCommand()[i] == 'C')
+        {
+            graphicsPath->AddBezier(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(), path.getPoints()[j].getX(), path.getPoints()[j].getY(), path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY(), path.getPoints()[j + 2].getX(), path.getPoints()[j + 2].getY());
+            j += 3;
+        }
+        else if (path.getCommand()[i] == 'Z')
+        {
+            graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(), path.getPoints()[0].getX(), path.getPoints()[0].getY());
+        }
+    }
+
+    SolidBrush brush(Color(path.getStroke().getRed(), path.getStroke().getGreen(), path.getStroke().getBlue(), path.getStrokeOpacity()));
+    graphics.FillPath(&brush, graphicsPath);
+
+    Pen pen(Color(path.getStroke().getRed(), path.getStroke().getGreen(), path.getStroke().getBlue(), path.getStrokeOpacity()), path.getStrokeWidth());
+    graphics.DrawPath(&pen, graphicsPath);
+}
+
 VOID OnPaint(HDC hdc)
 {
     // Ref: https://docs.microsoft.com/en-us/windows/desktop/gdiplus/-gdiplus-getting-started-use
