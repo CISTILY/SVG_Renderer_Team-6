@@ -4,7 +4,8 @@ using namespace std;
 
 TextSVG::TextSVG() {
     this->font_size = 0;
-
+    this->dx = 0;
+    this->dy = 0;
     //cout << "Text::Constructor" << endl;
 }
 
@@ -22,6 +23,16 @@ int TextSVG::getFont_size()
     return this->font_size;
 }
 
+float TextSVG::getDx() 
+{
+    return this->dx;
+}
+
+float TextSVG::getDy()
+{
+    return this->dy;
+}
+
 void TextSVG::buildShape(vector<char*> name, vector<char*> value) {
     string temp;
     for (int i = 0; i < name.size(); ++i) {
@@ -30,6 +41,10 @@ void TextSVG::buildShape(vector<char*> name, vector<char*> value) {
             this->coordinate.setX(stof(value[i]));
         else if (temp == "y")
             this->coordinate.setY(stof(value[i]));
+        else if (temp == "dx")
+            this->dx = stof(value[i]);
+        else if (temp == "dy")
+            this->dy = stof(value[i]);
         else if (temp == "font-size")
             this->setFontSize(atoi(value[i]));
     }
@@ -46,7 +61,7 @@ void TextSVG::setFontSize(int size) {
 
 void TextSVG::print() {
     this->coordinate.print();
-    cout << " " << this->font_size << " ";
+    cout << " " << dx << " " << dy << this->font_size << " ";
     cout << this->content << " ";
     Shape::print();
 }

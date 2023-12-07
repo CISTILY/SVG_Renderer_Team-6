@@ -5,6 +5,7 @@
 class TextSVG : public Shape {
 private:
     int font_size;
+    float dx, dy;
     string content;
 public:
     // Constructor
@@ -16,6 +17,8 @@ public:
     // Getters
     string getContent();
     int getFont_size();
+    float getDx();
+    float getDy();
 
     // Setters
     void setContent(string);

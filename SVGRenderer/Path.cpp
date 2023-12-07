@@ -39,8 +39,7 @@ void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 
 			for (int j = 0; j < point.length(); ++j)
 			{
-				point[j] = toupper(point[j]);
-				if(point[j] == ' ' || point[j] == ',' || point[j] == '\n' || point[j] == '\t')
+				if (point[j] == ' ' || point[j] == ',' || point[j] == '\n' || point[j] == '\t')
 					continue;
 				
 				if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
@@ -50,8 +49,14 @@ void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 						point.erase(point.begin() + j + 1);
 					++j;
 				}
+
 				else
-					command.push_back('L');
+				{
+					if (command[command.size() - 1] == toupper(command[command.size() - 1]))
+						command.push_back('L');
+					else 
+						command.push_back('l');
+				}
 
 
 				int n = command.size() - 1, markStart = j, markEnd = 0, count = 0;
