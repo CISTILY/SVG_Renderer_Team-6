@@ -113,7 +113,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -138,6 +138,7 @@
   <ItemGroup>
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="Color.cpp" />
+    <ClCompile Include="Draw.cpp" />
     <ClCompile Include="Ellipse.cpp" />
     <ClCompile Include="Group.cpp" />
     <ClCompile Include="Line.cpp" />
@@ -165,7 +166,7 @@
     <ClInclude Include="Polyline.h" />
     <ClInclude Include="rapidxml.hpp" />
     <ClInclude Include="Rect.h" />
-    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Draw.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="ShapeData.h" />

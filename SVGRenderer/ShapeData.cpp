@@ -115,48 +115,42 @@ void ShapeData::ReplaceProperties(vector<ShapeData>& data) {
 */
 
 
-void ShapeData::ReplaceProperties(vector<ShapeData>& data) {
+void ShapeData::ReplaceProperties() {
     
     //for (int i = 0; i < data.size(); ++i) {
     //    if (data[i].getTypeName() == "g")
     //        ReplaceProperties(*data[i].getShape()->getG());
     //}
     
-    for (int i = 0; i < data.size(); ++i) {
-        string temp = data[i].getTypeName();
-        if (temp == "g")
-        {
-            vector<ShapeData>* groupData = data[i].getShape()->getG();
-            for (int j = 0; j < (*groupData).size(); ++j) {
-                if ((*groupData)[j].getShape()->getFlagStroke() == 0 && data[i].getShape()->getFlagStroke() == 1) {
-                    (*groupData)[j].setStroke(data[i].getShape()->getStroke());
-                }
-                if ((*groupData)[j].getShape()->getFlagStrokeWidth() == 0 && data[i].getShape()->getFlagStrokeWidth() == 1) {
-                    (*groupData)[j].setStrokeWidth(data[i].getShape()->getStrokeWidth());
-                }
-                if ((*groupData)[j].getShape()->getFlagStrokeOpacity() == 0 && data[i].getShape()->getFlagStrokeOpacity() == 1) {
-                    (*groupData)[j].setStrokeOpacity(data[i].getShape()->getStrokeOpacity());
-                }
-                if ((*groupData)[j].getShape()->getFlagFill() == 0 && data[i].getShape()->getFlagFill() == 1) {
-                    (*groupData)[j].setFill(data[i].getShape()->getFill());
-                }
-                if ((*groupData)[j].getShape()->getFlagFillOpacity() == 0 && data[i].getShape()->getFlagFillOpacity() == 1) {
-                    (*groupData)[j].setFillOpacity(data[i].getShape()->getFillOpacity());
-                }
-                if (data[i].getShape()->getFlagTransform() == 1) {
-                    (*groupData)[j].setTransform(data[i].getShape()->getTransform());
-                }
-
-                cout << "After: ";
-                (*groupData)[j].getShape()->print();
-                cout << endl;
-
-                string temp = (*groupData)[j].getTypeName();
-                if (temp == "g")
-                    ReplaceProperties((*groupData));
-            }
+    vector<ShapeData>* groupData = this->getShape()->getG();
+    for (int j = 0; j < (*groupData).size(); ++j) {
+        if ((*groupData)[j].getShape()->getFlagStroke() == 0 && this->getShape()->getFlagStroke() == 1) {
+            (*groupData)[j].setStroke(this->getShape()->getStroke());
         }
-    }
+        if ((*groupData)[j].getShape()->getFlagStrokeWidth() == 0 && this->getShape()->getFlagStrokeWidth() == 1) {
+            (*groupData)[j].setStrokeWidth(this->getShape()->getStrokeWidth());
+        }
+        if ((*groupData)[j].getShape()->getFlagStrokeOpacity() == 0 && this->getShape()->getFlagStrokeOpacity() == 1) {
+            (*groupData)[j].setStrokeOpacity(this->getShape()->getStrokeOpacity());
+        }
+        if ((*groupData)[j].getShape()->getFlagFill() == 0 && this->getShape()->getFlagFill() == 1) {
+            (*groupData)[j].setFill(this->getShape()->getFill());
+        }
+        if ((*groupData)[j].getShape()->getFlagFillOpacity() == 0 && this->getShape()->getFlagFillOpacity() == 1) {
+            (*groupData)[j].setFillOpacity(this->getShape()->getFillOpacity());
+        }
+        if (this->getShape()->getFlagTransform() == 1) {
+            (*groupData)[j].setTransform(this->getShape()->getTransform());
+        }
+
+        cout << "After: ";
+        (*groupData)[j].getShape()->print();
+        cout << endl;
+
+        string temp = (*groupData)[j].getTypeName();
+        if (temp == "g")
+            (*groupData)[j].ReplaceProperties();
+        }
 }
 
 void ShapeData::setStroke(ColorSVG stroke) {
