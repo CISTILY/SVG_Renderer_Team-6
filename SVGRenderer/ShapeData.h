@@ -49,5 +49,5 @@ public:
     void setTransform(vector<string>);
 
     void readFile(xml_node<>* node, vector<ShapeData>& data, string);
-    void ReplaceProperties(vector<ShapeData>&);
+    void ReplaceProperties();
 };
