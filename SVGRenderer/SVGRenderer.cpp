@@ -67,7 +67,7 @@ VOID DrawPolygon(Graphics& graphics, PolygonSVG plg)
 {
     int nPoint = plg.getPoints().size();
     Point* points = new Point[nPoint];
-    for (int i = 0; i < plg.getPoints().size(); i++)
+    for (int i = 0; i < nPoint; i++)
     {
         points[i].X = plg.getPoints()[i].getX();
         points[i].Y = plg.getPoints()[i].getY();
@@ -113,6 +113,23 @@ VOID DrawPath(Graphics& graphics, PathSVG path)
 
     Pen pen(Color(path.getStroke().getRed(), path.getStroke().getGreen(), path.getStroke().getBlue(), path.getStrokeOpacity()), path.getStrokeWidth());
     graphics.DrawPath(&pen, graphicsPath);
+}
+
+VOID DrawPolyline(Graphics& graphics, PolylineSVG pll)
+{
+    int nPoint = pll.getPoints().size();
+    Point* points = new Point[nPoint];
+    for (int i = 0; i < nPoint; i++)
+    {
+        points[i].X = pll.getPoints()[i].getX();
+        points[i].Y = pll.getPoints()[i].getY();
+    }
+
+    SolidBrush brush(Color(pll.getStroke().getRed(), pll.getStroke().getGreen(), pll.getStroke().getBlue(), pll.getStrokeOpacity()));
+    graphics.FillPolygon(&brush, points, nPoint);
+
+    Pen pen(Color(pll.getStroke().getRed(), pll.getStroke().getGreen(), pll.getStroke().getBlue(), pll.getStrokeOpacity()), pll.getStrokeWidth());
+    graphics.DrawLines(&pen, points, nPoint);
 }
 
 VOID OnPaint(HDC hdc)
