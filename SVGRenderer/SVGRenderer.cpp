@@ -17,10 +17,10 @@ VOID DrawCircle(Graphics& graphics, CircleSVG circle)
 {
     Rect rect(circle.getCoordinateY(), circle.getCoordinateY(), circle.getRadiusX(), circle.getRadiusY());
 
-    SolidBrush brush(Color(circle.getFill().getRed(), circle.getFill().getGreen(), circle.getFill().getBlue(), circle.getFillOpacity()));
+    SolidBrush brush(Color(circle.getFill().getRed(), circle.getFill().getGreen(), circle.getFill().getBlue(), round(255 * circle.getFillOpacity())));
     graphics.FillEllipse(&brush, rect);
 
-    Pen pen(Color(circle.getStroke().getRed(), circle.getStroke().getGreen(), circle.getStroke().getBlue(), circle.getStrokeOpacity()), circle.getStrokeWidth());
+    Pen pen(Color(circle.getStroke().getRed(), circle.getStroke().getGreen(), circle.getStroke().getBlue(), round(255 * circle.getStrokeOpacity())), circle.getStrokeWidth());
     graphics.DrawEllipse(&pen, rect);
 }
 
@@ -28,10 +28,10 @@ VOID DrawRectangle(Graphics& graphics, RectangleSVG rect)
 {
     Rect rectangle(rect.getCoordinateX(), rect.getCoordinateY(), rect.getHeight(), rect.getWidth());
 
-    SolidBrush brush(Color(rect.getFill().getRed(), rect.getFill().getGreen(), rect.getFill().getBlue(), rect.getFillOpacity()));
+    SolidBrush brush(Color(rect.getFill().getRed(), rect.getFill().getGreen(), rect.getFill().getBlue(), round(255 * rect.getFillOpacity())));
     graphics.FillRectangle(&brush, rectangle);
 
-    Pen pen(Color(rect.getStroke().getRed(), rect.getStroke().getGreen(), rect.getStroke().getBlue(), rect.getStrokeOpacity()), rect.getStrokeWidth());
+    Pen pen(Color(rect.getStroke().getRed(), rect.getStroke().getGreen(), rect.getStroke().getBlue(), round(255 * rect.getStrokeOpacity())), rect.getStrokeWidth());
     graphics.DrawRectangle(&pen, rectangle);
 }
 
@@ -39,22 +39,22 @@ VOID DrawEllipse(Graphics& graphics, EllipseSVG ellip)
 {
     Rect rect(ellip.getCoordinateX(), ellip.getCoordinateY(), ellip.getRadiusX(), ellip.getRadiusY());
 
-    SolidBrush brush(Color(ellip.getFill().getRed(), ellip.getFill().getGreen(), ellip.getFill().getBlue(), ellip.getFillOpacity()));
+    SolidBrush brush(Color(ellip.getFill().getRed(), ellip.getFill().getGreen(), ellip.getFill().getBlue(), round(255 * ellip.getFillOpacity())));
     graphics.FillEllipse(&brush, rect);
 
-    Pen pen(Color(ellip.getStroke().getRed(), ellip.getStroke().getGreen(), ellip.getStroke().getBlue(), ellip.getStrokeOpacity()), ellip.getStrokeWidth());
+    Pen pen(Color(ellip.getStroke().getRed(), ellip.getStroke().getGreen(), ellip.getStroke().getBlue(), round(255 * ellip.getStrokeOpacity())), ellip.getStrokeWidth());
     graphics.DrawEllipse(&pen, rect);
 }
 
 VOID DrawLine(Graphics& graphics, LineSVG line)
 {
-    Pen pen(Color(line.getStroke().getRed(), line.getStroke().getGreen(), line.getStroke().getBlue(), line.getStrokeOpacity()), line.getStrokeWidth());
+    Pen pen(Color(line.getStroke().getRed(), line.getStroke().getGreen(), line.getStroke().getBlue(), round(255 * line.getStrokeOpacity())), line.getStrokeWidth());
     graphics.DrawLine(&pen, line.getCoordinateX(), line.getCoordinateY(), line.getEnd().getX(), line.getEnd().getY());
 }
 
 VOID DrawText(Graphics& graphics, TextSVG text)
 {
-    SolidBrush brush(Color(text.getFill().getRed(), text.getFill().getGreen(), text.getFill().getBlue(), text.getFillOpacity()));
+    SolidBrush brush(Color(text.getFill().getRed(), text.getFill().getGreen(), text.getFill().getBlue(), round(255 * text.getFillOpacity())));
     FontFamily fontFamily(L"Times New Roman");
     Font font(&fontFamily, text.getFont_size(), 0, UnitPixel);
     PointF pointF(text.getCoordinateX(), text.getCoordinateY());
@@ -73,10 +73,10 @@ VOID DrawPolygon(Graphics& graphics, PolygonSVG plg)
         points[i].Y = plg.getPoints()[i].getY();
     }
 
-    SolidBrush brush(Color(plg.getStroke().getRed(), plg.getStroke().getGreen(), plg.getStroke().getBlue(), plg.getStrokeOpacity()));
+    SolidBrush brush(Color(plg.getStroke().getRed(), plg.getStroke().getGreen(), plg.getStroke().getBlue(), round(255 * plg.getStrokeOpacity())));
     graphics.FillPolygon(&brush, points, nPoint);
  
-    Pen pen(Color(plg.getStroke().getRed(), plg.getStroke().getGreen(), plg.getStroke().getBlue(), plg.getStrokeOpacity()), plg.getStrokeWidth());
+    Pen pen(Color(plg.getStroke().getRed(), plg.getStroke().getGreen(), plg.getStroke().getBlue(), round(255 * plg.getStrokeOpacity())), plg.getStrokeWidth());
     graphics.DrawPolygon(&pen, points, nPoint);
 }
 
@@ -108,10 +108,10 @@ VOID DrawPath(Graphics& graphics, PathSVG path)
         }
     }
 
-    SolidBrush brush(Color(path.getStroke().getRed(), path.getStroke().getGreen(), path.getStroke().getBlue(), path.getStrokeOpacity()));
+    SolidBrush brush(Color(path.getStroke().getRed(), path.getStroke().getGreen(), path.getStroke().getBlue(), round(255 * path.getStrokeOpacity())));
     graphics.FillPath(&brush, graphicsPath);
 
-    Pen pen(Color(path.getStroke().getRed(), path.getStroke().getGreen(), path.getStroke().getBlue(), path.getStrokeOpacity()), path.getStrokeWidth());
+    Pen pen(Color(path.getStroke().getRed(), path.getStroke().getGreen(), path.getStroke().getBlue(), round(255 * path.getStrokeOpacity())), path.getStrokeWidth());
     graphics.DrawPath(&pen, graphicsPath);
 }
 
@@ -125,10 +125,10 @@ VOID DrawPolyline(Graphics& graphics, PolylineSVG pll)
         points[i].Y = pll.getPoints()[i].getY();
     }
 
-    SolidBrush brush(Color(pll.getStroke().getRed(), pll.getStroke().getGreen(), pll.getStroke().getBlue(), pll.getStrokeOpacity()));
+    SolidBrush brush(Color(pll.getStroke().getRed(), pll.getStroke().getGreen(), pll.getStroke().getBlue(), round(255 * pll.getStrokeOpacity())));
     graphics.FillPolygon(&brush, points, nPoint);
 
-    Pen pen(Color(pll.getStroke().getRed(), pll.getStroke().getGreen(), pll.getStroke().getBlue(), pll.getStrokeOpacity()), pll.getStrokeWidth());
+    Pen pen(Color(pll.getStroke().getRed(), pll.getStroke().getGreen(), pll.getStroke().getBlue(), round(255 * pll.getStrokeOpacity())), pll.getStrokeWidth());
     graphics.DrawLines(&pen, points, nPoint);
 }
 
