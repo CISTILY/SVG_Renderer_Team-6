@@ -122,7 +122,7 @@ void Shape::setStroke(ColorSVG stroke) {
     this->flagStroke = 1;
     this->stroke = stroke;
     
-    if (this->flagStrokeWidth == 0)
+    if (this->flagStrokeWidth == 0 && stroke.getRed() != -1 && stroke.getGreen() != -1 && stroke.getBlue() != -1)
         this->stroke_width = 1;
 }
 
