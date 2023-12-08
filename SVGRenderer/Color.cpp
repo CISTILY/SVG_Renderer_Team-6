@@ -12,22 +12,26 @@ ColorSVG::~ColorSVG()
     //cout << "Color::Destructor" << endl;
 }
 int ColorSVG::HexadecimalToDecimal(string hex) {
-        int hexLength = hex.length();
-        double dec = 0;
+    int decimalValue = 0;
 
-        for (int i = 0; i < hexLength; ++i)
-        {
-            char b = hex[i];
+    // Iterate through each character in the hexadecimal string
+    for (int i = hex.size() - 1; i >= 0; --i) {
+        char digit = hex[i];
 
-            if (b >= 48 && b <= 57)
-                b -= 48;
-            else if (b >= 65 && b <= 70)
-                b -= 55;
-
-            dec += b * pow(16, ((hexLength - i) - 1));
+        // Convert hexadecimal digit to decimal equivalent
+        int digitValue;
+        if (isdigit(digit)) {
+            digitValue = digit - '0';
+        }
+        else {
+            digitValue = toupper(digit) - 'A' + 10;
         }
 
-        return (int)dec;
+        // Update the decimal value
+        decimalValue += digitValue * pow(16, hex.size() - 1 - i);
+    }
+
+    return decimalValue;
 }
 
 void ColorSVG::setColor(string s) {
@@ -126,15 +130,29 @@ void ColorSVG::setColor(string s) {
     }
 
     else {
+        int tempColor = 0;
+
         int pos = s.find(',');
-        this->red = stoi(s.substr(4, pos));
+        tempColor = stoi(s.substr(4, pos));
+        if (tempColor > 255)
+            tempColor = 255;
+
+        this->red = tempColor;
         s.erase(0, pos + 1);
 
         pos = s.find(',');
-        this->green = stoi(s.substr(0, pos));
+        tempColor = stoi(s.substr(0, pos));
+        if (tempColor > 255)
+            tempColor = 255;
+
+        this->green = tempColor;
         s.erase(0, pos + 1);
 
-        this->blue = stoi(s.substr(0, s.length()));
+        tempColor = stoi(s.substr(0, s.length()));
+        if (tempColor > 255)
+            tempColor = 255;
+
+        this->blue = tempColor;
     }
 }
 

@@ -20,8 +20,22 @@ void PolylineSVG::buildShape(vector<char*> name, vector<char*> value) {
             string point = value[i];
             while (true) {
                 string dup;
-                int pos = point.find(' ');
-                if (pos == string::npos) {
+                int flag = 0, pos = 0;
+
+                for (int j = 0; j < point.length(); ++j)
+                    if (point[j] == ' ' || point[j] == ',')
+                    {
+                        if(flag == 0)
+                            ++flag;
+                        else
+                        {
+                            pos = j;
+                            break;
+                        }
+                    
+                    }
+                        
+                if (pos == 0) {
                     Point2D a(point);
                     this->points.push_back(a);
                     break;
@@ -45,7 +59,7 @@ void PolylineSVG::print() {
     
     for (int i = 0; i < this->points.size(); ++i) {
         this->points[i].print();
-        cout << " ";
+        cout << "; ";
     }
     Shape::print();
 }
