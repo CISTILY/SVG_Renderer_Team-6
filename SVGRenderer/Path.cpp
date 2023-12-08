@@ -47,6 +47,16 @@ void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 
 			for (int j = 0; j < point.length(); ++j)
 			{
+				if(j > 0 && point[j] == '-')
+					if (point[j - 1] >= '0' && point[j - 1] <= '9')
+					{
+						point.insert(j, " ");
+						++j;
+					}
+			}
+
+			for (int j = 0; j < point.length(); ++j)
+			{
 				if (point[j] == ' ' || point[j] == ',' || point[j] == '\n' || point[j] == '\t')
 					continue;
 				
