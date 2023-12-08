@@ -26,6 +26,14 @@ vector<Point2D> PathSVG::getPoints() {
 	return this->Points;
 }
 
+void PathSVG::replaceOnePoint(Point2D temp, int j) {
+	for (int i = 0; i < this->Points.size(); ++i)
+		if (i == j) {
+			this->Points[j].setX(temp.getX());
+			this->Points[j].setY(temp.getY());
+		}
+}
+
 void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 {
 	string temp;
