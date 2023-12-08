@@ -19,5 +19,7 @@ public:
 	vector<char> getCommand();
 	vector<Point2D> getPoints();
 
+	void replaceOnePoint(Point2D, int);
+
 	void print() override;
 };
