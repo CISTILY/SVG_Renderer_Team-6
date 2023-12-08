@@ -67,13 +67,18 @@ void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 						point.erase(point.begin() + j + 1);
 					++j;
 				}
-
 				else
 				{
-					if (command[command.size() - 1] == toupper(command[command.size() - 1]))
-						command.push_back('L');
-					else 
-						command.push_back('l');
+					if (toupper(command[command.size() - 1]) == 'M')
+					{
+
+						if (command[command.size() - 1] == toupper(command[command.size() - 1]))
+							command.push_back('L');
+						else
+							command.push_back('l');
+					}
+					else
+						command.push_back(command[command.size() - 1]);
 				}
 
 
