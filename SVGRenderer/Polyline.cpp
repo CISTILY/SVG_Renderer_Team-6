@@ -23,7 +23,7 @@ void PolylineSVG::buildShape(vector<char*> name, vector<char*> value) {
                 int flag = 0, pos = 0;
 
                 for (int j = 0; j < point.length(); ++j)
-                    if (point[j] == ' ' || point[j] == ',' || point[j] == '\n' || point[j] == '\t')
+                    if (point[j] == ' ' || point[j] == ',')
                     {
                         if(flag == 0)
                             ++flag;
