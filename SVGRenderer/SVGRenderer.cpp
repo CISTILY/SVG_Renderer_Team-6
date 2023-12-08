@@ -24,7 +24,7 @@ VOID OnPaint(HDC hdc)
     // Read XML
     xml_document<> doc;
     xml_node<>* rootNode;
-    string filename = "svg-12.svg";
+    string filename = "svg-01.svg";
     // Read the xml file into a vector
     ifstream file(filename);
     vector<char> buffer((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());

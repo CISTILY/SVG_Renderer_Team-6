@@ -245,6 +245,7 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path)
     {
         if (path.getCommand()[i] == 'M')
         {
+            graphicsPath->CloseFigure();
             startPoint = path.getPoints()[j];
             j++;
         }
