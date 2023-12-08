@@ -126,15 +126,29 @@ void ColorSVG::setColor(string s) {
     }
 
     else {
+        int tempColor = 0;
+
         int pos = s.find(',');
-        this->red = stoi(s.substr(4, pos));
+        tempColor = stoi(s.substr(4, pos));
+        if (tempColor > 255)
+            tempColor = 255;
+
+        this->red = tempColor;
         s.erase(0, pos + 1);
 
         pos = s.find(',');
-        this->green = stoi(s.substr(0, pos));
+        tempColor = stoi(s.substr(0, pos));
+        if (tempColor > 255)
+            tempColor = 255;
+
+        this->green = tempColor;
         s.erase(0, pos + 1);
 
-        this->blue = stoi(s.substr(0, s.length()));
+        tempColor = stoi(s.substr(0, s.length()));
+        if (tempColor > 255)
+            tempColor = 255;
+
+        this->blue = tempColor;
     }
 }
 
