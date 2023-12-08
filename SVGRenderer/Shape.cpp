@@ -63,6 +63,9 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
             else {
                 this->flagStroke = 1;
                 this->stroke.setColor(stroke);
+                
+                if (this->flagStrokeWidth == 0)
+                    this->stroke_width = 1;
             }
             
         }
