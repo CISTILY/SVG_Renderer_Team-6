@@ -248,8 +248,26 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path)
             startPoint = path.getPoints()[j];
             j++;
         }
-        else if (path.getCommand()[i] == 'L' || path.getCommand()[i] == 'H' || path.getCommand()[i] == 'V')
+        else if (path.getCommand()[i] == 'L')
         {
+            graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                path.getPoints()[j].getX(), path.getPoints()[j].getY());
+            j++;
+        }
+        else if (path.getCommand()[i] == 'H')
+        {
+            Point2D temp(path.getPoints()[j].getX(), path.getPoints()[j - 1].getY());
+            path.replaceOnePoint(temp, j);
+
+            graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                path.getPoints()[j].getX(), path.getPoints()[j].getY());
+            j++;
+        }
+        else if (path.getCommand()[i] == 'V')
+        {
+            Point2D temp(path.getPoints()[j - 1].getX(), path.getPoints()[j].getY());
+            path.replaceOnePoint(temp, j);
+
             graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
                 path.getPoints()[j].getX(), path.getPoints()[j].getY());
             j++;
