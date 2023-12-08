@@ -238,11 +238,14 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path)
     int nPath = path.getCommand().size();
     GraphicsPath* graphicsPath = new GraphicsPath[nPath];
 
-    int j = 0;
+    Point2D startPoint;
+    int j = 0; // index
+
     for (int i = 0; i < nPath; i++)
     {
         if (path.getCommand()[i] == 'M')
         {
+            startPoint = path.getPoints()[j];
             j++;
         }
         else if (path.getCommand()[i] == 'L' || path.getCommand()[i] == 'H' || path.getCommand()[i] == 'V')
@@ -262,16 +265,21 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path)
         else if (path.getCommand()[i] == 'Z' || path.getCommand()[i] == 'z')
         {
             graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
-                path.getPoints()[0].getX(), path.getPoints()[0].getY());
+                startPoint.getX(), startPoint.getY());
+            graphicsPath->CloseFigure();
         }
         else if (path.getCommand()[i] == 'm')
         {
-            if(j == 0)
+            if (j == 0)
+            {
+                startPoint = path.getPoints()[j];
                 j++;
+            }
             else
             {
                 Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j].getY());
                 path.replaceOnePoint(temp, j);
+                startPoint = temp;
                 j++;
             }
         }
@@ -311,7 +319,6 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path)
                 path.getPoints()[j].getX(), path.getPoints()[j].getY(),
                 path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY(),
                 path.getPoints()[j + 2].getX(), path.getPoints()[j + 2].getY());
-
             j += 3;
         }
     }
