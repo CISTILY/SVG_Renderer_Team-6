@@ -6,6 +6,7 @@ class TextSVG : public Shape {
 private:
     int font_size;
     float dx, dy;
+    string text_anchor;
     string content;
 public:
     // Constructor
