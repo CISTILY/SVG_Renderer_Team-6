@@ -47,8 +47,9 @@ void TextSVG::buildShape(vector<char*> name, vector<char*> value) {
             this->dy = stof(value[i]);
         else if (temp == "font-size")
             this->setFontSize(atoi(value[i]));
+        else if (temp == "text-anchor")
+            this->text_anchor(value[i]);
     }
-    
 }
 
 void TextSVG::setContent(string content) {
