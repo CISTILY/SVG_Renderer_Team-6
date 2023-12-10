@@ -247,30 +247,33 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path)
         {
             graphicsPath->CloseFigure();
             startPoint = path.getPoints()[j];
+
             j++;
+
         }
         else if (path.getCommand()[i] == 'L')
         {
             graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
                 path.getPoints()[j].getX(), path.getPoints()[j].getY());
+
             j++;
         }
         else if (path.getCommand()[i] == 'H')
         {
             Point2D temp(path.getPoints()[j].getX(), path.getPoints()[j - 1].getY());
             path.replaceOnePoint(temp, j);
-
             graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
                 path.getPoints()[j].getX(), path.getPoints()[j].getY());
+
             j++;
         }
         else if (path.getCommand()[i] == 'V')
         {
             Point2D temp(path.getPoints()[j - 1].getX(), path.getPoints()[j].getY());
             path.replaceOnePoint(temp, j);
-
             graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
                 path.getPoints()[j].getX(), path.getPoints()[j].getY());
+
             j++;
         }
         else if (path.getCommand()[i] == 'C')
@@ -279,7 +282,28 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path)
                 path.getPoints()[j].getX(), path.getPoints()[j].getY(),
                 path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY(),
                 path.getPoints()[j + 2].getX(), path.getPoints()[j + 2].getY());
+
             j += 3;
+        }
+        else if (path.getCommand()[i] == 'S')
+        {
+            if (path.getCommand()[i - 1] == 'S' || path.getCommand()[i - 1] == 's' || path.getCommand()[i - 1] == 'C' || path.getCommand()[i - 1] == 'c')
+            {
+                Point2D point(path.getPoints()[j - 1].getX() * 2 - path.getPoints()[j - 2].getX(), path.getPoints()[j - 1].getY() * 2 - path.getPoints()[j - 2].getY());
+                graphicsPath->AddBezier(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                    point.getX(), point.getY(),
+                    path.getPoints()[j].getX(), path.getPoints()[j].getY(),
+                    path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY());
+            }
+            else
+            {
+                graphicsPath->AddBezier(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                    path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                    path.getPoints()[j].getX(), path.getPoints()[j].getY(),
+                    path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY());
+            }
+
+            j += 2;
         }
         else if (path.getCommand()[i] == 'Z' || path.getCommand()[i] == 'z')
         {
@@ -292,15 +316,15 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path)
             if (j == 0)
             {
                 startPoint = path.getPoints()[j];
-                j++;
             }
             else
             {
                 Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j].getY());
                 path.replaceOnePoint(temp, j);
                 startPoint = temp;
-                j++;
             }
+
+            j++;
         }
         else if (path.getCommand()[i] == 'l')
         {
@@ -308,6 +332,7 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path)
             path.replaceOnePoint(temp, j);
             graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
                 path.getPoints()[j].getX(), path.getPoints()[j].getY());
+
             j++;
         }
         else if (path.getCommand()[i] == 'h')
@@ -316,6 +341,7 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path)
             path.replaceOnePoint(temp, j);
             graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
                 path.getPoints()[j].getX(), path.getPoints()[j].getY());
+
             j++;
         }
         else if (path.getCommand()[i] == 'v')
@@ -324,6 +350,7 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path)
             path.replaceOnePoint(temp, j);
             graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
                 path.getPoints()[j].getX(), path.getPoints()[j].getY());
+
             j++;
         }
         else if (path.getCommand()[i] == 'c')
@@ -331,14 +358,43 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path)
             Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j].getY());
             path.replaceOnePoint(temp, j);
             Point2D temp2(path.getPoints()[j - 1].getX() + path.getPoints()[j + 1].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j + 1].getY());
-            path.replaceOnePoint(temp2, j+1);
+            path.replaceOnePoint(temp2, j + 1);
             Point2D temp3(path.getPoints()[j - 1].getX() + path.getPoints()[j + 2].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j + 2].getY());
-            path.replaceOnePoint(temp3, j+2);
+            path.replaceOnePoint(temp3, j + 2);
             graphicsPath->AddBezier(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
                 path.getPoints()[j].getX(), path.getPoints()[j].getY(),
                 path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY(),
                 path.getPoints()[j + 2].getX(), path.getPoints()[j + 2].getY());
+
             j += 3;
+        }
+        else if (path.getCommand()[i] == 's')
+        {
+            if (path.getCommand()[i - 1] == 'S' || path.getCommand()[i - 1] == 's' || path.getCommand()[i - 1] == 'C' || path.getCommand()[i - 1] == 'c')
+            {
+                Point2D point(path.getPoints()[j - 1].getX() * 2 - path.getPoints()[j - 2].getX(), path.getPoints()[j - 1].getY() * 2 - path.getPoints()[j - 2].getY());
+                Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j].getY());
+                path.replaceOnePoint(temp, j);
+                Point2D temp2(path.getPoints()[j - 1].getX() + path.getPoints()[j + 1].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j + 1].getY());
+                path.replaceOnePoint(temp2, j + 1);
+                graphicsPath->AddBezier(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                    point.getX(), point.getY(),
+                    path.getPoints()[j].getX(), path.getPoints()[j].getY(),
+                    path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY());
+            }
+            else
+            {
+                Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j].getY());
+                path.replaceOnePoint(temp, j);
+                Point2D temp2(path.getPoints()[j - 1].getX() + path.getPoints()[j + 1].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j + 1].getY());
+                path.replaceOnePoint(temp2, j + 1);
+                graphicsPath->AddBezier(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                    path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                    path.getPoints()[j].getX(), path.getPoints()[j].getY(),
+                    path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY());
+            }
+
+            j += 2;
         }
     }
 
@@ -349,6 +405,7 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path)
     if (path.getStrokeWidth() != 0)
         graphics.DrawPath(&pen, graphicsPath);
 }
+
 
 // graphicsPath*
 
