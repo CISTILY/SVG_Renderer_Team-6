@@ -20,6 +20,7 @@
 
 
 // TODO: reference additional headers your program requires here
+#include "Screen.h"
 #include "Shape.h"
 #include "SVG.h"
 #include "ShapeData.h"

@@ -1,7 +1,6 @@
 #pragma once
 #include "Shape.h"
-
-class ShapeData;
+#include "ShapeData.h"
 
 class GroupSVG : public Shape {
 private:
