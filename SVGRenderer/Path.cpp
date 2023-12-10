@@ -82,56 +82,40 @@ void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 				}
 
 
-				int n = command.size() - 1, markStart = j, markEnd = 0, count = 0;
+				int n = command.size() - 1, markStart = j, markEnd = 0, count = 0, numberOfXY = 0;
 
 				if (toupper(command[n]) == 'C')
 				{
-					for (; j < point.length(); ++j)
-					{
-						if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
-							++count;
-						if (count == 6)
-						{
-							markEnd = j - 1;
-							if (point[j] != ' ' && point[j] != ',' && point[j] != '\n' && point[j] != '\t')
-								--j;
-							break;
-						}
-					}
+					numberOfXY = 6;
 				}
-				if (toupper(command[n]) == 'M' || toupper(command[n]) == 'L' || toupper(command[n]) == 'S')
+				else if (toupper(command[n]) == 'S')
 				{
-					for (; j < point.length(); ++j)
-					{
-						if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
-							++count;
-						if (count == 2)
-						{
-							markEnd = j - 1;
-							if (point[j] != ' ' && point[j] != ',' && point[j] != '\n' && point[j] != '\t')
-								--j;
-							break;
-						}
-					}
+					numberOfXY = 4;
 				}
-				if (toupper(command[n]) == 'Z')
+				else if (toupper(command[n]) == 'M' || toupper(command[n]) == 'L')
+				{
+					numberOfXY = 2;
+				}
+				else if (toupper(command[n]) == 'H' || toupper(command[n]) == 'V')
+				{
+					numberOfXY = 1;
+				}
+				else if (toupper(command[n]) == 'Z')
 				{
 					--j;
 					continue;
 				}
-				if (toupper(command[n]) == 'H' || toupper(command[n]) == 'V')
+
+				for (; j < point.length(); ++j)
 				{
-					for (; j < point.length(); ++j)
+					if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
+						++count;
+					if (count == numberOfXY)
 					{
-						if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
-							++count;
-						if (count == 1)
-						{
-							markEnd = j - 1;
-							if (point[j] != ' ' && point[j] != ',' && point[j] != '\n' && point[j] != '\t')
-								--j;
-							break;
-						}
+						markEnd = j - 1;
+						if (point[j] != ' ' && point[j] != ',' && point[j] != '\n' && point[j] != '\t')
+							--j;
+						break;
 					}
 				}
 
