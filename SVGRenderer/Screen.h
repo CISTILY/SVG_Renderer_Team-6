@@ -26,4 +26,5 @@ public:
     
     void buildScreen(vector<char*>, vector<char*>);
     void readScreen(xml_node<>* node);
+    void printScreen();
 };
