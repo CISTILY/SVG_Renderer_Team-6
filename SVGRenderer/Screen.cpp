@@ -52,8 +52,8 @@ void ScreenSVG::buildScreen(vector<char*> name, vector<char*> value)
                     pos = strViewBox.find(',');
             
                 dup = strViewBox.substr(0, pos);
-		strViewBox.erase(0, pos + 1);
-		this->view_box[j] = stof(dup);
+			          strViewBox.erase(0, pos + 1);
+			          this->view_box[j] = stof(dup);
             }
         }
     }
@@ -71,4 +71,19 @@ void ScreenSVG::readScreen(xml_node<>* node)
     }
     
     this->buildScreen(attributeName, attributeValue);
+    this->printScreen();
+}
+
+void ScreenSVG::printScreen()
+{
+    if (this->flagWidth == 1 || this->flagHeight == 1 || this->flagViewBox == 1)
+    {
+        cout << "Screen:"
+            << " width = " << this->width
+            << " height = " << this->height
+            << " viewBox = ";
+        for (int i = 0; i < 4; ++i)
+            cout << this->view_box[i] << " ";
+        cout << endl << endl;
+    }
 }
