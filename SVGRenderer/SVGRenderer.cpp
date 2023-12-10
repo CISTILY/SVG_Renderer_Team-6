@@ -33,6 +33,9 @@ VOID OnPaint(HDC hdc)
     doc.parse<0>(&buffer[0]);
 
     rootNode = doc.first_node("svg");
+    ScreenSVG screen;
+    screen.readScreen(rootNode);
+    
     xml_node<>* node = rootNode->first_node();
     SVGReader::setID(node);
     ShapeData temp;
@@ -182,7 +185,9 @@ int __cdecl main()
     
     rootNode = doc.first_node("svg");
     xml_node<>* node = rootNode->first_node();
-    int i = 0, j = 0;
+    ScreenSVG screen;
+    screen.readScreen(rootNode);
+    
     SVGReader::setID(node);
     ShapeData temp;
     vector<ShapeData> data;
