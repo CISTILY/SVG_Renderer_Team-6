@@ -57,6 +57,9 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
             if (stroke == "none") {
                 this->flagStroke = 1;
                 this->stroke.setColor("-1, -1, -1");
+                
+                this->flagStrokeOpacity = 1;
+                this->stroke_opacity = 0;
                 continue;
             }
             
@@ -84,6 +87,9 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
             if (fill == "none") {
                 this->flagFill = 1;
                 this->fill.setColor("-1, -1, -1");
+
+                this->flagFillOpacity = 1;
+                this->fill_opacity = 0;
                 continue;
             }
 
