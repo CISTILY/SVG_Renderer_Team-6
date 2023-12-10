@@ -38,7 +38,7 @@ void ScreenSVG::buildScreen(vector<char*> name, vector<char*> value)
             this->flagHeight = 1;
         }
             
-        else if (temp = "viewBox")
+        else if (temp == "viewBox")
         {
             this->flagViewBox = 1;
             string strViewBox = value[i];
@@ -52,8 +52,8 @@ void ScreenSVG::buildScreen(vector<char*> name, vector<char*> value)
                     pos = strViewBox.find(',');
             
                 dup = strViewBox.substr(0, pos);
-			          strViewBox.erase(0, pos + 1);
-			          this->viewBox[j] = stof(dup);
+		strViewBox.erase(0, pos + 1);
+		this->view_box[j] = stof(dup);
             }
         }
     }
