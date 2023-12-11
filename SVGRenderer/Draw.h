@@ -1,20 +1,9 @@
 #pragma once
 #include "stdafx.h"
-#include <windows.h>
-#include <objidl.h>
-#include <gdiplus.h>
-#include <vector>
-#include <fstream>
-#include <shellapi.h>
-#include <locale>
-#include <cmath>
-#include <codecvt>
 using namespace std;
 using namespace rapidxml;
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
-
-
 
 
 class Draw {

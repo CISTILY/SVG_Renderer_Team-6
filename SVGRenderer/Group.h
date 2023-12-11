@@ -12,7 +12,6 @@ public:
 	// Destructor
 	~GroupSVG();
 
-	
 	// Build group Shape
 	void buildShape(vector<char*>, vector<char*>) override {};
 
