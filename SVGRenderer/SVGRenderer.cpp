@@ -5,6 +5,8 @@ using namespace rapidxml;
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
 
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+
 string ConvertLPCWSTRToString(LPCWSTR lpcwszStr)
 {
     // Determine the length of the converted string 
@@ -44,15 +46,7 @@ VOID OnPaint(HDC hdc)
         wcout << szArglist[k] << endl;
     }
 
-    if (nArgs > 1)
-        filename = ConvertLPCWSTRToString(szArglist[1]);
-    else {
-        cout << "Enter file name: ";
-        getline(cin, filename);
-        filename += ".svg";
-        cout << filename << endl;
-    }
-    LocalFree(szArglist);
+    filename = ConvertLPCWSTRToString(szArglist[1]);
 
     // Read XML
     xml_document<> doc;
@@ -69,7 +63,6 @@ VOID OnPaint(HDC hdc)
     screen.readScreen(rootNode);
     
     xml_node<>* node = rootNode->first_node();
-    SVGReader::setID(node);
     ShapeData temp;
     vector<ShapeData> data;
 
@@ -80,13 +73,10 @@ VOID OnPaint(HDC hdc)
         if (temp == "g")
             data[i].ReplaceProperties();
     }
-    
     Draw pen;
     pen.drawShape(graphics, data);
-
+    LocalFree(szArglist);
 }
-
-LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 {
