@@ -113,7 +113,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -147,6 +147,7 @@
     <ClCompile Include="Polygon.cpp" />
     <ClCompile Include="Polyline.cpp" />
     <ClCompile Include="Rect.cpp" />
+    <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="ShapeData.cpp" />
     <ClCompile Include="stdafx.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="Rect.h" />
     <ClInclude Include="Draw.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Screen.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="ShapeData.h" />
     <ClInclude Include="stdafx.h" />
