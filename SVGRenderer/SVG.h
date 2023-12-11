@@ -32,8 +32,6 @@ public:
     void PropertiesBuilder(char*, char*);
     static void readContent(string);
     static void setID(xml_node<>*);
-    void ReplaceProperties(SVGReader);
-
     
     // Getters
     char* getNodeName();

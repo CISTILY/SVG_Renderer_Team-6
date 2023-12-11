@@ -6,8 +6,8 @@ using namespace std;
 
 class EllipseSVG : public Shape {
 protected:
-    int rx;
-    int ry;
+    float rx;
+    float ry;
 public:
     // Constructor
     EllipseSVG();
@@ -19,8 +19,8 @@ public:
     void buildShape(vector<char*>, vector<char*>) override;
 
     // Setters
-    void setRadiusX(int);
-    void setRadiusY(int);
+    void setRadiusX(float);
+    void setRadiusY(float);
 
     // Getters
     float getRadiusX();
