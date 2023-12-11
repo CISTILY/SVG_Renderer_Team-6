@@ -19,7 +19,6 @@ private:
     vector<char*> OtherAttrName;
     vector<char*> OtherAttrValue;
     static vector<string> content;
-    static vector<int> ID;
 public:
     // Constructor
     SVGReader();
@@ -31,7 +30,6 @@ public:
     void setNodeName(char*);
     void PropertiesBuilder(char*, char*);
     static void readContent(string);
-    static void setID(xml_node<>*);
     
     // Getters
     char* getNodeName();
@@ -40,8 +38,4 @@ public:
     vector<char*> getPropsAttrName();
     vector<char*> getPropsAttrValue();
     static vector<string> getContent();
-    static vector<int> getID();
-
-    void resetNode();
-    void getTransformValue(string, Point2D&, float&, Point2D&, float&, vector<int>&);
 };
