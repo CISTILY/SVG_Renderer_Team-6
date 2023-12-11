@@ -15,6 +15,10 @@ Point2D::Point2D(string s) {
 
     if (p == string::npos)
         p = s.find(' ');
+    if (p == string::npos)
+        p = s.find('\n');
+    if (p == string::npos)
+        p = s.find('\t');
 
     temp = s.substr(0, p);
     this->x = stof(temp);
