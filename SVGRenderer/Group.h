@@ -1,7 +1,6 @@
 #pragma once
 #include "Shape.h"
-
-class ShapeData;
+#include "ShapeData.h"
 
 class GroupSVG : public Shape {
 private:
@@ -13,7 +12,6 @@ public:
 	// Destructor
 	~GroupSVG();
 
-	
 	// Build group Shape
 	void buildShape(vector<char*>, vector<char*>) override {};
 

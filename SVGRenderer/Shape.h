@@ -2,7 +2,6 @@
 
 #include "Color.h"
 #include "Point2D.h"
-#include <vector>
 #include <iostream>
 #include <sstream>
 
