@@ -105,22 +105,22 @@ void Draw::splitString(string str) {
 }
 
 void Draw::transform(Graphics& graphics, Shape* shape) {
-    for (int i = 0; i < shape->getTransform().size(); ++i) {
+    for (int i = shape->getTransform().size() - 1; i >= 0; --i) {
         findOrderTransform(shape->getTransform()[i]);
         splitString(shape->getTransform()[i]);
 
         for (int j = 0; j < 3; ++j)
         {
-            if (TranslateRotateScale[0] == j) {
+            if (TranslateRotateScale[j] == 0) {
                 graphics.TranslateTransform(translate.getX(), translate.getY());
                 translate.setX(0);
                 translate.setY(0);
             }
-            if (TranslateRotateScale[1] == j) {
+            else if (TranslateRotateScale[j] == 1) {
                 graphics.RotateTransform(rotateAngle);
                 rotateAngle = 0;
             }
-            if (TranslateRotateScale[2] == j) {
+            else if (TranslateRotateScale[j] == 2) {
                 graphics.ScaleTransform(scalePoint.getX(), scalePoint.getY());
                 scalePoint.setX(1);
                 scalePoint.setY(1);
