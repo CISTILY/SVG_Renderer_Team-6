@@ -67,5 +67,4 @@ public:
     // Print out attributes
     virtual void print();
     virtual void buildShape(vector<char*>, vector<char*>) = 0;
-    void splitWord(string, vector<Point2D>&, vector<float>&, vector<Point2D>&);
 };

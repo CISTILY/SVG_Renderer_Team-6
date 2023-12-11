@@ -28,11 +28,11 @@ void EllipseSVG::buildShape(vector<char*> name, vector<char*> value) {
     }
 }
 
-void EllipseSVG::setRadiusX(int x) {
+void EllipseSVG::setRadiusX(float x) {
     this->rx = x;
 }
 
-void EllipseSVG::setRadiusY(int y) {
+void EllipseSVG::setRadiusY(float y) {
     this->ry = y;
 }
 

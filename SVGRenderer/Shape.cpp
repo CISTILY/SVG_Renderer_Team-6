@@ -20,34 +20,6 @@ Shape::~Shape() {
     //cout << "Shape::Destructor" << endl;
 }
 
-void Shape::splitWord(string str, vector<Point2D>& translate, vector<float>& rotate, vector<Point2D>& scalePoint) {
-    string value;
-    while (str != "") {
-        if (str.find("translate") != string::npos) {
-            int pos = str.find(')');
-            value = str.substr(str.find("translate") + 10, pos - 1 - 9);
-            Point2D* temp = new Point2D(value);
-            translate.push_back(*temp);
-            str.erase(0, pos + 1);
-            delete temp;
-        }
-        else if (str.find("rotate") != string::npos) {
-            int pos = str.find(')');
-            value = str.substr(str.find("rotate") + 7, pos - 1 - 6);
-            rotate.push_back(stof(value));
-            str.erase(0, pos + 1);
-        }
-        else if (str.find("scale") != string::npos) {
-            int pos = str.find(')');
-            value = str.substr(str.find("scale") + 6, pos - 1 - 5);
-            Point2D* temp = new Point2D(value);
-            scalePoint.push_back(*temp);
-            delete temp;
-            str.erase(0, pos + 1);
-        }
-    }
-}
-
 void Shape::buildProperties(vector<char*> name, vector<char*> value) {
     string temp;
     for (int i = 0; i < name.size(); ++i) {
