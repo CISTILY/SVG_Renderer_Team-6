@@ -42,15 +42,6 @@ void ShapeData::readFile(xml_node<>* node, vector<ShapeData>& data, string filen
             char* attributeValue = Attr->value();
             reader.PropertiesBuilder(attributeName, attributeValue);
         }
-        
-        /*cout << reader.getNodeName() << " ";
-        for (int j = 0; j < reader.getPropsAttrName().size(); ++j)
-            cout << reader.getPropsAttrName()[j] << " " << reader.getPropsAttrValue()[j] << " ";
-
-        for (int j = 0; j < reader.getOtherAttrName().size(); ++j)
-            cout << reader.getOtherAttrName()[j] << " " << reader.getOtherAttrValue()[j] << " ";
-
-        cout << endl;*/
 
         string nameSVGReader = reader.getNodeName();
         if (!reader.getOtherAttrName().empty() || !reader.getPropsAttrName().empty() || nameSVGReader == "g") {
@@ -63,10 +54,6 @@ void ShapeData::readFile(xml_node<>* node, vector<ShapeData>& data, string filen
         {
             if (nameSVGReader == "g")
             {
-                //vector<ShapeData> *childData = &(data[j - 1].getShape()->getG());
-                //this->readFile(child, *childData, filename);
-                
-                //Khong hieu tai sao class group bien g phai la pointer chu khong dc bien thuong 
                 this->readFile(child, *(data[j - 1].getShape()->getG()), filename);
             }
         }
@@ -75,53 +62,7 @@ void ShapeData::readFile(xml_node<>* node, vector<ShapeData>& data, string filen
     cout << endl;
 }
 
-/*
-void ShapeData::ReplaceProperties(vector<ShapeData>& data) {
-    vector<int> group;
-    for (int i = 0; i < data.size(); ++i) {
-        if (data[i].getTypeName() == "g")
-            group.push_back(i);
-    }
-    group.push_back(data.size()-1);
-
-    cout << data.size() << endl;
-    for (int i = 0; i < group.size()-1; ++i) {
-        for (int j = group[i]+1; j <= group[i + 1]; ++j) {
-            cout << j << " ";
-            if (data[group[i]].getShape()->getFlagStroke() != data[j].getShape()->getFlagStroke() && data[group[i]].getShape()->getFlagStroke() != 0) {
-                data[j].setStroke(data[group[i]].getShape()->getStroke());
-            }
-            if (data[group[i]].getShape()->getFlagStrokeWidth() != data[j].getShape()->getFlagStrokeWidth() && data[group[i]].getShape()->getFlagStrokeWidth() != 0) {
-                data[j].setStrokeWidth(data[group[i]].getShape()->getStrokeWidth());
-            }
-            if (data[group[i]].getShape()->getFlagStrokeOpacity() != data[j].getShape()->getFlagStrokeOpacity() && data[group[i]].getShape()->getFlagStrokeOpacity() != 0) {
-                data[j].setStrokeOpacity(data[group[i]].getShape()->getStrokeOpacity()); 
-            }
-            if (data[group[i]].getShape()->getFlagFill() != data[j].getShape()->getFlagFill() && data[group[i]].getShape()->getFlagFill() != 0) {
-                data[j].setFill(data[group[i]].getShape()->getFill());
-            }
-            if (data[group[i]].getShape()->getFlagFillOpacity() != data[j].getShape()->getFlagFillOpacity() && data[group[i]].getShape()->getFlagFillOpacity() != 0) {
-                data[j].setFillOpacity(data[group[i]].getShape()->getFillOpacity());
-            }
-            if (data[group[i]].getShape()->getFlagTransform() == 1 && data[j].getShape()->getFlagTransform() == 0 || data[j].getShape()->getFlagTransform() == 1) {
-                data[j].setTransform(data[group[i]].getShape()->getTransform());
-            }
-            cout << "After: ";
-            data[j].getShape()->print();
-            cout << endl;
-        }
-    }
-}
-*/
-
-
 void ShapeData::ReplaceProperties() {
-    
-    //for (int i = 0; i < data.size(); ++i) {
-    //    if (data[i].getTypeName() == "g")
-    //        ReplaceProperties(*data[i].getShape()->getG());
-    //}
-    
     vector<ShapeData>* groupData = this->getShape()->getG();
     for (int j = 0; j < (*groupData).size(); ++j) {
         if ((*groupData)[j].getShape()->getFlagStroke() == 0 && this->getShape()->getFlagStroke() == 1) {

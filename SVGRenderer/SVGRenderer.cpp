@@ -159,3 +159,59 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
 } // WndProc
+
+//int __cdecl main() {
+//    string filename;
+//    LPWSTR* szArglist;
+//    int nArgs;
+//    int k;
+//
+//    szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+//    if (NULL == szArglist)
+//    {
+//        wprintf(L"CommandLineToArgvW failed\n");
+//        return 0;
+//    }
+//    else for (k = 0; k < nArgs; k++) {
+//        wcout << "line " << k << ": ";
+//        wcout << szArglist[k] << endl;
+//    }
+//
+//    if (nArgs > 1)
+//        filename = ConvertLPCWSTRToString(szArglist[1]);
+//    else {
+//        cout << "Enter file name: ";
+//        getline(cin, filename);
+//        filename += ".svg";
+//        cout << filename << endl;
+//    }
+//    LocalFree(szArglist);
+//
+//    // Read XML
+//    xml_document<> doc;
+//    xml_node<>* rootNode;
+//    // Read the xml file into a vector
+//    ifstream file(filename);
+//    vector<char> buffer((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
+//    buffer.push_back('\0');
+//    // Parse the buffer using the xml file parsing library into doc 
+//    doc.parse<0>(&buffer[0]);
+//
+//    rootNode = doc.first_node("svg");
+//    ScreenSVG screen;
+//    screen.readScreen(rootNode);
+//
+//    xml_node<>* node = rootNode->first_node();
+//    SVGReader::setID(node);
+//    ShapeData temp;
+//    vector<ShapeData> data;
+//
+//    // Load font for text rendering
+//    temp.readFile(node, data, filename);
+//    for (int i = 0; i < data.size(); ++i) {
+//        string temp = data[i].getTypeName();
+//        if (temp == "g")
+//            data[i].ReplaceProperties();
+//    }
+//    return (1);
+//}
