@@ -65,6 +65,9 @@ VOID OnPaint(HDC hdc)
     doc.parse<0>(&buffer[0]);
 
     rootNode = doc.first_node("svg");
+    ScreenSVG screen;
+    screen.readScreen(rootNode);
+    
     xml_node<>* node = rootNode->first_node();
     SVGReader::setID(node);
     ShapeData temp;
