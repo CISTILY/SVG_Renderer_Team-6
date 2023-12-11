@@ -52,7 +52,6 @@ VOID OnPaint(HDC hdc)
         filename += ".svg";
         cout << filename << endl;
     }
-    LocalFree(szArglist);
 
     // Read XML
     xml_document<> doc;
@@ -83,7 +82,7 @@ VOID OnPaint(HDC hdc)
     
     Draw pen;
     pen.drawShape(graphics, data);
-
+    LocalFree(szArglist);
 }
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
