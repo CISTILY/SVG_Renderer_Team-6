@@ -23,11 +23,11 @@ Shape* ShapeData::getShape() {
     return this->shapeSVG;
 }
 
-void ShapeData::readFile(xml_node<>* node, vector<ShapeData>& data, string filename)
+void ShapeData::readFile(xml_node<>* node, vector<ShapeData>& data, string filename, int& text_order)
 {
     ShapeData temp;
     int j = 0;
-    static int i = 0;
+  
     while (node != NULL) {
 
         SVGReader reader;
@@ -46,7 +46,7 @@ void ShapeData::readFile(xml_node<>* node, vector<ShapeData>& data, string filen
         string nameSVGReader = reader.getNodeName();
         if (!reader.getOtherAttrName().empty() || !reader.getPropsAttrName().empty() || nameSVGReader == "g") {
             data.push_back(temp);
-            data[j].buildAndPrintShapeInfo(reader, i);
+            data[j].buildAndPrintShapeInfo(reader, text_order);
             j++;
         }
         
@@ -54,7 +54,8 @@ void ShapeData::readFile(xml_node<>* node, vector<ShapeData>& data, string filen
         {
             if (nameSVGReader == "g")
             {
-                this->readFile(child, *(data[j - 1].getShape()->getG()), filename);
+                GroupSVG* g = dynamic_cast<GroupSVG*>(data[j - 1].getShape());
+                this->readFile(child, *(g->getG()), filename, text_order);
             }
         }
         node = node->next_sibling();
@@ -63,7 +64,8 @@ void ShapeData::readFile(xml_node<>* node, vector<ShapeData>& data, string filen
 }
 
 void ShapeData::ReplaceProperties() {
-    vector<ShapeData>* groupData = this->getShape()->getG();
+    GroupSVG* g = dynamic_cast<GroupSVG*>(this->getShape());
+    vector<ShapeData>* groupData = g->getG();
     for (int j = 0; j < (*groupData).size(); ++j) {
         if ((*groupData)[j].getShape()->getFlagStroke() == 0 && this->getShape()->getFlagStroke() == 1) {
             (*groupData)[j].setStroke(this->getShape()->getStroke());
@@ -197,6 +199,3 @@ void ShapeData::buildAndPrintShapeInfo(SVGReader reader, int& i) {
     }
     cout << endl;
 }
-
-//////////////////////////////////////////////
-
