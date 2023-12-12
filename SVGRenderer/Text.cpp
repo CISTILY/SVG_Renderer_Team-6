@@ -54,10 +54,29 @@ void TextSVG::buildShape(vector<char*> name, vector<char*> value) {
             this->setFontSize(atoi(value[i]));
         else if (temp == "text-anchor")
             this->text_anchor = value[i];
-        else if (temp == "font-family")
-            this->font_family = value[i];
         else if (temp == "font-style")
             this->font_style = value[i];
+        else if (temp == "font-family")
+        {
+            string font = value[i];
+            
+            while (true)
+			{
+				string dup;
+				int pos = font.find(',');
+
+				if (pos == string::npos)
+				{
+					this->font_family.push_back(font);
+					break;
+				}
+
+				dup = font.substr(0, pos);
+				font.erase(0, pos + 1);
+				this->font_family.push_back(dup);
+			}
+        }
+            
     }
 }
 
@@ -71,7 +90,9 @@ void TextSVG::setFontSize(int size) {
 
 void TextSVG::print() {
     this->coordinate.print();
-    cout << " " << dx << " " << dy << " " << this->font_size << " " << this->font_family << " " << this->font_style << " ";
+    cout << " " << dx << " " << dy << " " << this->font_size << " " << this->font_style << " ";
+    for(int i = 0; i < this->font_family.size(); ++i)
+        cout << this->font_family[i] << " ";
     cout << this->content << " ";
     Shape::print();
 }
