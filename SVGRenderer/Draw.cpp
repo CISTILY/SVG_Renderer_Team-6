@@ -78,29 +78,28 @@ void Draw::findOrderTransform(string transform)
 
 void Draw::splitString(string str) {
     string value;
-    while (str != "") {
-        if (str.find("translate") != string::npos) {
-            int pos = str.find(')');
-            value = str.substr(str.find("translate") + 10, pos - 1 - 9);
-            Point2D* temp = new Point2D(value);
-            translate = *temp;
-            str.erase(0, pos + 1);
-            delete temp;
-        }
-        else if (str.find("rotate") != string::npos) {
-            int pos = str.find(')');
-            value = str.substr(str.find("rotate") + 7, pos - 1 - 6);
-            rotateAngle = stof(value);
-            str.erase(0, pos + 1);
-        }
-        else if (str.find("scale") != string::npos) {
-            int pos = str.find(')');
-            value = str.substr(str.find("scale") + 6, pos - 1 - 5);
-            Point2D* temp = new Point2D(value);
-            scalePoint = *temp;
-            delete temp;
-            str.erase(0, pos + 1);
-        }
+    int posStart = 0, posEnd = 0;
+    if (str.find("translate") != string::npos) {
+        posStart = str.find("translate");
+        posEnd = str.find(')', posStart);
+        value = str.substr(posStart + 10, posEnd - 1 - 9);
+        Point2D* temp = new Point2D(value);
+        translate = *temp;
+        delete temp;
+    }
+    if (str.find("rotate") != string::npos) {
+        posStart = str.find("rotate");
+        posEnd = str.find(')', posStart);
+        value = str.substr(str.find("rotate") + 7, posEnd - 1 - 6);
+        rotateAngle = stof(value);
+    }
+    if (str.find("scale") != string::npos) {
+        posStart = str.find("scale");
+        posEnd = str.find(')', posStart);
+        value = str.substr(str.find("scale") + 6, posEnd - 1 - 5);
+        Point2D* temp = new Point2D(value);
+        scalePoint = *temp;
+        delete temp;
     }
 }
 
