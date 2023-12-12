@@ -87,3 +87,18 @@ void ScreenSVG::printScreen()
         cout << endl << endl;
     }
 }
+
+Point2D ScreenSVG::getSize() {
+    if (!this->flagHeight)
+        this->height = 0x80000000;
+    if (!this->flagWidth)
+        this->width = 0x80000000;
+    return Point2D(this->width, this->height);
+}
+
+
+Point2D ScreenSVG::getView() {
+    if (this->flagViewBox)
+        return Point2D(this->view_box[2], this->view_box[3]);
+    else return this->getSize();
+}

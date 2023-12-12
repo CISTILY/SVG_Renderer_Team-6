@@ -2,7 +2,8 @@
 
 #include <iostream>
 #include <string>
-#include <vector> 
+#include <vector>
+#include "Point2D.h"
 #include "rapidxml.hpp"
 
 using namespace rapidxml;
@@ -27,4 +28,7 @@ public:
     void buildScreen(vector<char*>, vector<char*>);
     void readScreen(xml_node<>* node);
     void printScreen();
+
+    Point2D getSize();
+    Point2D getView();
 };

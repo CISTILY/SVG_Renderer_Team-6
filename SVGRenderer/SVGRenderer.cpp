@@ -25,11 +25,14 @@ string ConvertLPCWSTRToString(LPCWSTR lpcwszStr)
     return str;
 }
 
-VOID OnPaint(HDC hdc)
+VOID OnPaint(HDC hdc, int offsetX, int offsetY, int angle, RectF viewBox, float scale)
 {
     // Ref: https://docs.microsoft.com/en-us/windows/desktop/gdiplus/-gdiplus-getting-started-use
     Graphics graphics(hdc);
     graphics.SetSmoothingMode(SmoothingModeAntiAlias);
+    graphics.TranslateTransform(static_cast<REAL>(offsetX), static_cast<REAL>(offsetY));
+    graphics.RotateTransform(static_cast<REAL> (angle));
+    graphics.ScaleTransform(scale, scale);
 
     string filename;
     LPWSTR* szArglist;
@@ -46,8 +49,9 @@ VOID OnPaint(HDC hdc)
         wcout << szArglist[k] << endl;
     }
 
-    filename = ConvertLPCWSTRToString(szArglist[1]);
-
+    //filename = ConvertLPCWSTRToString(szArglist[1]);
+    filename = "svg-02.svg";
+        
     // Read XML
     xml_document<> doc;
     xml_node<>* rootNode;
@@ -87,6 +91,39 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
     GdiplusStartupInput gdiplusStartupInput;
     ULONG_PTR           gdiplusToken;
 
+    string filename;
+    LPWSTR* szArglist;
+    int nArgs;
+    int k;
+
+    ////////////////////////////////////////////////////
+    szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+    if (NULL == szArglist)
+    {
+        wprintf(L"CommandLineToArgvW failed\n");
+    }
+    else for (k = 0; k < nArgs; k++) {
+        wcout << "line " << k << ": ";
+        wcout << szArglist[k] << endl;
+    }
+
+    //filename = ConvertLPCWSTRToString(szArglist[1]);
+    filename = "svg-02.svg";
+
+    xml_document<> doc;
+    xml_node<>* rootNode;
+    // Read the xml file into a vector
+    ifstream file(filename);
+    vector<char> buffer((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
+    buffer.push_back('\0');
+    // Parse the buffer using the xml file parsing library into doc 
+    doc.parse<0>(&buffer[0]);
+
+    rootNode = doc.first_node("svg");
+    ScreenSVG screen;
+    screen.readScreen(rootNode);
+
+    ///////////////////////////////////////////
 
     // Initialize GDI+.
     GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
@@ -110,8 +147,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
         WS_OVERLAPPEDWINDOW,      // window style
         CW_USEDEFAULT,            // initial x position
         CW_USEDEFAULT,            // initial y position
-        CW_USEDEFAULT,            // initial x size
-        CW_USEDEFAULT,            // initial y size
+        screen.getSize().getX(),            // initial x size
+        screen.getSize().getY(),            // initial y size
         NULL,                     // parent window handle
         NULL,                     // window menu handle
         hInstance,                // program instance handle
@@ -136,16 +173,60 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     HDC          hdc;
     PAINTSTRUCT  ps;
 
+ 
+    ///////////////////////////////////////////
+
+    static int xPos = 0;
+    static int yPos = 0;
+    static int angle = 0;
+    static float scale = 1.0;
+    const int a = 5;
+    const int stepSize = 20;
+    RectF viewBox(0, 0, 100, 100);
+
     switch (message)
     {
     case WM_PAINT:
         hdc = BeginPaint(hWnd, &ps);
-        OnPaint(hdc);
+        OnPaint(hdc, xPos, yPos, angle, viewBox, scale);
         EndPaint(hWnd, &ps);
         return 0;
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
+    case WM_KEYDOWN:
+        switch (wParam)
+        {
+        case VK_LEFT:
+            xPos -= stepSize;
+            break;
+        case VK_RIGHT:
+            xPos += stepSize;
+            break;
+        case VK_UP:
+            yPos -= stepSize;
+            break;
+        case VK_DOWN:
+            yPos += stepSize;
+            break;
+        case 'E': case 'e':
+            angle += a;
+            break;
+        case 'Q': case 'q':
+            angle -= a;
+            break;
+        }
+        InvalidateRect(hWnd, NULL, TRUE);
+        break;
+    case WM_MOUSEWHEEL:
+    {
+        int delta = GET_WHEEL_DELTA_WPARAM(wParam);
+        if (delta > 0)
+            scale *= 1.1;
+        else
+            scale *= 0.9;
+        InvalidateRect(hWnd, NULL, TRUE); 
+    }
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
