@@ -7,8 +7,6 @@
 
 using namespace std;
 
-class ShapeData;
-
 class Shape {
 protected:
     Point2D coordinate;
@@ -59,10 +57,6 @@ public:
     ColorSVG getStroke();
     ColorSVG getFill();
     vector<string> getTransform();
-
-    //
-    virtual vector<class ShapeData>* getG();
-    
 
     // Print out attributes
     virtual void print();
