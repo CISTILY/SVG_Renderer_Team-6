@@ -7,6 +7,7 @@ private:
     int font_size;
     float dx, dy;
     string text_anchor;
+    string font_family;
     string content;
 public:
     // Constructor
