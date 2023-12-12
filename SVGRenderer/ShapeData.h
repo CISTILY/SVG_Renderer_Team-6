@@ -48,6 +48,6 @@ public:
     void setFillOpacity(double fillOpacity);
     void setTransform(vector<string>);
 
-    void readFile(xml_node<>* node, vector<ShapeData>& data, string);
+    void readFile(xml_node<>* node, vector<ShapeData>& data, string, int&);
     void ReplaceProperties();
 };
