@@ -6,7 +6,7 @@ TextSVG::TextSVG() {
     this->font_size = 0;
     this->dx = 0;
     this->dy = 0;
-    this->font_family.push_back("Times new Roman");
+    this->font_family.push_back("Times New Roman");
     //cout << "Text::Constructor" << endl;
 }
 
@@ -70,22 +70,24 @@ void TextSVG::buildShape(vector<char*> name, vector<char*> value) {
         else if (temp == "font-family")
         {
             string font = value[i];
-            
+            this->font_family.clear();
+		
             while (true)
-			{
-				string dup;
-				int pos = font.find(',');
+	    {
+		string dup;
+		int pos = font.find(',');
 
-				if (pos == string::npos)
-				{
-					this->font_family.push_back(font);
-					break;
-				}
+		if (pos == string::npos)
+		{
+			this->font_family.push_back(font);
+			break;
+		}
 
-				dup = font.substr(0, pos);
-				font.erase(0, pos + 1);
-				this->font_family.push_back(dup);
-			}
+		dup = font.substr(0, pos);
+		font.erase(0, pos + 1);
+		this->font_family.push_back(dup);
+	    }
+		this->font_family.push_back("Times New Roman");
         }
             
     }
