@@ -1,6 +1,7 @@
 #pragma once
 #include "Shape.h"
-#include "ShapeData.h"
+
+class ShapeData;
 
 class GroupSVG : public Shape {
 private:
@@ -16,7 +17,7 @@ public:
 	void buildShape(vector<char*>, vector<char*>) override {};
 
 	// Getters
-	vector<ShapeData>* getG() override;
+	vector<ShapeData>* getG();
 
 	// Print data of group shape
 	void print() override;
