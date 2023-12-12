@@ -186,9 +186,3 @@ double Shape::getStrokeOpacity() {
 vector<string> Shape::getTransform() {
     return this->transform;
 }
-
-vector<ShapeData>* Shape::getG()
-{
-    return nullptr;
-}
-
