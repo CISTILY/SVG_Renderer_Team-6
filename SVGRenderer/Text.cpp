@@ -51,6 +51,8 @@ void TextSVG::buildShape(vector<char*> name, vector<char*> value) {
             this->text_anchor = value[i];
         else if (temp == "font-family")
             this->font_family = value[i];
+        else if (temp == "font-style")
+            this->font_style = value[i];
     }
 }
 
