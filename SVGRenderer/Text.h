@@ -8,7 +8,9 @@ private:
     float dx, dy;
     string text_anchor;
     string font_family;
+    string font_style;
     string content;
+
 public:
     // Constructor
     TextSVG();
