@@ -67,7 +67,8 @@ VOID OnPaint(HDC hdc)
     vector<ShapeData> data;
 
     // Load font for text rendering
-    temp.readFile(node, data, filename); 
+    int text_order = 0;
+    temp.readFile(node, data, filename, text_order); 
     for (int i = 0; i < data.size(); ++i) {
         string temp = data[i].getTypeName();
         if (temp == "g")
@@ -192,12 +193,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 //    screen.readScreen(rootNode);
 //
 //    xml_node<>* node = rootNode->first_node();
-//    SVGReader::setID(node);
 //    ShapeData temp;
 //    vector<ShapeData> data;
 //
 //    // Load font for text rendering
-//    temp.readFile(node, data, filename);
+//    int text_order = 0;
+//    temp.readFile(node, data, filename, text_order); 
 //    for (int i = 0; i < data.size(); ++i) {
 //        string temp = data[i].getTypeName();
 //        if (temp == "g")
