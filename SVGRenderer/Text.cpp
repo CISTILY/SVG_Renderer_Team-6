@@ -6,7 +6,7 @@ TextSVG::TextSVG() {
     this->font_size = 0;
     this->dx = 0;
     this->dy = 0;
-    this->font_family = "Times New Roman";
+    this->font_family.push_back("Times new Roman");
     //cout << "Text::Constructor" << endl;
 }
 
@@ -39,7 +39,7 @@ string TextSVG::getAnchor()
     return this->text_anchor;
 }
 
-string TextSVG::getFont_family()
+vector<string> TextSVG::getFont_family()
 {
     return this->font_family;
 }

@@ -24,7 +24,7 @@ public:
     float getDx();
     float getDy();
     string getAnchor();
-    string getFont_family();
+    vector<string> getFont_family();
     string getFont_style();
 
     // Setters
