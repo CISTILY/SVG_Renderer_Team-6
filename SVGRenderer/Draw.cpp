@@ -185,7 +185,7 @@ VOID Draw::DrawLine(Graphics& graphics, LineSVG line)
 
 VOID Draw::DrawText(Graphics& graphics, TextSVG text)
 {
-    float rate = 0;
+    float delta = 0;
     Shape* shape = dynamic_cast<Shape*>(new TextSVG(text));
     transform(graphics, shape);
 
@@ -196,22 +196,29 @@ VOID Draw::DrawText(Graphics& graphics, TextSVG text)
     }
     else if (text.getAnchor() == "end") {
         strFormat.SetAlignment(StringAlignmentFar);
-        rate = 0.15;
+        delta = 0.15;
     }
     else 
     {
         strFormat.SetAlignment(StringAlignmentNear);
-        rate = -0.15;
+        delta = -0.15;
     }
     SolidBrush brush(Color(round(255 * text.getFillOpacity()), text.getFill().getRed(), text.getFill().getGreen(), text.getFill().getBlue()));
-    FontFamily fontFamily(L"Times New Roman");
 
-    Font font(&fontFamily, text.getFont_size(), 0, UnitPixel);
-    PointF pointF(text.getCoordinateX() + text.getDx() + rate * text.getFont_size(), 
-        text.getCoordinateY() + text.getDy() - 0.9 * text.getFont_size());
+    PointF pointF(text.getCoordinateX() + text.getDx() + delta * text.getFont_size(),
+        text.getCoordinateY() + text.getDy() - 0.89 * text.getFont_size());
     wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
+
+    wstring wFontFamily = converter.from_bytes(text.getFont_family());
+    FontFamily fontFamily(wFontFamily.c_str());
+    Font font(&fontFamily, text.getFont_size(), 0, UnitPixel);
+
+    int font_style = 0;
+    if (text.getFont_style() == "italic")
+        font_style = 2;
+
     wstring content = converter.from_bytes(text.getContent());
-    path.AddString(content.c_str(), -1, &fontFamily, FontStyleRegular, static_cast<REAL>(text.getFont_size()), pointF, &strFormat);
+    path.AddString(content.c_str(), -1, &fontFamily, font_style, static_cast<REAL>(text.getFont_size()), pointF, &strFormat);
     Pen pen(Color(round(255 * text.getStrokeOpacity()), text.getStroke().getRed(), text.getStroke().getGreen(), text.getStroke().getBlue()), text.getStrokeWidth());
 
     graphics.FillPath(&brush, &path);
