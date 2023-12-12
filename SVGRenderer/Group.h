@@ -1,5 +1,6 @@
 #pragma once
 #include "Shape.h"
+#include "ShapeData.h"
 
 class ShapeData;
 
