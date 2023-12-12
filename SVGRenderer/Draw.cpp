@@ -190,7 +190,13 @@ VOID Draw::DrawText(Graphics& graphics, TextSVG text)
 
     GraphicsPath path;
     StringFormat strFormat;
-    strFormat.SetAlignment(StringAlignmentNear);
+    if (text.getAnchor() == "middle") {
+        strFormat.SetAlignment(StringAlignmentCenter);
+    }
+    else if (text.getAnchor() == "end") {
+        strFormat.SetAlignment(StringAlignmentFar);
+    }
+    else strFormat.SetAlignment(StringAlignmentNear);
     SolidBrush brush(Color(round(255 * text.getFillOpacity()), text.getFill().getRed(), text.getFill().getGreen(), text.getFill().getBlue()));
     FontFamily fontFamily(L"Times New Roman");
     Font font(&fontFamily, text.getFont_size(), 0, UnitPixel);

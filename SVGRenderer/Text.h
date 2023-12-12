@@ -21,6 +21,7 @@ public:
     int getFont_size();
     float getDx();
     float getDy();
+    string getAnchor();
 
     // Setters
     void setContent(string);
