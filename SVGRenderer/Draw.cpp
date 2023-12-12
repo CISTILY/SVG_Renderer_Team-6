@@ -185,6 +185,7 @@ VOID Draw::DrawLine(Graphics& graphics, LineSVG line)
 
 VOID Draw::DrawText(Graphics& graphics, TextSVG text)
 {
+    float rate = 0;
     Shape* shape = dynamic_cast<Shape*>(new TextSVG(text));
     transform(graphics, shape);
 
@@ -195,20 +196,25 @@ VOID Draw::DrawText(Graphics& graphics, TextSVG text)
     }
     else if (text.getAnchor() == "end") {
         strFormat.SetAlignment(StringAlignmentFar);
+        rate = 0.15;
     }
-    else strFormat.SetAlignment(StringAlignmentNear);
+    else 
+    {
+        strFormat.SetAlignment(StringAlignmentNear);
+        rate = -0.15;
+    }
     SolidBrush brush(Color(round(255 * text.getFillOpacity()), text.getFill().getRed(), text.getFill().getGreen(), text.getFill().getBlue()));
     FontFamily fontFamily(L"Times New Roman");
+
     Font font(&fontFamily, text.getFont_size(), 0, UnitPixel);
-    PointF pointF(text.getCoordinateX() + text.getDx(), text.getCoordinateY() - text.getFont_size() + text.getDy());
+    PointF pointF(text.getCoordinateX() + text.getDx() + rate * text.getFont_size(), 
+        text.getCoordinateY() + text.getDy() - 0.9 * text.getFont_size());
     wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
     wstring content = converter.from_bytes(text.getContent());
     path.AddString(content.c_str(), -1, &fontFamily, FontStyleRegular, static_cast<REAL>(text.getFont_size()), pointF, &strFormat);
     Pen pen(Color(round(255 * text.getStrokeOpacity()), text.getStroke().getRed(), text.getStroke().getGreen(), text.getStroke().getBlue()), text.getStrokeWidth());
 
-
-    graphics.DrawString(content.c_str(), -1, &font, pointF, &brush);
-
+    graphics.FillPath(&brush, &path);
 
     if (text.getStrokeWidth() != 0)
         graphics.DrawPath(&pen, &path);
