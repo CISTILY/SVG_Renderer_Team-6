@@ -223,7 +223,7 @@ VOID Draw::DrawPolygon(Graphics& graphics, PolygonSVG plg)
     }
 
     SolidBrush brush(Color(round(255 * plg.getStrokeOpacity()), plg.getFill().getRed(), plg.getFill().getGreen(), plg.getFill().getBlue()));
-    graphics.FillPolygon(&brush, points, nPoint);
+    graphics.FillPolygon(&brush, points, nPoint, FillModeWinding);
 
     Pen pen(Color(round(255 * plg.getStrokeOpacity()), plg.getStroke().getRed(), plg.getStroke().getGreen(), plg.getStroke().getBlue()), plg.getStrokeWidth());
     if (plg.getStrokeWidth() != 0)
