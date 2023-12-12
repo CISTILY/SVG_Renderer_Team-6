@@ -38,25 +38,39 @@ void SVGReader::PropertiesBuilder(char* attrName, char* attrVal) {
     }
 }
 
-void SVGReader::readContent(string filename) {
+void SVGReader::readContent(string filename)
+{
     if (!content.empty())
         return;
 
     ifstream fIn;
     fIn.open(filename);
-    string temp, text;
-    while (getline(fIn, temp, '\n')) {
-        if (temp.find("text") != string::npos) {
-            text = temp;
-            int pos = text.find(">");
-            text = text.substr(pos + 1, text.length());
-            pos = text.find("<");
-            text = text.substr(0, pos);
-            while (text[0] == ' ')
-                text.erase(0, 1);
-            content.push_back(text);
-        }
+    string fileSVG, text, line;
+    int markContinue = 0;
+
+    while (!fIn.eof())
+    {
+        getline(fIn, line, '\n');
+        fileSVG += line;
     }
+
+    while (fileSVG.find("<text", markContinue) != string::npos)
+    {
+        markContinue = fileSVG.find("<text", markContinue);
+        int markStart = fileSVG.find(">", markContinue);
+        int markEnd = fileSVG.find("<", markStart + 1);
+        markContinue = markEnd;
+
+        text = fileSVG.substr(markStart + 1, markEnd - markStart - 1);
+
+        while (text[0] == ' ')
+            text.erase(0, 1);
+        while (text.find("  ") != string::npos)
+            text.erase(text.find("  "), 1);
+
+        content.push_back(text);
+    }
+    
     fIn.close();
 }
 
