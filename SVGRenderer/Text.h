@@ -7,9 +7,9 @@ private:
     int font_size;
     float dx, dy;
     string text_anchor;
-    string font_family;
     string font_style;
     string content;
+    vector<string> font_family;
 
 public:
     // Constructor
