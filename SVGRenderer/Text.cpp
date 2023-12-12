@@ -56,6 +56,8 @@ void TextSVG::buildShape(vector<char*> name, vector<char*> value) {
             this->text_anchor = value[i];
         else if (temp == "font-family")
             this->font_family = value[i];
+        else if (temp == "font-style")
+            this->font_style = value[i];
     }
 }
 
@@ -69,7 +71,7 @@ void TextSVG::setFontSize(int size) {
 
 void TextSVG::print() {
     this->coordinate.print();
-    cout << " " << dx << " " << dy << " " << this->font_size << " " << this->font_family << " ";
+    cout << " " << dx << " " << dy << " " << this->font_size << " " << this->font_family << " " << this->font_style << " ";
     cout << this->content << " ";
     Shape::print();
 }
