@@ -50,7 +50,7 @@ VOID OnPaint(HDC hdc, int offsetX, int offsetY, int angle, RectF viewBox, float 
     }
 
     //filename = ConvertLPCWSTRToString(szArglist[1]);
-    filename = "svg-08.svg";
+    filename = "svg-01.svg";
         
     // Read XML
     xml_document<> doc;
@@ -90,7 +90,9 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
     WNDCLASS            wndClass;
     GdiplusStartupInput gdiplusStartupInput;
     ULONG_PTR           gdiplusToken;
+    //PrivateFontCollection privateFontCollection;
 
+    //privateFontCollection.AddFontFile(L"F:\\CODE\\Nam 2\\Ki 1\\OOP\\SVG_Renderer_Team - 6\\SVGRenderer\\sans-serif.ttf");
     string filename;
     LPWSTR* szArglist;
     int nArgs;
@@ -108,7 +110,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
     }
 
     //filename = ConvertLPCWSTRToString(szArglist[1]);
-    filename = "svg-08.svg";
+    filename = "svg-01.svg";
 
     xml_document<> doc;
     xml_node<>* rootNode;
@@ -198,16 +200,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
         switch (wParam)
         {
         case VK_LEFT:
-            xPos -= stepSize;
-            break;
-        case VK_RIGHT:
             xPos += stepSize;
             break;
+        case VK_RIGHT:
+            xPos -= stepSize;
+            break;
         case VK_UP:
-            yPos -= stepSize;
+            yPos += stepSize;
             break;
         case VK_DOWN:
-            yPos += stepSize;
+            yPos -= stepSize;
             break;
         case 'E': case 'e':
             angle += a;
