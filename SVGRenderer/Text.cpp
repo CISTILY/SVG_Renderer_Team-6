@@ -33,6 +33,11 @@ float TextSVG::getDy()
     return this->dy;
 }
 
+string TextSVG::getAnchor()
+{
+    return this->text_anchor;
+}
+
 void TextSVG::buildShape(vector<char*> name, vector<char*> value) {
     string temp;
     for (int i = 0; i < name.size(); ++i) {

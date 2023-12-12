@@ -50,7 +50,7 @@ VOID OnPaint(HDC hdc, int offsetX, int offsetY, int angle, RectF viewBox, float 
     }
 
     //filename = ConvertLPCWSTRToString(szArglist[1]);
-    filename = "svg-02.svg";
+    filename = "svg-08.svg";
         
     // Read XML
     xml_document<> doc;
@@ -108,7 +108,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
     }
 
     //filename = ConvertLPCWSTRToString(szArglist[1]);
-    filename = "svg-02.svg";
+    filename = "svg-08.svg";
 
     xml_document<> doc;
     xml_node<>* rootNode;
