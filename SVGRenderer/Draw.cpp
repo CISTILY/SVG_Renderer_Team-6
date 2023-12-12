@@ -209,7 +209,16 @@ VOID Draw::DrawText(Graphics& graphics, TextSVG text)
         text.getCoordinateY() + text.getDy() - 0.89 * text.getFont_size());
     wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
 
-    wstring wFontFamily = converter.from_bytes(text.getFont_family());
+    vector<string> fonts = text.getFont_family();
+    
+    wstring wFontFamily;
+    
+    for (int i = 0; i < fonts.size(); i++) {
+        wFontFamily = converter.from_bytes(fonts[i]);
+        FontFamily fontFamily(wFontFamily.c_str());
+        if (fontFamily.IsAvailable())
+            break;
+    }
     FontFamily fontFamily(wFontFamily.c_str());
     Font font(&fontFamily, text.getFont_size(), 0, UnitPixel);
 
