@@ -25,6 +25,8 @@ string ConvertLPCWSTRToString(LPCWSTR lpcwszStr)
     return str;
 }
 
+static bool read = false;
+
 VOID OnPaint(HDC hdc, int offsetX, int offsetY, int angle, RectF viewBox, float scale)
 {
     // Ref: https://docs.microsoft.com/en-us/windows/desktop/gdiplus/-gdiplus-getting-started-use
@@ -34,49 +36,53 @@ VOID OnPaint(HDC hdc, int offsetX, int offsetY, int angle, RectF viewBox, float 
     graphics.RotateTransform(static_cast<REAL> (angle));
     graphics.ScaleTransform(scale, scale);
 
+    static vector<ShapeData> data;
+
     string filename;
     LPWSTR* szArglist;
     int nArgs;
     int k;
-
     szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
-    if (NULL == szArglist)
-    {
-        wprintf(L"CommandLineToArgvW failed\n");
-    }
-    else for (k = 0; k < nArgs; k++) {
-        wcout << "line " << k << ": ";
-        wcout << szArglist[k] << endl;
-    }
 
-    //filename = ConvertLPCWSTRToString(szArglist[1]);
-    filename = "svg-14.svg";
-        
-    // Read XML
-    xml_document<> doc;
-    xml_node<>* rootNode;
-    // Read the xml file into a vector
-    ifstream file(filename);
-    vector<char> buffer((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
-    buffer.push_back('\0');
-    // Parse the buffer using the xml file parsing library into doc 
-    doc.parse<0>(&buffer[0]);
+    if (read == false) {
+        if (NULL == szArglist)
+        {
+            wprintf(L"CommandLineToArgvW failed\n");
+        }
+        else for (k = 0; k < nArgs; k++) {
+            wcout << "line " << k << ": ";
+            wcout << szArglist[k] << endl;
+        }
 
-    rootNode = doc.first_node("svg");
-    ScreenSVG screen;
-    screen.readScreen(rootNode);
-    
-    xml_node<>* node = rootNode->first_node();
-    ShapeData temp;
-    vector<ShapeData> data;
+        //filename = ConvertLPCWSTRToString(szArglist[1]);
+        filename = "svg-14.svg";
 
-    // Load font for text rendering
-    int text_order = 0;
-    temp.readFile(node, data, filename, text_order); 
-    for (int i = 0; i < data.size(); ++i) {
-        string temp = data[i].getTypeName();
-        if (temp == "g")
-            data[i].ReplaceProperties();
+        // Read XML
+        xml_document<> doc;
+        xml_node<>* rootNode;
+        // Read the xml file into a vector
+        ifstream file(filename);
+        vector<char> buffer((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
+        buffer.push_back('\0');
+        // Parse the buffer using the xml file parsing library into doc 
+        doc.parse<0>(&buffer[0]);
+
+        rootNode = doc.first_node("svg");
+        ScreenSVG screen;
+        screen.readScreen(rootNode);
+
+        xml_node<>* node = rootNode->first_node();
+        ShapeData temp;
+
+        // Load font for text rendering
+        int text_order = 0;
+        temp.readFile(node, data, filename, text_order);
+        for (int i = 0; i < data.size(); ++i) {
+            string temp = data[i].getTypeName();
+            if (temp == "g")
+                data[i].ReplaceProperties();
+        }
+        read = true;
     }
     Draw pen;
     pen.drawShape(graphics, data);
@@ -175,7 +181,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     HDC          hdc;
     PAINTSTRUCT  ps;
 
- 
+
     ///////////////////////////////////////////
 
     static int xPos = 0;
@@ -227,7 +233,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
             scale *= 1.1;
         else
             scale *= 0.9;
-        InvalidateRect(hWnd, NULL, TRUE); 
+        InvalidateRect(hWnd, NULL, TRUE);
+        break;
     }
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
