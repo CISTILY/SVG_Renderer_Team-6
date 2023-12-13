@@ -22,7 +22,7 @@ using namespace std;
 
 class ShapeData {
 private:
-    char* typeName;
+    string typeName;
 
     // shape variables
     Shape* shapeSVG;

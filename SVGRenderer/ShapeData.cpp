@@ -4,7 +4,7 @@ using namespace std;
 
 ShapeData::ShapeData()
 {
-    this->typeName = NULL;
+    //this->typeName = NULL;
     this->shapeSVG = NULL;
     //cout << "ShapeData::Default Constructor" << endl;
 }
