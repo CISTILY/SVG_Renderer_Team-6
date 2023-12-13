@@ -10,7 +10,12 @@ using namespace std;
 class Shape {
 protected:
     Point2D coordinate;
+
     vector<string> transform;
+    vector<Point2D> translate;
+    vector<float> rotateAngle;
+    vector<Point2D> scalePoint;
+    vector<int*> order_of_TranslateRotateScale;
 
     bool flagStroke;
     bool flagStrokeWidth;
@@ -38,7 +43,11 @@ public:
     void setStrokeOpacity(double);
     void setFill(ColorSVG);
     void setFillOpacity(double);
-    void setTransform(string);
+    void setTransform(string, Point2D, float, Point2D, int*);
+
+    // Caculate
+    void findOrderTransform(string);
+    void convertTransform(string);
 
     // Getters
     float getCoordinateX(); 
@@ -57,6 +66,10 @@ public:
     ColorSVG getStroke();
     ColorSVG getFill();
     vector<string> getTransform();
+    vector<Point2D>getTranslate();
+    vector<float>getRotateAngle();
+    vector<Point2D>getScalePoint();
+    vector<int*> getOrderOfTransform();
 
     // Print out attributes
     virtual void print();

@@ -2,14 +2,6 @@
 
 Draw::Draw()
 {
-	this->translate.setX(0);
-	this->translate.setY(0);
-	this->scalePoint.setX(1);
-	this->scalePoint.setY(1);
-	this->rotateAngle = 0;
-	for (int i = 0; i < 3; i++) {
-		this->TranslateRotateScale[i] = i;
-	}
 	//cout << "Draw::Default Constructor\n";
 }
 
@@ -18,111 +10,18 @@ Draw::~Draw()
 	//cout << "Draw::Destructor\n";
 }
 
-void Draw::findOrderTransform(string transform)
-{
-    int posTranslate = transform.find("translate");
-    int posRotate = transform.find("rotate");
-    int posScale = transform.find("scale");
-
-    if (posTranslate == string::npos)
-        posTranslate = transform.length();
-    if (posRotate == string::npos)
-        posRotate = transform.length();
-    if (posScale == string::npos)
-        posScale = transform.length();
-
-    if (posTranslate <= posRotate && posTranslate <= posScale)
-    {
-        TranslateRotateScale[0] = 0;
-        if (posRotate <= posScale)
-        {
-            TranslateRotateScale[1] = 1;
-            TranslateRotateScale[2] = 2;
-        }
-        else
-        {
-            TranslateRotateScale[1] = 2;
-            TranslateRotateScale[2] = 1;
-        }
-    }
-    else if (posRotate <= posTranslate && posRotate <= posScale)
-    {
-        TranslateRotateScale[0] = 1;
-        if (posTranslate <= posScale)
-        {
-            TranslateRotateScale[1] = 0;
-            TranslateRotateScale[2] = 2;
-        }
-        else
-        {
-            TranslateRotateScale[1] = 2;
-            TranslateRotateScale[2] = 0;
-        }
-    }
-    else
-    {
-        TranslateRotateScale[0] = 2;
-        if (posTranslate <= posRotate)
-        {
-            TranslateRotateScale[1] = 0;
-            TranslateRotateScale[2] = 1;
-        }
-        else
-        {
-            TranslateRotateScale[1] = 1;
-            TranslateRotateScale[2] = 0;
-        }
-    }
-}
-
-
-void Draw::splitString(string str) {
-    string value;
-    int posStart = 0, posEnd = 0;
-    if (str.find("translate") != string::npos) {
-        posStart = str.find("translate");
-        posEnd = str.find(')', posStart);
-        value = str.substr(posStart + 10, posEnd - 1 - 9);
-        Point2D* temp = new Point2D(value);
-        translate = *temp;
-        delete temp;
-    }
-    if (str.find("rotate") != string::npos) {
-        posStart = str.find("rotate");
-        posEnd = str.find(')', posStart);
-        value = str.substr(str.find("rotate") + 7, posEnd - 1 - 6);
-        rotateAngle = stof(value);
-    }
-    if (str.find("scale") != string::npos) {
-        posStart = str.find("scale");
-        posEnd = str.find(')', posStart);
-        value = str.substr(str.find("scale") + 6, posEnd - 1 - 5);
-        Point2D* temp = new Point2D(value);
-        scalePoint = *temp;
-        delete temp;
-    }
-}
-
 void Draw::transform(Graphics& graphics, Shape* shape) {
     for (int i = shape->getTransform().size() - 1; i >= 0; --i) {
-        findOrderTransform(shape->getTransform()[i]);
-        splitString(shape->getTransform()[i]);
-
         for (int j = 0; j < 3; ++j)
         {
-            if (TranslateRotateScale[j] == 0) {
-                graphics.TranslateTransform(translate.getX(), translate.getY());
-                translate.setX(0);
-                translate.setY(0);
+            if (shape->getOrderOfTransform()[i][j] == 0) {
+                graphics.TranslateTransform(shape->getTranslate()[i].getX(), shape->getTranslate()[i].getY());
             }
-            else if (TranslateRotateScale[j] == 1) {
-                graphics.RotateTransform(rotateAngle);
-                rotateAngle = 0;
+            else if (shape->getOrderOfTransform()[i][j] == 1) {
+                graphics.RotateTransform(shape->getRotateAngle()[i]);
             }
-            else if (TranslateRotateScale[j] == 2) {
-                graphics.ScaleTransform(scalePoint.getX(), scalePoint.getY());
-                scalePoint.setX(1);
-                scalePoint.setY(1);
+            else if (shape->getOrderOfTransform()[i][j] == 2) {
+                graphics.ScaleTransform(shape->getScalePoint()[i].getX(), shape->getScalePoint()[i].getY());
             }
         }
     }

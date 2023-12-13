@@ -79,7 +79,102 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
         else if (temp == "transform") {
             this->flagTransform = 1;
             this->transform.push_back(value[i]);
+
+            this->convertTransform(value[i]);
+            this->findOrderTransform(value[i]);
         }
+    }
+}
+
+void Shape::findOrderTransform(string transform)
+{
+    int* TranslateRotateScale = new int[3];
+
+    int posTranslate = transform.find("translate");
+    int posRotate = transform.find("rotate");
+    int posScale = transform.find("scale");
+
+    if (posTranslate == string::npos)
+        posTranslate = transform.length();
+    if (posRotate == string::npos)
+        posRotate = transform.length();
+    if (posScale == string::npos)
+        posScale = transform.length();
+
+    if (posTranslate <= posRotate && posTranslate <= posScale)
+    {
+        TranslateRotateScale[0] = 0;
+        if (posRotate <= posScale)
+        {
+            TranslateRotateScale[1] = 1;
+            TranslateRotateScale[2] = 2;
+        }
+        else
+        {
+            TranslateRotateScale[1] = 2;
+            TranslateRotateScale[2] = 1;
+        }
+    }
+    else if (posRotate <= posTranslate && posRotate <= posScale)
+    {
+        TranslateRotateScale[0] = 1;
+        if (posTranslate <= posScale)
+        {
+            TranslateRotateScale[1] = 0;
+            TranslateRotateScale[2] = 2;
+        }
+        else
+        {
+            TranslateRotateScale[1] = 2;
+            TranslateRotateScale[2] = 0;
+        }
+    }
+    else
+    {
+        TranslateRotateScale[0] = 2;
+        if (posTranslate <= posRotate)
+        {
+            TranslateRotateScale[1] = 0;
+            TranslateRotateScale[2] = 1;
+        }
+        else
+        {
+            TranslateRotateScale[1] = 1;
+            TranslateRotateScale[2] = 0;
+        }
+    }
+
+    this->order_of_TranslateRotateScale.push_back(TranslateRotateScale);
+}
+
+void Shape::convertTransform(string str) {
+    this->translate.push_back(Point2D(0, 0));
+    this->rotateAngle.push_back(0);
+    this->scalePoint.push_back(Point2D(1, 1));
+
+    string value;
+    int posStart = 0, posEnd = 0;
+    if (str.find("translate") != string::npos) {
+        posStart = str.find("translate");
+        posEnd = str.find(')', posStart);
+        value = str.substr(posStart + 10, posEnd - 1 - 9);
+        Point2D* temp = new Point2D(value);
+        this->translate[this->translate.size() - 1] = *temp;
+        delete temp;
+    }
+    if (str.find("rotate") != string::npos) {
+        posStart = str.find("rotate");
+        posEnd = str.find(')', posStart);
+        value = str.substr(str.find("rotate") + 7, posEnd - 1 - 6);
+        this->rotateAngle[this->rotateAngle.size() - 1] = stof(value);
+    }
+    if (str.find("scale") != string::npos) {
+        posStart = str.find("scale");
+        posEnd = str.find(')', posStart);
+        value = str.substr(str.find("scale") + 6, posEnd - 1 - 5);
+        Point2D* temp = new Point2D(value);
+        this->scalePoint[this->scalePoint.size() - 1] = *temp;
+        delete temp;
     }
 }
 
@@ -124,9 +219,13 @@ void Shape::setFillOpacity(double fillOpacity) {
     this->fill_opacity = fillOpacity;
 }
 
-void Shape::setTransform(string transform) {
+void Shape::setTransform(string transform, Point2D translate, float rotateAngle, Point2D scalePoint, int* order_of_TranslateRotateScale) {
     this->flagTransform = 1;
     this->transform.push_back(transform);
+    this->translate.push_back(translate);
+    this->rotateAngle.push_back(rotateAngle);
+    this->scalePoint.push_back(scalePoint);
+    this->order_of_TranslateRotateScale.push_back(order_of_TranslateRotateScale);
 }
 
 float Shape::getCoordinateX() {
@@ -185,4 +284,24 @@ double Shape::getStrokeOpacity() {
 
 vector<string> Shape::getTransform() {
     return this->transform;
+}
+
+vector<Point2D> Shape::getTranslate()
+{
+    return this->translate;
+}
+
+vector<float> Shape::getRotateAngle()
+{
+    return this->rotateAngle;
+}
+
+vector<Point2D> Shape::getScalePoint()
+{
+    return this->scalePoint;
+}
+
+vector<int*> Shape::getOrderOfTransform()
+{
+    return this->order_of_TranslateRotateScale;
 }

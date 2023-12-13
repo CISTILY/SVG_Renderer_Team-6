@@ -83,7 +83,7 @@ void ShapeData::ReplaceProperties() {
             (*groupData)[j].setFillOpacity(this->getShape()->getFillOpacity());
         }
         if (this->getShape()->getFlagTransform() == 1) {
-            (*groupData)[j].setTransform(this->getShape()->getTransform());
+            (*groupData)[j].setTransform(this->getShape()->getTransform(), this->getShape()->getTranslate(), this->getShape()->getRotateAngle(), this->getShape()->getScalePoint(), this->getShape()->getOrderOfTransform());
         }
 
         cout << "After: ";
@@ -116,9 +116,9 @@ void ShapeData::setFillOpacity(double fillOpacity) {
     this->shapeSVG->setFillOpacity(fillOpacity);
 }
 
-void ShapeData::setTransform(vector<string> transform) {
+void ShapeData::setTransform(vector<string> transform, vector<Point2D> translate, vector<float> rotateAngle, vector<Point2D> scalePoint, vector<int*> order_of_TranslateRotateScale) {
     for (int i = 0; i < transform.size(); ++i)
-        this->shapeSVG->setTransform(transform[i]);
+        this->shapeSVG->setTransform(transform[i], translate[i], rotateAngle[i], scalePoint[i], order_of_TranslateRotateScale[i]);
 }
 
 void ShapeData::buildAndPrintShapeInfo(SVGReader reader, int& i) {
