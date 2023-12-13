@@ -7,15 +7,10 @@ using namespace Gdiplus;
 
 
 class Draw {
-private:
-    Point2D translate, scalePoint;
-    float rotateAngle;
-    int TranslateRotateScale[3];
 public:
     Draw();
     ~Draw();
-    void findOrderTransform(string);
-    void splitString(string);
+    
     void transform(Graphics&, Shape*);
     VOID DrawCircle(Graphics&, CircleSVG);
     VOID DrawRectangle(Graphics&, RectangleSVG);
