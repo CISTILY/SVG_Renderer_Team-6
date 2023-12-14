@@ -85,6 +85,7 @@ VOID OnPaint(HDC hdc, int offsetX, int offsetY, int angle, RectF viewBox, float 
     }
     Draw pen;
     pen.drawShape(graphics, data);
+    Draw::setDrew(1);
     LocalFree(szArglist);
 }
 

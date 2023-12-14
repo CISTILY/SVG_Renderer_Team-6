@@ -24,4 +24,6 @@ public:
     VOID DrawPath(Graphics&, PathSVG, int&); 
     VOID DrawPolyline(Graphics&, PolylineSVG);
     void drawShape(Graphics&, vector<ShapeData>);
+
+    static void setDrew(bool);
 };

@@ -335,12 +335,11 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, int& order_of_path)
         this->graphicsPaths.push_back(graphicsPath);
     }
     else
-    {
+    {   
         graphicsPath = this->graphicsPaths[order_of_path];
         ++order_of_path;
     }
     
-
     SolidBrush brush(Color(round(255 * path.getFillOpacity()), path.getFill().getRed(), path.getFill().getGreen(), path.getFill().getBlue()));
     graphics.FillPath(&brush, graphicsPath);
 
@@ -423,5 +422,8 @@ void Draw::drawShape(Graphics& graphics, vector<ShapeData> data)
         }
         graphics.Restore(origin);
     }
-    drew = 1;
+}
+
+void Draw::setDrew(bool x) {
+    drew = x;
 }
