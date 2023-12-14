@@ -7,6 +7,9 @@ using namespace Gdiplus;
 
 
 class Draw {
+private:
+    static bool drew;
+    static vector< GraphicsPath*> graphicsPaths;
 public:
     Draw();
     ~Draw();
@@ -18,7 +21,7 @@ public:
     VOID DrawLine(Graphics&, LineSVG);
     VOID DrawText(Graphics&, TextSVG);
     VOID DrawPolygon(Graphics&, PolygonSVG);
-    VOID DrawPath(Graphics&, PathSVG); 
+    VOID DrawPath(Graphics&, PathSVG, int&); 
     VOID DrawPolyline(Graphics&, PolylineSVG);
     void drawShape(Graphics&, vector<ShapeData>);
 };
