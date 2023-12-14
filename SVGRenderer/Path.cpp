@@ -3,11 +3,11 @@
 using namespace std;
 
 PathSVG::PathSVG() {
-	cout << "Path::Constructor" << endl;
+	//cout << "Path::Constructor" << endl;
 }
 
 PathSVG::~PathSVG() {
-	cout << "Path::Destructor" << endl;
+	//cout << "Path::Destructor" << endl;
 }
 
 void PathSVG::setCommand(vector<char> command) {
