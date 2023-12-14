@@ -1,5 +1,8 @@
 #include "Draw.h"
 
+bool Draw::drew = 0;
+vector< GraphicsPath*> Draw::graphicsPaths;
+
 Draw::Draw()
 {
 	//cout << "Draw::Default Constructor\n";
@@ -156,173 +159,187 @@ VOID Draw::DrawPolygon(Graphics& graphics, PolygonSVG plg)
         graphics.DrawPolygon(&pen, points, nPoint);
 }
 
-VOID Draw::DrawPath(Graphics& graphics, PathSVG path)
+VOID Draw::DrawPath(Graphics& graphics, PathSVG path, int& order_of_path)
 {
     Shape* shape = dynamic_cast<Shape*>(new PathSVG(path));
     transform(graphics, shape);
 
-    int nPath = path.getCommand().size();
-    GraphicsPath* graphicsPath = new GraphicsPath[nPath];
-
-    Point2D startPoint;
-    int j = 0; // index
-
-    for (int i = 0; i < nPath; i++)
+    
+    GraphicsPath* graphicsPath;
+    
+    if (drew == 0)
     {
-        if (path.getCommand()[i] == 'M')
-        {
-            startPoint = path.getPoints()[j];
-	    graphicsPath->StartFigure();
+        int nPath = path.getCommand().size();
+        graphicsPath = new GraphicsPath[nPath];
 
-            j++;
+        Point2D startPoint;
+        int j = 0; // index
 
-        }
-        else if (path.getCommand()[i] == 'L')
+        for (int i = 0; i < nPath; i++)
         {
-            graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
-                path.getPoints()[j].getX(), path.getPoints()[j].getY());
-
-            j++;
-        }
-        else if (path.getCommand()[i] == 'H')
-        {
-            Point2D temp(path.getPoints()[j].getX(), path.getPoints()[j - 1].getY());
-            path.replaceOnePoint(temp, j);
-            graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
-                path.getPoints()[j].getX(), path.getPoints()[j].getY());
-
-            j++;
-        }
-        else if (path.getCommand()[i] == 'V')
-        {
-            Point2D temp(path.getPoints()[j - 1].getX(), path.getPoints()[j].getY());
-            path.replaceOnePoint(temp, j);
-            graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
-                path.getPoints()[j].getX(), path.getPoints()[j].getY());
-
-            j++;
-        }
-        else if (path.getCommand()[i] == 'C')
-        {
-            graphicsPath->AddBezier(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
-                path.getPoints()[j].getX(), path.getPoints()[j].getY(),
-                path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY(),
-                path.getPoints()[j + 2].getX(), path.getPoints()[j + 2].getY());
-
-            j += 3;
-        }
-        else if (path.getCommand()[i] == 'S')
-        {
-            if (path.getCommand()[i - 1] == 'S' || path.getCommand()[i - 1] == 's' || path.getCommand()[i - 1] == 'C' || path.getCommand()[i - 1] == 'c')
-            {
-                Point2D point(path.getPoints()[j - 1].getX() * 2 - path.getPoints()[j - 2].getX(), path.getPoints()[j - 1].getY() * 2 - path.getPoints()[j - 2].getY());
-                graphicsPath->AddBezier(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
-                    point.getX(), point.getY(),
-                    path.getPoints()[j].getX(), path.getPoints()[j].getY(),
-                    path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY());
-            }
-            else
-            {
-                graphicsPath->AddBezier(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
-                    path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
-                    path.getPoints()[j].getX(), path.getPoints()[j].getY(),
-                    path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY());
-            }
-
-            j += 2;
-        }
-        else if (path.getCommand()[i] == 'Z' || path.getCommand()[i] == 'z')
-        {
-            graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
-                startPoint.getX(), startPoint.getY());
-            graphicsPath->CloseFigure();
-        }
-        else if (path.getCommand()[i] == 'm')
-        {
-            if (j == 0)
+            if (path.getCommand()[i] == 'M')
             {
                 startPoint = path.getPoints()[j];
+                graphicsPath->StartFigure();
+
+                j++;
+
             }
-            else
+            else if (path.getCommand()[i] == 'L')
+            {
+                graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                    path.getPoints()[j].getX(), path.getPoints()[j].getY());
+
+                j++;
+            }
+            else if (path.getCommand()[i] == 'H')
+            {
+                Point2D temp(path.getPoints()[j].getX(), path.getPoints()[j - 1].getY());
+                path.replaceOnePoint(temp, j);
+                graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                    path.getPoints()[j].getX(), path.getPoints()[j].getY());
+
+                j++;
+            }
+            else if (path.getCommand()[i] == 'V')
+            {
+                Point2D temp(path.getPoints()[j - 1].getX(), path.getPoints()[j].getY());
+                path.replaceOnePoint(temp, j);
+                graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                    path.getPoints()[j].getX(), path.getPoints()[j].getY());
+
+                j++;
+            }
+            else if (path.getCommand()[i] == 'C')
+            {
+                graphicsPath->AddBezier(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                    path.getPoints()[j].getX(), path.getPoints()[j].getY(),
+                    path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY(),
+                    path.getPoints()[j + 2].getX(), path.getPoints()[j + 2].getY());
+
+                j += 3;
+            }
+            else if (path.getCommand()[i] == 'S')
+            {
+                if (path.getCommand()[i - 1] == 'S' || path.getCommand()[i - 1] == 's' || path.getCommand()[i - 1] == 'C' || path.getCommand()[i - 1] == 'c')
+                {
+                    Point2D point(path.getPoints()[j - 1].getX() * 2 - path.getPoints()[j - 2].getX(), path.getPoints()[j - 1].getY() * 2 - path.getPoints()[j - 2].getY());
+                    graphicsPath->AddBezier(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                        point.getX(), point.getY(),
+                        path.getPoints()[j].getX(), path.getPoints()[j].getY(),
+                        path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY());
+                }
+                else
+                {
+                    graphicsPath->AddBezier(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                        path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                        path.getPoints()[j].getX(), path.getPoints()[j].getY(),
+                        path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY());
+                }
+
+                j += 2;
+            }
+            else if (path.getCommand()[i] == 'Z' || path.getCommand()[i] == 'z')
+            {
+                graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                    startPoint.getX(), startPoint.getY());
+                graphicsPath->CloseFigure();
+            }
+            else if (path.getCommand()[i] == 'm')
+            {
+                if (j == 0)
+                {
+                    startPoint = path.getPoints()[j];
+                }
+                else
+                {
+                    Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j].getY());
+                    path.replaceOnePoint(temp, j);
+                    startPoint = temp;
+                }
+
+                j++;
+            }
+            else if (path.getCommand()[i] == 'l')
             {
                 Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j].getY());
                 path.replaceOnePoint(temp, j);
-                startPoint = temp;
+                graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                    path.getPoints()[j].getX(), path.getPoints()[j].getY());
+
+                j++;
             }
-
-            j++;
-        }
-        else if (path.getCommand()[i] == 'l')
-        {
-            Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j].getY());
-            path.replaceOnePoint(temp, j);
-            graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
-                path.getPoints()[j].getX(), path.getPoints()[j].getY());
-
-            j++;
-        }
-        else if (path.getCommand()[i] == 'h')
-        {
-            Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j].getX(), path.getPoints()[j - 1].getY());
-            path.replaceOnePoint(temp, j);
-            graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
-                path.getPoints()[j].getX(), path.getPoints()[j].getY());
-
-            j++;
-        }
-        else if (path.getCommand()[i] == 'v')
-        {
-            Point2D temp(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j].getY());
-            path.replaceOnePoint(temp, j);
-            graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
-                path.getPoints()[j].getX(), path.getPoints()[j].getY());
-
-            j++;
-        }
-        else if (path.getCommand()[i] == 'c')
-        {
-            Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j].getY());
-            path.replaceOnePoint(temp, j);
-            Point2D temp2(path.getPoints()[j - 1].getX() + path.getPoints()[j + 1].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j + 1].getY());
-            path.replaceOnePoint(temp2, j + 1);
-            Point2D temp3(path.getPoints()[j - 1].getX() + path.getPoints()[j + 2].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j + 2].getY());
-            path.replaceOnePoint(temp3, j + 2);
-            graphicsPath->AddBezier(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
-                path.getPoints()[j].getX(), path.getPoints()[j].getY(),
-                path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY(),
-                path.getPoints()[j + 2].getX(), path.getPoints()[j + 2].getY());
-
-            j += 3;
-        }
-        else if (path.getCommand()[i] == 's')
-        {
-            if (path.getCommand()[i - 1] == 'S' || path.getCommand()[i - 1] == 's' || path.getCommand()[i - 1] == 'C' || path.getCommand()[i - 1] == 'c')
+            else if (path.getCommand()[i] == 'h')
             {
-                Point2D point(path.getPoints()[j - 1].getX() * 2 - path.getPoints()[j - 2].getX(), path.getPoints()[j - 1].getY() * 2 - path.getPoints()[j - 2].getY());
+                Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j].getX(), path.getPoints()[j - 1].getY());
+                path.replaceOnePoint(temp, j);
+                graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                    path.getPoints()[j].getX(), path.getPoints()[j].getY());
+
+                j++;
+            }
+            else if (path.getCommand()[i] == 'v')
+            {
+                Point2D temp(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j].getY());
+                path.replaceOnePoint(temp, j);
+                graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                    path.getPoints()[j].getX(), path.getPoints()[j].getY());
+
+                j++;
+            }
+            else if (path.getCommand()[i] == 'c')
+            {
                 Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j].getY());
                 path.replaceOnePoint(temp, j);
                 Point2D temp2(path.getPoints()[j - 1].getX() + path.getPoints()[j + 1].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j + 1].getY());
                 path.replaceOnePoint(temp2, j + 1);
+                Point2D temp3(path.getPoints()[j - 1].getX() + path.getPoints()[j + 2].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j + 2].getY());
+                path.replaceOnePoint(temp3, j + 2);
                 graphicsPath->AddBezier(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
-                    point.getX(), point.getY(),
                     path.getPoints()[j].getX(), path.getPoints()[j].getY(),
-                    path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY());
-            }
-            else
-            {
-                Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j].getY());
-                path.replaceOnePoint(temp, j);
-                Point2D temp2(path.getPoints()[j - 1].getX() + path.getPoints()[j + 1].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j + 1].getY());
-                path.replaceOnePoint(temp2, j + 1);
-                graphicsPath->AddBezier(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
-                    path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
-                    path.getPoints()[j].getX(), path.getPoints()[j].getY(),
-                    path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY());
-            }
+                    path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY(),
+                    path.getPoints()[j + 2].getX(), path.getPoints()[j + 2].getY());
 
-            j += 2;
+                j += 3;
+            }
+            else if (path.getCommand()[i] == 's')
+            {
+                if (path.getCommand()[i - 1] == 'S' || path.getCommand()[i - 1] == 's' || path.getCommand()[i - 1] == 'C' || path.getCommand()[i - 1] == 'c')
+                {
+                    Point2D point(path.getPoints()[j - 1].getX() * 2 - path.getPoints()[j - 2].getX(), path.getPoints()[j - 1].getY() * 2 - path.getPoints()[j - 2].getY());
+                    Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j].getY());
+                    path.replaceOnePoint(temp, j);
+                    Point2D temp2(path.getPoints()[j - 1].getX() + path.getPoints()[j + 1].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j + 1].getY());
+                    path.replaceOnePoint(temp2, j + 1);
+                    graphicsPath->AddBezier(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                        point.getX(), point.getY(),
+                        path.getPoints()[j].getX(), path.getPoints()[j].getY(),
+                        path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY());
+                }
+                else
+                {
+                    Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j].getY());
+                    path.replaceOnePoint(temp, j);
+                    Point2D temp2(path.getPoints()[j - 1].getX() + path.getPoints()[j + 1].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j + 1].getY());
+                    path.replaceOnePoint(temp2, j + 1);
+                    graphicsPath->AddBezier(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                        path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                        path.getPoints()[j].getX(), path.getPoints()[j].getY(),
+                        path.getPoints()[j + 1].getX(), path.getPoints()[j + 1].getY());
+                }
+
+                j += 2;
+            }
         }
+
+        this->graphicsPaths.push_back(graphicsPath);
     }
+    else
+    {
+        graphicsPath = this->graphicsPaths[order_of_path];
+        ++order_of_path;
+    }
+    
 
     SolidBrush brush(Color(round(255 * path.getFillOpacity()), path.getFill().getRed(), path.getFill().getGreen(), path.getFill().getBlue()));
     graphics.FillPath(&brush, graphicsPath);
@@ -359,6 +376,7 @@ VOID Draw::DrawPolyline(Graphics& graphics, PolylineSVG pll)
 
 void Draw::drawShape(Graphics& graphics, vector<ShapeData> data)
 {
+    int order_of_path = 0;
     for (int i = 0; i < data.size(); ++i)
     {
         GraphicsState origin = graphics.Save();
@@ -397,7 +415,7 @@ void Draw::drawShape(Graphics& graphics, vector<ShapeData> data)
         }
         else if (data[i].getTypeName() == "path") {
             PathSVG* path = dynamic_cast<PathSVG*> (data[i].getShape());
-            DrawPath(graphics, *path);
+            DrawPath(graphics, *path, order_of_path);
         }
         else if (data[i].getTypeName() == "g") {
             GroupSVG* g = dynamic_cast<GroupSVG*> (data[i].getShape());
@@ -405,4 +423,5 @@ void Draw::drawShape(Graphics& graphics, vector<ShapeData> data)
         }
         graphics.Restore(origin);
     }
+    drew = 1;
 }
