@@ -9,6 +9,8 @@ using namespace std;
 class ColorSVG {
 private:
 	int red, green, blue;
+	static vector<string>basic_color_name;
+	static vector<string>basic_color_value;
 public:
 	// Constructor
 	ColorSVG();
