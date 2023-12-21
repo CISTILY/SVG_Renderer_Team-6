@@ -25,8 +25,6 @@ string ConvertLPCWSTRToString(LPCWSTR lpcwszStr)
     return str;
 }
 
-static bool read = false;
-
 VOID OnPaint(HDC hdc, int offsetX, int offsetY, int angle, RectF viewBox, float scale)
 {
     // Ref: https://docs.microsoft.com/en-us/windows/desktop/gdiplus/-gdiplus-getting-started-use
@@ -36,57 +34,11 @@ VOID OnPaint(HDC hdc, int offsetX, int offsetY, int angle, RectF viewBox, float 
     graphics.RotateTransform(static_cast<REAL> (angle));
     graphics.ScaleTransform(scale, scale);
 
-    static vector<ShapeData> data;
+    ShapeData* data = ShapeData::getInstance();
 
-    string filename;
-    LPWSTR* szArglist;
-    int nArgs;
-    int k;
-    szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
-
-    if (read == false) {
-        if (NULL == szArglist)
-        {
-            wprintf(L"CommandLineToArgvW failed\n");
-        }
-        else for (k = 0; k < nArgs; k++) {
-            wcout << "line " << k << ": ";
-            wcout << szArglist[k] << endl;
-        }
-
-        filename = ConvertLPCWSTRToString(szArglist[1]);
-
-        // Read XML
-        xml_document<> doc;
-        xml_node<>* rootNode;
-        // Read the xml file into a vector
-        ifstream file(filename);
-        vector<char> buffer((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
-        buffer.push_back('\0');
-        // Parse the buffer using the xml file parsing library into doc 
-        doc.parse<0>(&buffer[0]);
-
-        rootNode = doc.first_node("svg");
-        ScreenSVG screen;
-        screen.readScreen(rootNode);
-
-        xml_node<>* node = rootNode->first_node();
-        ShapeData temp;
-
-        // Load font for text rendering
-        int text_order = 0;
-        temp.readFile(node, data, filename, text_order);
-        for (int i = 0; i < data.size(); ++i) {
-            string temp = data[i].getTypeName();
-            if (temp == "g")
-                data[i].ReplaceProperties();
-        }
-        read = true;
-    }
     Draw pen;
-    pen.drawShape(graphics, data);
+    pen.drawShape(graphics, data->getVectorShape());
     Draw::setDrew(1);
-    LocalFree(szArglist);
 }
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
@@ -99,13 +51,16 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
     //PrivateFontCollection privateFontCollection;
 
     //privateFontCollection.AddFontFile(L"F:\\CODE\\Nam 2\\Ki 1\\OOP\\SVG_Renderer_Team - 6\\SVGRenderer\\sans-serif.ttf");
+
+
+    ////////////////////////////////////////////////////
     string filename;
     LPWSTR* szArglist;
     int nArgs;
     int k;
 
-    ////////////////////////////////////////////////////
     szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+
     if (NULL == szArglist)
     {
         wprintf(L"CommandLineToArgvW failed\n");
@@ -117,19 +72,10 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 
     filename = ConvertLPCWSTRToString(szArglist[1]);
 
-    xml_document<> doc;
-    xml_node<>* rootNode;
-    // Read the xml file into a vector
-    ifstream file(filename);
-    vector<char> buffer((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
-    buffer.push_back('\0');
-    // Parse the buffer using the xml file parsing library into doc 
-    doc.parse<0>(&buffer[0]);
+    ShapeData* data = ShapeData::getInstance();
+    data->readSVG(filename);
 
-    rootNode = doc.first_node("svg");
-    ScreenSVG screen;
-    screen.readScreen(rootNode);
-
+    LocalFree(szArglist);
     ///////////////////////////////////////////
 
     // Initialize GDI+.
@@ -154,8 +100,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
         WS_OVERLAPPEDWINDOW,      // window style
         CW_USEDEFAULT,            // initial x position
         CW_USEDEFAULT,            // initial y position
-        screen.getSize().getX(),            // initial x size
-        screen.getSize().getY(),            // initial y size
+        data->getScreen().getSize().getX(),            // initial x size
+        data->getScreen().getSize().getY(),            // initial y size
         NULL,                     // parent window handle
         NULL,                     // window menu handle
         hInstance,                // program instance handle
