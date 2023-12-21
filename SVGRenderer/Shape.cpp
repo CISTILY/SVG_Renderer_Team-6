@@ -24,7 +24,11 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
     string temp;
     for (int i = 0; i < name.size(); ++i) {
         temp = name[i];
-        if (temp == "stroke") {
+        if (temp == "type-name")
+        {
+            this->typeName = value[i];
+        }
+        else if (temp == "stroke") {
             string stroke = value[i];
             if (stroke == "none") {
                 this->flagStroke = 1;
@@ -219,13 +223,22 @@ void Shape::setFillOpacity(double fillOpacity) {
     this->fill_opacity = fillOpacity;
 }
 
-void Shape::setTransform(string transform, Point2D translate, float rotateAngle, Point2D scalePoint, int* order_of_TranslateRotateScale) {
+void Shape::setTransform(vector<string> transform, vector<Point2D> translate, vector<float> rotateAngle, vector<Point2D> scalePoint, vector<int*> order_of_TranslateRotateScale) 
+{
     this->flagTransform = 1;
-    this->transform.push_back(transform);
-    this->translate.push_back(translate);
-    this->rotateAngle.push_back(rotateAngle);
-    this->scalePoint.push_back(scalePoint);
-    this->order_of_TranslateRotateScale.push_back(order_of_TranslateRotateScale);
+    for (int i = 0; i < transform.size(); ++i)
+    {
+        this->transform.push_back(transform[i]);
+        this->translate.push_back(translate[i]);
+        this->rotateAngle.push_back(rotateAngle[i]);
+        this->scalePoint.push_back(scalePoint[i]);
+        this->order_of_TranslateRotateScale.push_back(order_of_TranslateRotateScale[i]);
+    }
+}
+
+string Shape::getTypeName()
+{
+    return this->typeName;
 }
 
 float Shape::getCoordinateX() {
