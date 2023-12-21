@@ -15,10 +15,14 @@ private:
     float width;
     float height;
     float view_box[4];
+    string xRatio;
+    string yRatio;
+    string aspect;
 
     bool flagWidth;
     bool flagHeight;
     bool flagViewBox;
+    bool flagRatio;
 
 public:
     ScreenSVG();
