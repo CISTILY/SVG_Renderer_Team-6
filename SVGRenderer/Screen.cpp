@@ -11,6 +11,7 @@ ScreenSVG::ScreenSVG()
     this->flagWidth = 0;
     this->flagHeight = 0;
     this->flagViewBox = 0;
+    this->flagRatio = 0;
 
     cout << "ScreenSVG::Default Constructor" << endl;
 }
@@ -56,6 +57,25 @@ void ScreenSVG::buildScreen(vector<char*> name, vector<char*> value)
 			          this->view_box[j] = stof(dup);
             }
         }
+
+        else if (temp == "preserveAspectRatio")
+        {
+            this->flagRatio = 1;
+            string strRatio = value[i];
+
+            if (strRatio == "none")
+            {
+                this->xRatio = strRatio;
+                this->yRatio = strRatio;
+                this->aspect = strRatio;
+            }
+            else
+            {
+                this->xRatio = strRatio.substr(1, 3);
+                this->yRatio = strRatio.substr(5, 3);
+                this->aspect = strRatio.substr(9, strRatio.length());
+            }
+        }
     }
 }
 
@@ -76,11 +96,12 @@ void ScreenSVG::readScreen(xml_node<>* node)
 
 void ScreenSVG::printScreen()
 {
-    if (this->flagWidth == 1 || this->flagHeight == 1 || this->flagViewBox == 1)
+    if (this->flagWidth == 1 || this->flagHeight == 1 || this->flagViewBox == 1 || this->flagRatio == 1)
     {
         cout << "Screen:"
             << " width = " << this->width
             << " height = " << this->height
+            << " preserveAspectRatio = " << this->xRatio << " " << this->yRatio << " " << this->aspect
             << " viewBox = ";
         for (int i = 0; i < 4; ++i)
             cout << this->view_box[i] << " ";

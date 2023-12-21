@@ -5,6 +5,7 @@ vector< GraphicsPath*> Draw::graphicsPaths;
 
 Draw::Draw()
 {
+    this->curent_path = 0;
 	//cout << "Draw::Default Constructor\n";
 }
 
@@ -159,7 +160,7 @@ VOID Draw::DrawPolygon(Graphics& graphics, PolygonSVG plg)
         graphics.DrawPolygon(&pen, points, nPoint);
 }
 
-VOID Draw::DrawPath(Graphics& graphics, PathSVG path, int& order_of_path)
+VOID Draw::DrawPath(Graphics& graphics, PathSVG path)
 {
     Shape* shape = dynamic_cast<Shape*>(new PathSVG(path));
     transform(graphics, shape);
@@ -336,8 +337,8 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, int& order_of_path)
     }
     else
     {   
-        graphicsPath = this->graphicsPaths[order_of_path];
-        ++order_of_path;
+        graphicsPath = this->graphicsPaths[this->curent_path];
+        ++this->curent_path;
     }
     
     SolidBrush brush(Color(round(255 * path.getFillOpacity()), path.getFill().getRed(), path.getFill().getGreen(), path.getFill().getBlue()));
@@ -373,52 +374,51 @@ VOID Draw::DrawPolyline(Graphics& graphics, PolylineSVG pll)
 
 }
 
-void Draw::drawShape(Graphics& graphics, vector<ShapeData> data)
+void Draw::drawShape(Graphics& graphics, vector<Shape*> shapesSVG)
 {
-    int order_of_path = 0;
-    for (int i = 0; i < data.size(); ++i)
+    for (int i = 0; i < shapesSVG.size(); ++i)
     {
         GraphicsState origin = graphics.Save();
-        if (data[i].getTypeName() == "rect") {
-            RectangleSVG* rect = dynamic_cast<RectangleSVG*> (data[i].getShape());
+        if (shapesSVG[i]->getTypeName() == "rect") {
+            RectangleSVG* rect = dynamic_cast<RectangleSVG*> (shapesSVG[i]);
             DrawRectangle(graphics, *rect);
         }
 
-        else if (data[i].getTypeName() == "circle") {
-            CircleSVG* cir = dynamic_cast<CircleSVG*> (data[i].getShape());
+        else if (shapesSVG[i]->getTypeName() == "circle") {
+            CircleSVG* cir = dynamic_cast<CircleSVG*> (shapesSVG[i]);
             DrawCircle(graphics, *cir);
         }
 
-        else if (data[i].getTypeName() == "text") {
-            TextSVG* txt = dynamic_cast<TextSVG*> (data[i].getShape());
+        else if (shapesSVG[i]->getTypeName() == "text") {
+            TextSVG* txt = dynamic_cast<TextSVG*> (shapesSVG[i]);
             DrawText(graphics, *txt);
         }
 
-        else if (data[i].getTypeName() == "line") {
-            LineSVG* line = dynamic_cast<LineSVG*> (data[i].getShape());
+        else if (shapesSVG[i]->getTypeName() == "line") {
+            LineSVG* line = dynamic_cast<LineSVG*> (shapesSVG[i]);
             DrawLine(graphics, *line);
         }
 
-        else if (data[i].getTypeName() == "ellipse") {
-            EllipseSVG* ellip = dynamic_cast<EllipseSVG*> (data[i].getShape());
+        else if (shapesSVG[i]->getTypeName() == "ellipse") {
+            EllipseSVG* ellip = dynamic_cast<EllipseSVG*> (shapesSVG[i]);
             DrawEllipse(graphics, *ellip);
         }
 
-        else if (data[i].getTypeName() == "polygon") {
-            PolygonSVG* polygon = dynamic_cast<PolygonSVG*> (data[i].getShape());
+        else if (shapesSVG[i]->getTypeName() == "polygon") {
+            PolygonSVG* polygon = dynamic_cast<PolygonSVG*> (shapesSVG[i]);
             DrawPolygon(graphics, *polygon);
         }
-        else if (data[i].getTypeName() == "polyline") {
-            PolylineSVG* polyline = dynamic_cast<PolylineSVG*> (data[i].getShape());
+        else if (shapesSVG[i]->getTypeName() == "polyline") {
+            PolylineSVG* polyline = dynamic_cast<PolylineSVG*> (shapesSVG[i]);
             DrawPolyline(graphics, *polyline);
         }
-        else if (data[i].getTypeName() == "path") {
-            PathSVG* path = dynamic_cast<PathSVG*> (data[i].getShape());
-            DrawPath(graphics, *path, order_of_path);
+        else if (shapesSVG[i]->getTypeName() == "path") {
+            PathSVG* path = dynamic_cast<PathSVG*> (shapesSVG[i]);
+            DrawPath(graphics, *path);
         }
-        else if (data[i].getTypeName() == "g") {
-            GroupSVG* g = dynamic_cast<GroupSVG*> (data[i].getShape());
-            drawShape(graphics, *g->getG());
+        else if (shapesSVG[i]->getTypeName() == "g") {
+            GroupSVG* g = dynamic_cast<GroupSVG*> (shapesSVG[i]);
+            drawShape(graphics, g->getVectorShape());
         }
         graphics.Restore(origin);
     }

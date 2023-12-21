@@ -9,6 +9,7 @@ using namespace std;
 
 class Shape {
 protected:
+    string typeName;
     Point2D coordinate;
 
     vector<string> transform;
@@ -43,13 +44,14 @@ public:
     void setStrokeOpacity(double);
     void setFill(ColorSVG);
     void setFillOpacity(double);
-    void setTransform(string, Point2D, float, Point2D, int*);
+    void setTransform(vector<string>, vector<Point2D>, vector<float>, vector<Point2D>, vector<int*>);
 
     // Caculate
     void findOrderTransform(string);
     void convertTransform(string);
 
     // Getters
+    string getTypeName();
     float getCoordinateX(); 
     float getCoordinateY();
 

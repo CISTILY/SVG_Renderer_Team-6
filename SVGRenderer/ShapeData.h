@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include "Screen.h"
 #include "Shape.h"
 #include "SVG.h"
 #include "Rect.h"
@@ -22,32 +23,28 @@ using namespace std;
 
 class ShapeData {
 private:
-    string typeName;
+    vector<Shape*> shapesSVG;   
+    ScreenSVG screen;
+    static bool read;
 
-    // shape variables
-    Shape* shapeSVG;
+    static ShapeData* instance;
+    ShapeData();
 public:
     // Constructor
-    ShapeData();
+    static ShapeData* getInstance();
 
     // Destructor
     ~ShapeData();
 
     // Assign data for shape variables
-    void buildAndPrintShapeInfo(SVGReader, int&);
+    void buildAndPrintShapeInfo(SVGReader, vector<Shape*>&, int&);
 
     // Getters
-    string getTypeName();
-    Shape* getShape();
+    vector<Shape*> getVectorShape();
+    ScreenSVG getScreen();
 
-    // Setters
-    void setStroke(ColorSVG stroke);
-    void setStrokeWidth(float strokeWidth);
-    void setStrokeOpacity(double strokeOpacity);
-    void setFill(ColorSVG fill);
-    void setFillOpacity(double fillOpacity);
-    void setTransform(vector<string>, vector<Point2D>, vector<float>, vector<Point2D>, vector<int*>);
-
-    void readFile(xml_node<>* node, vector<ShapeData>& data, string, int&);
-    void ReplaceProperties();
+    //void readFile(xml_node<>* node, vector<ShapeData>& data, string, int&);
+    void readSVG(string);
+    void readFile(xml_node<>* node, vector<Shape*>&, string, int&);
+    void ReplaceProperties(Shape*);
 };

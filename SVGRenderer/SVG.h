@@ -18,6 +18,7 @@ private:
     vector<char*> PropsAttrValue;
     vector<char*> OtherAttrName;
     vector<char*> OtherAttrValue;
+
     static vector<string> content;
 public:
     // Constructor
@@ -37,5 +38,6 @@ public:
     vector<char*> getOtherAttrValue();
     vector<char*> getPropsAttrName();
     vector<char*> getPropsAttrValue();
+
     static vector<string> getContent();
 };

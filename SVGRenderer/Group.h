@@ -6,7 +6,7 @@ class ShapeData;
 
 class GroupSVG : public Shape {
 private:
-	vector<ShapeData>* g;
+	vector<Shape*> shapes;
 public:
 	// Constructor
 	GroupSVG();
@@ -18,8 +18,6 @@ public:
 	void buildShape(vector<char*>, vector<char*>) override {};
 
 	// Getters
-	vector<ShapeData>* getG();
-
-	// Print data of group shape
-	void print() override;
+	vector<Shape*> getVectorShape();
+	vector<Shape*>* getVectorShapeAddress();
 };
