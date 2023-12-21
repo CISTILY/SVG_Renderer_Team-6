@@ -2,7 +2,6 @@
 
 GroupSVG::GroupSVG()
 {
-	this->g = new vector<ShapeData>;
 	//cout << "Group::Default Constructor" << endl;
 }
 
@@ -11,12 +10,12 @@ GroupSVG::~GroupSVG()
 	//cout << "Group::Destructor" << endl;
 }
 
-vector<ShapeData>* GroupSVG::getG()
+vector<Shape*> GroupSVG::getVectorShape()
 {
-	return this->g;
+	return this->shapes;
 }
 
-void GroupSVG::print()
+vector<Shape*>* GroupSVG::getVectorShapeAddress()
 {
-	Shape::print();
+	return &this->shapes;
 }
