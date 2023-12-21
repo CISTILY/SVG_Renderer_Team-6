@@ -26,9 +26,20 @@ char* SVGReader::getNodeName()
 }
 
 void SVGReader::PropertiesBuilder(char* attrName, char* attrVal) {
+    string temp = attrName;
 
-    if (strstr(attrName, "fill-opacity") != NULL || strstr(attrName, "fill") != NULL || strstr(attrName, "stroke-opacity") != NULL
-        || strstr(attrName, "stroke-width") != NULL || strstr(attrName, "stroke") != NULL || strstr(attrName, "transform")!= NULL) {
+    if (temp == "type-name")
+    {
+        string tempValue = attrVal;
+        if (tempValue == "rect" || tempValue == "circle" || tempValue == "ellipse"
+            || tempValue == "text" || tempValue == "line" || tempValue == "polygon"
+            || tempValue == "polyline" || tempValue == "path" || tempValue == "g") {
+            PropsAttrName.push_back(attrName);
+            PropsAttrValue.push_back(attrVal);
+        }
+    }
+    else if (temp == "fill-opacity" || temp == "fill" || temp == "stroke-opacity"
+        || temp == "stroke-width" || temp == "stroke" || temp == "transform") {
         PropsAttrName.push_back(attrName);
         PropsAttrValue.push_back(attrVal);
     }
