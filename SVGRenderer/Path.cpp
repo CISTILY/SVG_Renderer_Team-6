@@ -55,6 +55,32 @@ void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 					}
 			}
 
+			if (point.find('.') != string::npos)
+			{
+				int posDotStart = point.find('.');
+				int posDotEnd = point.find('.', posDotStart + 1);
+				int k;
+				while (posDotEnd != string::npos)
+				{
+					for (k = posDotStart + 1; k < posDotEnd; ++k)
+						if (!isdigit(point[k]))
+							break;
+
+					if (k == posDotEnd)
+					{
+						point.insert(k, " 0");
+						posDotStart = posDotEnd + 2;
+						posDotEnd = point.find('.', posDotStart + 1);
+					}
+					else
+					{
+						posDotStart = posDotEnd;
+						posDotEnd = point.find('.', posDotStart + 1);
+					}
+						
+				}
+			}
+
 			for (int j = 0; j < point.length(); ++j)
 			{
 				if (point[j] == ' ' || point[j] == ',' || point[j] == '\n' || point[j] == '\t')
