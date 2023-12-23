@@ -109,6 +109,16 @@ void ScreenSVG::printScreen()
     }
 }
 
+bool ScreenSVG::getFlagViewBox()
+{
+    return this->flagViewBox;
+}
+
+bool ScreenSVG::getFlagRatio()
+{
+    return this->flagRatio;
+}
+
 Point2D ScreenSVG::getSize() {
     if (!this->flagHeight)
         this->height = 0x80000000;
@@ -122,4 +132,19 @@ Point2D ScreenSVG::getView() {
     if (this->flagViewBox)
         return Point2D(this->view_box[2], this->view_box[3]);
     else return this->getSize();
+}
+
+string ScreenSVG::getXRatio()
+{
+    return this->xRatio;
+}
+
+string ScreenSVG::getYRatio()
+{
+    return this->yRatio;
+}
+
+string ScreenSVG::getAspect()
+{
+    return this->aspect;
 }
