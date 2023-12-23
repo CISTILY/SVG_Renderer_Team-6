@@ -48,12 +48,9 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
     WNDCLASS            wndClass;
     GdiplusStartupInput gdiplusStartupInput;
     ULONG_PTR           gdiplusToken;
-    //PrivateFontCollection privateFontCollection;
-
-    //privateFontCollection.AddFontFile(L"F:\\CODE\\Nam 2\\Ki 1\\OOP\\SVG_Renderer_Team - 6\\SVGRenderer\\sans-serif.ttf");
-
 
     ////////////////////////////////////////////////////
+
     string filename; 
     LPWSTR* szArglist;
     int nArgs;
@@ -70,13 +67,15 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
         wcout << szArglist[k] << endl;
     }
 
-    filename = ConvertLPCWSTRToString(szArglist[1]);
+    //filename = ConvertLPCWSTRToString(szArglist[1]);
+    filename = "svg-18.svg";
 
     ShapeData* data = ShapeData::getInstance();
     data->readSVG(filename);
 
     LocalFree(szArglist);
-    ///////////////////////////////////////////
+
+    ////////////////////////////////////////////////////
 
     // Initialize GDI+.
     GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
@@ -125,9 +124,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     HDC          hdc;
     PAINTSTRUCT  ps;
 
-
-    ///////////////////////////////////////////
-
     ShapeData* data = ShapeData::getInstance();
     static Point2D scale(1.0, 1.0);
     
@@ -135,22 +131,54 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     static int yPos = 0;
     static int angle = 0;
     const int a = 5;
-    const int stepSize = 20;
+    const int stepSize = 30;
 
     switch (message)
     {
     case WM_CREATE:
-        if (data->getScreen().getFlagViewBox() == true) {
+        if (data->getScreen().getFlagViewBox() == true) 
+        {
             RECT rect;
-            GetClientRect(hWnd, &rect);
+            GetClientRect(hWnd, &rect); // get port size
+
             int width = rect.right - rect.left;
             int height = rect.bottom - rect.top;
-            scale.setY(height / data->getScreen().getView().getY());
-            if (data->getScreen().getFlagRatio() && data->getScreen().getAspect() == "none") {
-                scale.setX(width / data->getScreen().getView().getX());
+            float scrWidth = data->getScreen().getView().getX();
+            float scrHeight = data->getScreen().getView().getY();
+
+            if (data->getScreen().getFlagRatio())
+            { 
+
+                if (data->getScreen().getAspect() == "none") 
+                {
+                    scale.setX(width / scrWidth);
+                    scale.setY(height / scrHeight);
+                }
+                else if (data->getScreen().getAspect() == "slice") 
+                {
+                    if (width > height)
+                    {
+                        scale.setX(width / scrWidth);
+                        scale.setY(scale.getX());
+                    }
+                    else if (width < height)
+                    {
+                        scale.setY(height / scrHeight);
+                        scale.setX(scale.getY());
+                    }
+                }
+                else {
+                    scale.setY(height / scrHeight);
+                    scale.setX(scale.getY());
+                }
             }
-            else 
+            else {
+                scale.setY(height / scrHeight);
                 scale.setX(scale.getY());
+            }
+
+            xPos = -data->getScreen().getViewPosition().getX() * scale.getX();
+            yPos = -data->getScreen().getViewPosition().getY() * scale.getY();
         }
         break;
     case WM_PAINT:
