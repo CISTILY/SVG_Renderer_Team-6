@@ -105,7 +105,7 @@ void ScreenSVG::printScreen()
             << " viewBox = ";
         for (int i = 0; i < 4; ++i)
             cout << this->view_box[i] << " ";
-        cout << endl << endl;
+        cout << endl;
     }
 }
 
