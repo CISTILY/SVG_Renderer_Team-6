@@ -25,14 +25,14 @@ string ConvertLPCWSTRToString(LPCWSTR lpcwszStr)
     return str;
 }
 
-VOID OnPaint(HDC hdc, int offsetX, int offsetY, int angle, RectF viewBox, float scale)
+VOID OnPaint(HDC hdc, int offsetX, int offsetY, int angle, Point2D scale)
 {
     // Ref: https://docs.microsoft.com/en-us/windows/desktop/gdiplus/-gdiplus-getting-started-use
     Graphics graphics(hdc);
     graphics.SetSmoothingMode(SmoothingModeAntiAlias);
     graphics.TranslateTransform(static_cast<REAL>(offsetX), static_cast<REAL>(offsetY));
     graphics.RotateTransform(static_cast<REAL> (angle));
-    graphics.ScaleTransform(scale, scale);
+    graphics.ScaleTransform(scale.getX(), scale.getY());
 
     ShapeData* data = ShapeData::getInstance();
 
@@ -54,7 +54,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
 
 
     ////////////////////////////////////////////////////
-    string filename;
+    string filename; 
     LPWSTR* szArglist;
     int nArgs;
     int k;
@@ -106,7 +106,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
         NULL,                     // window menu handle
         hInstance,                // program instance handle
         NULL);                    // creation parameters
-
     ShowWindow(hWnd, iCmdShow);
     UpdateWindow(hWnd);
 
@@ -129,19 +128,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
     ///////////////////////////////////////////
 
+    ShapeData* data = ShapeData::getInstance();
+    static Point2D scale(1.0, 1.0);
+    
     static int xPos = 0;
     static int yPos = 0;
     static int angle = 0;
-    static float scale = 1.0;
     const int a = 5;
     const int stepSize = 20;
-    RectF viewBox(0, 0, 100, 100);
 
     switch (message)
     {
+    case WM_CREATE:
+        if (data->getScreen().getFlagViewBox() == true) {
+            RECT rect;
+            GetClientRect(hWnd, &rect);
+            int width = rect.right - rect.left;
+            int height = rect.bottom - rect.top;
+            scale.setY(height / data->getScreen().getView().getY());
+            if (data->getScreen().getFlagRatio() && data->getScreen().getAspect() == "none") {
+                scale.setX(width / data->getScreen().getView().getX());
+            }
+            else 
+                scale.setX(scale.getY());
+        }
+        break;
     case WM_PAINT:
         hdc = BeginPaint(hWnd, &ps);
-        OnPaint(hdc, xPos, yPos, angle, viewBox, scale);
+        OnPaint(hdc, xPos, yPos, angle, scale);
         EndPaint(hWnd, &ps);
         return 0;
     case WM_DESTROY:
@@ -174,10 +188,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     case WM_MOUSEWHEEL:
     {
         int delta = GET_WHEEL_DELTA_WPARAM(wParam);
-        if (delta > 0)
-            scale *= 1.1;
-        else
-            scale *= 0.9;
+        if (delta > 0) {
+            scale.setX(scale.getX() * 1.1);
+            scale.setY(scale.getY() * 1.1);
+        }
+        else {
+            scale.setX(scale.getX() * 0.9);
+            scale.setY(scale.getY() * 0.9);
+        }
         InvalidateRect(hWnd, NULL, TRUE);
         break;
     }

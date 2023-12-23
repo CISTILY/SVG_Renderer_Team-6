@@ -33,6 +33,11 @@ public:
     void readScreen(xml_node<>* node);
     void printScreen();
 
+    bool getFlagViewBox();
+    bool getFlagRatio();
     Point2D getSize();
     Point2D getView();
+    string getXRatio();
+    string getYRatio();
+    string getAspect();
 };
