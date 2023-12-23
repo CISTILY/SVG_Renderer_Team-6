@@ -27,7 +27,8 @@ private:
     vector<Shape*> shapesSVG;   
     def gradients;
     ScreenSVG screen;
-    static bool read;
+
+    bool read;
 
     static ShapeData* instance;
     ShapeData();
