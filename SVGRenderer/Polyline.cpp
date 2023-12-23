@@ -17,7 +17,11 @@ void PolylineSVG::buildShape(vector<char*> name, vector<char*> value) {
     for (int i = 0; i < name.size(); ++i) {
         temp = name[i];
         if (temp == "points") {
-            string point = value[i];
+            string point = value[i];;
+
+            while (!isdigit(point[point.length() - 1]))
+                point.erase(point.length() - 1, 1);
+
             while (true) {
                 string dup;
                 int flag = 0, pos = 0;
