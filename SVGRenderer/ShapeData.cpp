@@ -3,10 +3,10 @@
 using namespace std;
 
 ShapeData* ShapeData::instance = NULL;
-bool ShapeData::read = false;
 
 ShapeData::ShapeData()
 {
+    this->read = false;
     //cout << "ShapeData::Default Constructor" << endl;
 }
 
@@ -34,7 +34,7 @@ ScreenSVG ShapeData::getScreen()
 
 void ShapeData::readSVG(string filename)
 {
-    if (read == false) 
+    if (this->read == false) 
     {
         // Read XML
         xml_document<> doc;
