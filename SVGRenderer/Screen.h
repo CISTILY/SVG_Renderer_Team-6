@@ -37,6 +37,7 @@ public:
     bool getFlagRatio();
     Point2D getSize();
     Point2D getView();
+    Point2D getViewPosition();
     string getXRatio();
     string getYRatio();
     string getAspect();
