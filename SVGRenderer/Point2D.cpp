@@ -10,6 +10,8 @@ Point2D::Point2D() {
 }
 
 Point2D::Point2D(string s) {
+    if (s[0] == '.')
+        s.insert(0, 1, '0');
     string temp;
     int p = s.find(',');
 

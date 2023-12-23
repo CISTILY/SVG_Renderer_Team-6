@@ -5,6 +5,7 @@
 #include <cmath>
 #include "Screen.h"
 #include "Shape.h"
+#include "Gradient.h"
 #include "SVG.h"
 #include "Rect.h"
 #include "Circle.h"
@@ -24,6 +25,7 @@ using namespace std;
 class ShapeData {
 private:
     vector<Shape*> shapesSVG;   
+    def gradients;
     ScreenSVG screen;
     static bool read;
 

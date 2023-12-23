@@ -48,6 +48,9 @@ void ShapeData::readSVG(string filename)
 
         rootNode = doc.first_node("svg");
         this->screen.readScreen(rootNode);
+        this->gradients.readGradient(rootNode->first_node());
+        this->gradients.performHref();
+        this->gradients.printGradient();
 
         xml_node<>* node = rootNode->first_node();
         int text_order = 0;

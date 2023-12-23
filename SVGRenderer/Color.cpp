@@ -43,33 +43,45 @@ int ColorSVG::HexadecimalToDecimal(string hex) {
 }
 
 void ColorSVG::setColor(string s) {
-    if (s[0] == '#') {
-        s = s.erase(0, 1);
-
-        this->red = HexadecimalToDecimal(s.substr(0, 2));
-        this->green = HexadecimalToDecimal(s.substr(2, 2));
-        this->blue = HexadecimalToDecimal(s.substr(4, 2));
+    
+    string temp = s;
+    if (temp[0] == '#' && temp.length() <= 4) {
+        temp.insert(2, 1, temp[1]);
+        temp.insert(4, 1, temp[3]);
+        temp.insert(6, 1, temp[5]);
     }
-    else if(s.find("rgb") != string::npos) {
+
+    for (auto& x : temp) {
+        x = tolower(x);
+    }
+
+    if (temp[0] == '#') {
+        temp = temp.erase(0, 1);
+
+        this->red = HexadecimalToDecimal(temp.substr(0, 2));
+        this->green = HexadecimalToDecimal(temp.substr(2, 2));
+        this->blue = HexadecimalToDecimal(temp.substr(4, 2));
+    }
+    else if(temp.find("rgb") != string::npos) {
         int tempColor = 0;
 
         int pos = s.find(',');
-        tempColor = stoi(s.substr(4, pos));
+        tempColor = stoi(temp.substr(4, pos));
         if (tempColor > 255)
             tempColor = 255;
 
         this->red = tempColor;
-        s.erase(0, pos + 1);
+        temp.erase(0, pos + 1);
 
-        pos = s.find(',');
-        tempColor = stoi(s.substr(0, pos));
+        pos = temp.find(',');
+        tempColor = stoi(temp.substr(0, pos));
         if (tempColor > 255)
             tempColor = 255;
 
         this->green = tempColor;
-        s.erase(0, pos + 1);
+        temp.erase(0, pos + 1);
 
-        tempColor = stoi(s.substr(0, s.length()));
+        tempColor = stoi(temp.substr(0, temp.length()));
         if (tempColor > 255)
             tempColor = 255;
 

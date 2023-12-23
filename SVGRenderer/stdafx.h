@@ -32,6 +32,7 @@
 // TODO: reference additional headers your program requires here
 
 #include "Screen.h"
+#include "Gradient.h"
 
 // Resource include for main
 #include "SVGRenderer.h"
