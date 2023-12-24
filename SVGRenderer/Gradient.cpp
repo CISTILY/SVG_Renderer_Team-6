@@ -305,7 +305,15 @@ void Def::readGradient(xml_node<>* node) {
         vector<char*> attrName;
         vector<char*> attrValue;
         int id = 0;
+	    
         string nameSVGReader = node->name();
+	    
+	if (nameSVGReader == "title")
+        {
+            node = node->next_sibling();
+            continue;
+        }
+	    
         if (nameSVGReader != "linearGradient" && nameSVGReader != "stop" && nameSVGReader != "defs" && nameSVGReader != "radialGradient")
             break;
 
