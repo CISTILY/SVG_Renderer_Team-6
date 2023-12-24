@@ -25,7 +25,7 @@ using namespace std;
 class ShapeData {
 private:
     vector<Shape*> shapesSVG;   
-    def gradients;
+    Def gradients;
     ScreenSVG screen;
 
     bool read;

@@ -67,8 +67,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
         wcout << szArglist[k] << endl;
     }
 
-    //filename = ConvertLPCWSTRToString(szArglist[1]);
-    filename = "svg-18.svg";
+    filename = ConvertLPCWSTRToString(szArglist[1]);
 
     ShapeData* data = ShapeData::getInstance();
     data->readSVG(filename);

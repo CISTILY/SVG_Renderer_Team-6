@@ -67,10 +67,10 @@ public:
 	void setHref(string);
 
 	// Add a stop for this Gradient
-	void addStop(stop);
+	void addStop(Stop);
 
 	// Use stops of different Gradient for this Gradient
-	void replaceStop(vector<stop>);
+	void replaceStop(vector<Stop>);
 
 	// Getters
 	string getHref();
@@ -82,8 +82,8 @@ public:
 	float getRotate();
 	Point2D getTranslate();
 	Point2D getScale();
-	vector<float> getMatrix();
-	vector<stop> getStops();
+	float* getMatrix();
+	vector<Stop> getStops();
 };
 
 class LinearGradientSVG : public Gradient {
@@ -121,10 +121,10 @@ private:
 	vector<RadialGradientSVG> RadialGradients;
 public:
 	// Constructor
-	def();
+	Def();
 
 	// Destructor
-	~def();
+	~Def();
 
 	// Parsing Gradient from xml node
 	void readGradient(xml_node<>* node);
