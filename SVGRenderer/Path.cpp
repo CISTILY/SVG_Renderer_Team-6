@@ -110,7 +110,11 @@ void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 
 				int n = command.size() - 1, markStart = j, markEnd = 0, count = 0, numberOfXY = 0;
 
-				if (toupper(command[n]) == 'C')
+				if (toupper(command[n]) == 'A')
+				{
+					numberOfXY = 7;
+				}
+				else if (toupper(command[n]) == 'C')
 				{
 					numberOfXY = 6;
 				}
@@ -161,7 +165,30 @@ void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 					else
 						temp = to_string(this->Points[this->Points.size() - 1].getX()) + "," + temp;
 				}
+				
+				if (toupper(command[n]) == 'A')
+				{
+					int countXY = 0;
+					int phiStart = 0, phiEnd;
+
+					for (int k = 0; k < temp.length(); ++k)
+					{
+						if ((temp[k] < '0' || temp[k] > '9') && temp[k] != '.' && temp[k] != '-')
+							++countXY;
+						if (countXY == 2 && phiStart == 0)
+						{
+							phiStart = k;
+						}
+						if (countXY == 3)
+						{
+							phiEnd = k;
+							break;
+						}
+					}
 					
+					string addPhi = temp.substr(phiStart, phiEnd - phiStart);
+					temp.insert(phiEnd, addPhi);
+				}
 
 				while (true)
 				{

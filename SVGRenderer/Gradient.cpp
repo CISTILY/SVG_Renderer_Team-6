@@ -16,10 +16,6 @@ void Stop::setOffset(float offset) {
 	this->offset = offset;
 }
 
-void Stop::setColor(string s) {
-	this->stop_color.setColor(s);
-}
-
 float Stop::getStopOpacity() {
     return this->stop_opacity;
 }
@@ -122,8 +118,8 @@ void Gradient::setGradientUnits(string unit) {
     this->gradientUnits = unit;
 }
 
-void Gradient::addStop(Stop a) {
-    this->stops.push_back(a);
+void Gradient::addStop(Stop stop) {
+    this->stops.push_back(stop);
 }
 
 void Gradient::replaceStop(vector<Stop> stops) {
@@ -328,30 +324,28 @@ void Def::readGradient(xml_node<>* node) {
     }
 }
 
-void Def::buildDef(string id, vector<char*> name, vector<char*> value) {
-    if (id == "linearGradient") {
-        LinearGradientSVG *temp = new LinearGradientSVG();
-        temp->buildGradient(name, value);
-        this->LinearGradients.push_back(*temp);
+void Def::buildDef(string typeName, vector<char*> name, vector<char*> value) {
+    if (typeName == "linearGradient") {
+        LinearGradientSVG linear;
+        linear.buildGradient(name, value);
+        this->LinearGradients.push_back(linear);
         this->previous = 1;
-        delete temp;
     }
-    else if (id == "radialGradient") {
-        RadialGradientSVG *temp = new RadialGradientSVG();
-        temp->buildGradient(name, value);
-        this->RadialGradients.push_back(*temp);
+    else if (typeName == "radialGradient") {
+        RadialGradientSVG radial;
+        radial.buildGradient(name, value);
+        this->RadialGradients.push_back(radial);
         this->previous = 2;
-        delete temp;
     }
-    else if (id == "stop") {
-        Stop *temp = new Stop();
-        temp->buildStop(name, value); 
+    else if (typeName == "stop") {
+        Stop stop;
+        stop.buildStop(name, value);
         if (this->previous == 1)
-            this->LinearGradients[this->LinearGradients.size() - 1].addStop(*temp);
+            this->LinearGradients[this->LinearGradients.size() - 1].addStop(stop);
         else if (this->previous == 2)
-            this->RadialGradients[this->RadialGradients.size() - 1].addStop(*temp);
-        delete temp;
+            this->RadialGradients[this->RadialGradients.size() - 1].addStop(stop);
     }
+
 }
 
 void Def::printGradient() {
@@ -371,7 +365,7 @@ void Def::printGradient() {
 void Def::performHref() {
     for (int i = 0; i < this->LinearGradients.size(); ++i) {
         string temp = this->LinearGradients[i].getHref();
-        temp.erase(0, 1);
+
         for (int j = 0; j < this->LinearGradients.size(); ++j) {
             if (temp == this->LinearGradients[j].getID()) {
                 this->LinearGradients[i].replaceStop(this->LinearGradients[j].getStops());
@@ -389,6 +383,7 @@ void Def::performHref() {
 
     for (int i = 0; i < this->RadialGradients.size(); ++i) {
         string temp = this->RadialGradients[i].getHref();
+
         for (int j = 0; j < this->LinearGradients.size(); ++j) {
             if (temp == this->LinearGradients[j].getID()) {
                 this->RadialGradients[i].replaceStop(this->LinearGradients[j].getStops());
