@@ -31,6 +31,60 @@ void Draw::transform(Graphics& graphics, Shape* shape) {
     }
 }
 
+LinearGradientBrush& Draw::createLinearGradient(LinearGradientSVG lgSVG)
+{
+    int n = lgSVG.getStops().size();
+
+    Color* colors = new Color(n);
+    REAL* pos = new REAL[n];
+    for (int i = 0; i < n; i++)
+    {
+        colors[i] = Color(lgSVG.getStops()[i].getStopColor().getRed(), lgSVG.getStops()[i].getStopColor().getGreen(), lgSVG.getStops()[i].getStopColor().getBlue(), lgSVG.getStops()[i].getStopOpacity());
+        pos[i] = lgSVG.getStops()[i].getOffset();
+    }
+
+    Point point1(lgSVG.getPoint1().getX(), lgSVG.getPoint1().getY());
+    Point point2(lgSVG.getPoint2().getX(), lgSVG.getPoint2().getY());
+
+    LinearGradientBrush brush(point1, point2, colors[0], colors[n - 1]);
+    brush.SetInterpolationColors(colors, pos, n);
+
+    delete[] colors;
+    delete[] pos;
+
+    return brush;
+}
+
+PathGradientBrush& Draw::createRadialGradient(RadialGradientSVG rgSVG)
+{
+    GraphicsPath path;
+
+    double radius = rgSVG.getRadius();
+    Point center(rgSVG.getPoint1().getX(), rgSVG.getPoint1().getY());
+    int n = rgSVG.getStops().size();
+    Rect rectangle(rgSVG.getPoint1().getX() - radius, rgSVG.getPoint1().getY() - radius, radius * 2, radius * 2);
+    path.AddEllipse(rectangle);
+    Color* colors = new Color(n);
+    REAL* pos = new REAL[n];
+    for (int i = 0; i < n; i++)
+    {
+        colors[i] = Color(rgSVG.getStops()[i].getStopColor().getRed(), rgSVG.getStops()[i].getStopColor().getGreen(), rgSVG.getStops()[i].getStopColor().getBlue(), rgSVG.getStops()[i].getStopOpacity());
+        pos[i] = rgSVG.getStops()[i].getOffset();
+    }
+    Matrix matrix(rgSVG.getMatrix()[0], rgSVG.getMatrix()[1], rgSVG.getMatrix()[2], rgSVG.getMatrix()[3], rgSVG.getMatrix()[4], rgSVG.getMatrix()[5]);
+
+    PathGradientBrush pthGrBrush(&path);
+    pthGrBrush.SetCenterPoint(center);
+    pthGrBrush.SetInterpolationColors(colors, pos, n);
+    pthGrBrush.SetSurroundColors(colors, &n);
+    pthGrBrush.SetTransform(&matrix);
+
+    delete[] colors;
+    delete[] pos;
+
+    return pthGrBrush;
+}
+
 VOID Draw::DrawCircle(Graphics& graphics, CircleSVG circle)
 {
     Shape* shape = dynamic_cast<Shape*>(new CircleSVG(circle));

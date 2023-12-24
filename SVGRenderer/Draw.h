@@ -17,6 +17,9 @@ public:
     
     void transform(Graphics&, Shape*);
 
+    LinearGradientBrush& createLinearGradient(LinearGradientSVG);
+    PathGradientBrush& createRadialGradient(RadialGradientSVG);
+
     void drawShape(Graphics&, vector<Shape*> shapesSVG);
 
     VOID DrawCircle(Graphics&, CircleSVG);
