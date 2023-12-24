@@ -4,15 +4,24 @@ using namespace std;
 
 stop::stop() {
     this->offset = 0;
-    this->stop_opacity = 0;
+    this->stop_opacity = 1;
 }
 stop::~stop() { }
+
+void stop::setStopOpacity(float opacity) {
+    this->stop_opacity = opacity;
+}
+
 void stop::setOffset(float offset) {
 	this->offset = offset;
 }
 
 void stop::setColor(string s) {
 	this->stop_color.setColor(s);
+}
+
+float stop::getStopOpacity() {
+    return this->stop_opacity;
 }
 
 float stop::getOffset() {
@@ -42,10 +51,7 @@ void stop::printStop() {
     cout << this->offset << " "; this->stop_color.print(); cout << " " << this->stop_opacity << endl;
 }
 
-LinearGradientSVG::LinearGradientSVG() {
-    this->rotate = 0;
-}
-LinearGradientSVG::~LinearGradientSVG() { }
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Gradient::Gradient() {
     this->rotate = 0;
@@ -62,6 +68,38 @@ string Gradient::getID() {
 
 vector<stop> Gradient::getStops() {
     return this->stops;
+}
+
+string Gradient::getGradientUnits() {
+    return this->gradientUnits;
+}
+
+string Gradient::getSpreadMethod() {
+    return this->spreadMethod;
+}
+
+Point2D Gradient::getPoint1() {
+    return this->p1;
+}
+
+Point2D Gradient::getPoint2() {
+    return this->p2;
+}
+
+float Gradient::getRotate() {
+    return this->rotate;
+}
+
+Point2D Gradient::getTranslate() {
+    return this->translate;
+}
+
+Point2D Gradient::getScale() {
+    return this->scale;
+}
+
+vector<float> Gradient::getMatrix() {
+    return this->matrix;
 }
 
 void Gradient::setID(char* id) {
@@ -87,7 +125,7 @@ void Gradient::replaceStop(vector<stop> stops) {
 
 void Gradient::setGradientTransform(string transform) {
     string value;
-    int posStart = 0, posEnd = 0;
+    int posStart = 0, posEnd = 0, posSpace = 0;
     if (transform.find("translate") != string::npos) {
         posStart = transform.find("translate");
         posEnd = transform.find(')', posStart);
@@ -110,7 +148,40 @@ void Gradient::setGradientTransform(string transform) {
         this->scale = *temp;
         delete temp;
     }
+    if (transform.find("matrix") != string::npos) {
+        posStart = transform.find("matrix");
+        posEnd = transform.find(')', posStart);
+        value = transform.substr(posStart + 7, posEnd - posStart - 7);
+        for (int i = 0; i < value.length(); ++i) {
+            if (value[i] == '.' && value[i] == ' ') {
+                if (i == 0)
+                    value.insert(0, 1, '0');
+                else {
+                    value.insert(i - 1, 1, '0');
+                }
+            }
+        }
+        cout << value << endl;
+        while (true) {
+            if (value.find(' ') != string::npos) {
+                posSpace = value.find(' ');
+                this->matrix.push_back(stof(value.substr(0, posSpace)));
+                value.erase(0, posSpace + 1);
+            }
+
+            else if (value.find(' ') == string::npos) {
+                this->matrix.push_back(stof(value));
+                value.erase(0, value.length());
+                break;
+            }
+        }
+    }
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+LinearGradientSVG::LinearGradientSVG() : Gradient() { }
+LinearGradientSVG::~LinearGradientSVG() { }
 
 void LinearGradientSVG::buildGradient(vector<char*> name, vector<char*> value) {
     for (int i = 0; i < name.size(); ++i) {
@@ -147,6 +218,9 @@ void LinearGradientSVG::buildGradient(vector<char*> name, vector<char*> value) {
 void LinearGradientSVG::print() {
     cout << "ID: " << this->id << " " << " GradientUnits: " << this->gradientUnits << " SpreadMethod: " << this->spreadMethod << " ";
     cout << "Transform: ";  this->translate.print(); cout << " " << this->rotate << " "; this->scale.print(); cout << " ";
+    for (int i = 0; i < matrix.size(); ++i) {
+        cout << this->matrix[i] << " ";
+    }
     cout << "Points: "; this->p1.print(); cout << " ";  this->p2.print(); cout << endl;
     for (int i = 0; i < this->stops.size(); ++i) {
         cout << "stop " << i + 1 << ": ";
@@ -154,8 +228,9 @@ void LinearGradientSVG::print() {
     }
 }
 
-RadialGradientSVG::RadialGradientSVG() {
-    this->rotate = 0;
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+RadialGradientSVG::RadialGradientSVG() : Gradient() {
     this->r = 0;
 }
 
@@ -198,6 +273,9 @@ void RadialGradientSVG::buildGradient(vector<char*> name, vector<char*> value) {
 void RadialGradientSVG::print() {
     cout << "ID: " << this->id << " " << " GradientUnits: " << this->gradientUnits << " SpreadMethod: " << this->spreadMethod << " ";
     cout << "Transform: ";  this->translate.print(); cout << " " << this->rotate << " "; this->scale.print(); cout << " ";
+    for (int i = 0; i < matrix.size(); ++i) {
+        cout << this->matrix[i] << " ";
+    }
     cout << "Points: "; this->p1.print(); cout << " ";  this->p2.print(); cout << " " << this->r << endl;
     for (int i = 0; i < this->stops.size(); ++i) {
         cout << "stop " << i + 1 << ": ";
@@ -205,12 +283,28 @@ void RadialGradientSVG::print() {
     }
 }
 
+vector<LinearGradientSVG> def::getLinearGradients() {
+    return this->LinearGradients;
+}
+
+vector<RadialGradientSVG> def::getRadialGradient() {
+    return this->RadialGradients;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+def::def() {
+    this->previous = 0;
+}
+
+def::~def() { }
+
 void def::readGradient(xml_node<>* node) {
     LinearGradientSVG temp;
-    vector<char*> attrName;
-    vector<char*> attrValue;
 
     while (node != NULL) {
+        vector<char*> attrName;
+        vector<char*> attrValue;
         int id = 0;
         string nameSVGReader = node->name();
         if (nameSVGReader != "linearGradient" && nameSVGReader != "stop" && nameSVGReader != "defs" && nameSVGReader != "radialGradient")
@@ -238,26 +332,28 @@ void def::readGradient(xml_node<>* node) {
 
 void def::buildDef(string id, vector<char*> name, vector<char*> value) {
     if (id == "linearGradient") {
-        LinearGradientSVG temp;
-        temp.buildGradient(name, value);
-        this->LinearGradients.push_back(temp);
+        LinearGradientSVG *temp = new LinearGradientSVG();
+        temp->buildGradient(name, value);
+        this->LinearGradients.push_back(*temp);
         this->previous = 1;
+        delete temp;
     }
     else if (id == "radialGradient") {
-        RadialGradientSVG temp;
-        temp.buildGradient(name, value);
-        this->RadialGradients.push_back(temp);
+        RadialGradientSVG *temp = new RadialGradientSVG();
+        temp->buildGradient(name, value);
+        this->RadialGradients.push_back(*temp);
         this->previous = 2;
+        delete temp;
     }
     else if (id == "stop") {
-        stop temp;
-        temp.buildStop(name, value);
+        stop *temp = new stop();
+        temp->buildStop(name, value);
         if (this->previous == 1)
-            this->LinearGradients[this->LinearGradients.size() - 1].addStop(temp);
+            this->LinearGradients[this->LinearGradients.size() - 1].addStop(*temp);
         else if (this->previous == 2)
-            this->RadialGradients[this->RadialGradients.size() - 1].addStop(temp);
+            this->RadialGradients[this->RadialGradients.size() - 1].addStop(*temp);
+        delete temp;
     }
-    
 }
 
 void def::printGradient() {

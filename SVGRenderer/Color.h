@@ -8,6 +8,8 @@ using namespace std;
 
 class ColorSVG {
 private:
+	bool flagURL;
+	string url;
 	int red, green, blue;
 	static vector<string>basic_color_name;
 	static vector<string>basic_color_value;

@@ -43,26 +43,23 @@ int ColorSVG::HexadecimalToDecimal(string hex) {
 }
 
 void ColorSVG::setColor(string s) {
-    
-    string temp = s;
-    if (temp[0] == '#' && temp.length() <= 4) {
-        temp.insert(2, 1, temp[1]);
-        temp.insert(4, 1, temp[3]);
-        temp.insert(6, 1, temp[5]);
-    }
 
-    for (auto& x : temp) {
-        x = tolower(x);
-    }
+    string temp = s;
 
     if (temp[0] == '#') {
-        temp = temp.erase(0, 1);
+        if (temp.length() <= 4)
+        {
+            temp.insert(2, 1, temp[1]);
+            temp.insert(4, 1, temp[3]);
+            temp.insert(6, 1, temp[5]);
+        }
 
+        temp = temp.erase(0, 1);
         this->red = HexadecimalToDecimal(temp.substr(0, 2));
         this->green = HexadecimalToDecimal(temp.substr(2, 2));
         this->blue = HexadecimalToDecimal(temp.substr(4, 2));
     }
-    else if(temp.find("rgb") != string::npos) {
+    else if (temp.find("rgb") != string::npos) {
         int tempColor = 0;
 
         int pos = s.find(',');
@@ -87,9 +84,20 @@ void ColorSVG::setColor(string s) {
 
         this->blue = tempColor;
     }
+    else if (temp.find("url") != string::npos)
+    {
+        this->flagURL = 1;
+
+        int pos = temp.find(')');
+        this->url = temp.substr(5, pos - 5);
+    }
     else
     {
-        for(int i = 0; i < basic_color_name.size(); ++i)
+        for (auto& x : temp) {
+            x = tolower(x);
+        }
+
+        for (int i = 0; i < basic_color_name.size(); ++i)
             if (s == basic_color_name[i])
             {
                 this->setColor(basic_color_value[i]);
