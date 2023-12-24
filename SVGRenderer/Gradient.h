@@ -111,6 +111,9 @@ public:
 	// Overrided functions
 	void buildGradient(vector<char*>, vector<char*>) override;
 	void print() override;
+
+	// Getter
+	float getRadius();
 };
 
 class Def {
