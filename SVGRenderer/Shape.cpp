@@ -161,7 +161,7 @@ void Shape::convertTransform(string str) {
     if (str.find("translate") != string::npos) {
         posStart = str.find("translate");
         posEnd = str.find(')', posStart);
-        value = str.substr(posStart + 10, posEnd - 1 - 9);
+        value = str.substr(posStart + 10, posEnd - 10);
         Point2D* temp = new Point2D(value);
         this->translate[this->translate.size() - 1] = *temp;
         delete temp;
@@ -169,13 +169,13 @@ void Shape::convertTransform(string str) {
     if (str.find("rotate") != string::npos) {
         posStart = str.find("rotate");
         posEnd = str.find(')', posStart);
-        value = str.substr(str.find("rotate") + 7, posEnd - 1 - 6);
+        value = str.substr(posStart + 7, posEnd - 7);
         this->rotateAngle[this->rotateAngle.size() - 1] = stof(value);
     }
     if (str.find("scale") != string::npos) {
         posStart = str.find("scale");
         posEnd = str.find(')', posStart);
-        value = str.substr(str.find("scale") + 6, posEnd - 1 - 5);
+        value = str.substr(posStart + 6, posEnd - 6);
         Point2D* temp = new Point2D(value);
         this->scalePoint[this->scalePoint.size() - 1] = *temp;
         delete temp;

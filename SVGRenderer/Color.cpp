@@ -12,6 +12,8 @@ vector<string> ColorSVG::basic_color_value = { "rgb(240, 248, 255)", "rgb(250, 2
 
 ColorSVG::ColorSVG() {
     red = blue = green = 0;
+    this->flagURL = 0;
+
     //cout << "Color::Default Constructor" << endl;
 }
 
@@ -112,7 +114,10 @@ bool ColorSVG::operator!= (const ColorSVG& other) {
 } 
 
 void ColorSVG::print() {
-    cout << this->red << ", " << this->green << ", " << this->blue;
+    if (this->flagURL == false)
+        cout << this->red << ", " << this->green << ", " << this->blue;
+    else
+        cout << this->url;
 }
 
 int ColorSVG::getRed() {
@@ -125,4 +130,14 @@ int ColorSVG::getBlue() {
 
 int ColorSVG::getGreen() {
     return this->green;
+}
+
+string ColorSVG::getURL()
+{
+    return this->url;
+}
+
+bool ColorSVG::getFlagURL()
+{
+    return this->flagURL;
 }

@@ -6,18 +6,17 @@
 using namespace rapidxml;
 using namespace std;
 
-class stop : public ColorSVG {
+class Stop {
 private:
 	float offset;
 	ColorSVG stop_color;
 	float stop_opacity;
 public:
-
 	// Constructor
-	stop();
+	Stop();
 
 	// Destructor
-	~stop();
+	~Stop();
 
 	// Build Stop
 	void buildStop(vector<char*>, vector<char*>);
@@ -39,16 +38,16 @@ public:
 class Gradient {
 protected:
 	string id;
-	vector<stop> stops;
+	vector<Stop> stops;
 	Point2D p1;
 	Point2D p2;
 	string gradientUnits;
 	string spreadMethod;
-	Point2D translate;
 	string href;
+	Point2D translate;
 	float rotate;
 	Point2D scale;
-	vector<float> matrix;
+	float matrix[6];
 public:
 	// Constructor
 	Gradient();
@@ -65,6 +64,7 @@ public:
 	void setGradientUnits(string);
 	void setSpreadMethod(string);
 	void setGradientTransform(string);
+	void setHref(string);
 
 	// Add a stop for this Gradient
 	void addStop(stop);
@@ -114,7 +114,7 @@ public:
 	void print() override;
 };
 
-class def {
+class Def {
 private:
 	int previous;	// Flag for previous Gradient (1 for Linear, 2 for Radial)
 	vector<LinearGradientSVG> LinearGradients;

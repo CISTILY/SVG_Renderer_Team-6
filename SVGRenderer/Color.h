@@ -11,6 +11,9 @@ private:
 	bool flagURL;
 	string url;
 	int red, green, blue;
+	string url;
+	bool flagURL;
+
 	static vector<string>basic_color_name;
 	static vector<string>basic_color_value;
 public:
@@ -27,6 +30,8 @@ public:
 	int getRed();
 	int getGreen();
 	int getBlue();
+	string getURL();
+	bool getFlagURL();
 
 	// Print data of color
 	void print();

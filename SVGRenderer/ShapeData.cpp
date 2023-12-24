@@ -47,7 +47,9 @@ void ShapeData::readSVG(string filename)
         doc.parse<0>(&buffer[0]);
 
         rootNode = doc.first_node("svg");
+
         this->screen.readScreen(rootNode);
+
         this->gradients.readGradient(rootNode->first_node());
         this->gradients.performHref();
         this->gradients.printGradient();
@@ -90,7 +92,7 @@ void ShapeData::readFile(xml_node<>* node, vector<Shape*>& shapes, string filena
         }
 
         string nameSVGReader = reader.getNodeName();
-        if (!reader.getOtherAttrName().empty() || !reader.getPropsAttrName().empty() || nameSVGReader == "g") {
+        if (!reader.getOtherAttrName().empty() || !reader.getPropsAttrName().empty()) {
             this->buildAndPrintShapeInfo(reader, shapes, text_order);
         }
 

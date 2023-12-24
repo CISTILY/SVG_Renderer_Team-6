@@ -25,14 +25,14 @@ string ConvertLPCWSTRToString(LPCWSTR lpcwszStr)
     return str;
 }
 
-VOID OnPaint(HDC hdc, int offsetX, int offsetY, int angle, RectF viewBox, float scale)
+VOID OnPaint(HDC hdc, int offsetX, int offsetY, int angle, Point2D scale)
 {
     // Ref: https://docs.microsoft.com/en-us/windows/desktop/gdiplus/-gdiplus-getting-started-use
     Graphics graphics(hdc);
     graphics.SetSmoothingMode(SmoothingModeAntiAlias);
     graphics.TranslateTransform(static_cast<REAL>(offsetX), static_cast<REAL>(offsetY));
     graphics.RotateTransform(static_cast<REAL> (angle));
-    graphics.ScaleTransform(scale, scale);
+    graphics.ScaleTransform(scale.getX(), scale.getY());
 
     ShapeData* data = ShapeData::getInstance();
 
@@ -48,13 +48,10 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
     WNDCLASS            wndClass;
     GdiplusStartupInput gdiplusStartupInput;
     ULONG_PTR           gdiplusToken;
-    //PrivateFontCollection privateFontCollection;
-
-    //privateFontCollection.AddFontFile(L"F:\\CODE\\Nam 2\\Ki 1\\OOP\\SVG_Renderer_Team - 6\\SVGRenderer\\sans-serif.ttf");
-
 
     ////////////////////////////////////////////////////
-    string filename;
+
+    string filename; 
     LPWSTR* szArglist;
     int nArgs;
     int k;
@@ -70,13 +67,15 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
         wcout << szArglist[k] << endl;
     }
 
-    filename = ConvertLPCWSTRToString(szArglist[1]);
+    //filename = ConvertLPCWSTRToString(szArglist[1]);
+    filename = "svg-18.svg";
 
     ShapeData* data = ShapeData::getInstance();
     data->readSVG(filename);
 
     LocalFree(szArglist);
-    ///////////////////////////////////////////
+
+    ////////////////////////////////////////////////////
 
     // Initialize GDI+.
     GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
@@ -106,7 +105,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
         NULL,                     // window menu handle
         hInstance,                // program instance handle
         NULL);                    // creation parameters
-
     ShowWindow(hWnd, iCmdShow);
     UpdateWindow(hWnd);
 
@@ -126,22 +124,66 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     HDC          hdc;
     PAINTSTRUCT  ps;
 
-
-    ///////////////////////////////////////////
-
+    ShapeData* data = ShapeData::getInstance();
+    static Point2D scale(1.0, 1.0);
+    
     static int xPos = 0;
     static int yPos = 0;
     static int angle = 0;
-    static float scale = 1.0;
     const int a = 5;
-    const int stepSize = 20;
-    RectF viewBox(0, 0, 100, 100);
+    const int stepSize = 30;
 
     switch (message)
     {
+    case WM_CREATE:
+        if (data->getScreen().getFlagViewBox() == true) 
+        {
+            RECT rect;
+            GetClientRect(hWnd, &rect); // get port size
+
+            int width = rect.right - rect.left;
+            int height = rect.bottom - rect.top;
+            float scrWidth = data->getScreen().getView().getX();
+            float scrHeight = data->getScreen().getView().getY();
+
+            if (data->getScreen().getFlagRatio())
+            { 
+
+                if (data->getScreen().getAspect() == "none") 
+                {
+                    scale.setX(width / scrWidth);
+                    scale.setY(height / scrHeight);
+                }
+                else if (data->getScreen().getAspect() == "slice") 
+                {
+                    if (width > height)
+                    {
+                        scale.setX(width / scrWidth);
+                        scale.setY(scale.getX());
+                    }
+                    else if (width < height)
+                    {
+                        scale.setY(height / scrHeight);
+                        scale.setX(scale.getY());
+                    }
+                }
+                else {
+                    scale.setY(height / scrHeight);
+                    scale.setX(scale.getY());
+                }
+            }
+            else {
+                scale.setY(height / scrHeight);
+                scale.setX(scale.getY());
+            }
+
+            xPos = -data->getScreen().getViewPosition().getX() * scale.getX();
+            yPos = -data->getScreen().getViewPosition().getY() * scale.getY();
+        }
+        break;
     case WM_PAINT:
         hdc = BeginPaint(hWnd, &ps);
-        OnPaint(hdc, xPos, yPos, angle, viewBox, scale);
+        OnPaint(hdc, xPos, yPos, angle, scale);
         EndPaint(hWnd, &ps);
         return 0;
     case WM_DESTROY:
@@ -174,10 +216,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     case WM_MOUSEWHEEL:
     {
         int delta = GET_WHEEL_DELTA_WPARAM(wParam);
-        if (delta > 0)
-            scale *= 1.1;
-        else
-            scale *= 0.9;
+        if (delta > 0) {
+            scale.setX(scale.getX() * 1.1);
+            scale.setY(scale.getY() * 1.1);
+        }
+        else {
+            scale.setX(scale.getX() * 0.9);
+            scale.setY(scale.getY() * 0.9);
+        }
         InvalidateRect(hWnd, NULL, TRUE);
         break;
     }

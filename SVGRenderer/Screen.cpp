@@ -51,7 +51,7 @@ void ScreenSVG::buildScreen(vector<char*> name, vector<char*> value)
 
                 if (pos == string::npos)
                     pos = strViewBox.find(',');
-            
+             
                 dup = strViewBox.substr(0, pos);
 			          strViewBox.erase(0, pos + 1);
 			          this->view_box[j] = stof(dup);
@@ -109,6 +109,16 @@ void ScreenSVG::printScreen()
     }
 }
 
+bool ScreenSVG::getFlagViewBox()
+{
+    return this->flagViewBox;
+}
+
+bool ScreenSVG::getFlagRatio()
+{
+    return this->flagRatio;
+}
+
 Point2D ScreenSVG::getSize() {
     if (!this->flagHeight)
         this->height = 0x80000000;
@@ -119,7 +129,25 @@ Point2D ScreenSVG::getSize() {
 
 
 Point2D ScreenSVG::getView() {
-    if (this->flagViewBox)
-        return Point2D(this->view_box[2], this->view_box[3]);
-    else return this->getSize();
+    return Point2D(this->view_box[2], this->view_box[3]);
+}
+
+Point2D ScreenSVG::getViewPosition()
+{
+    return Point2D(this->view_box[0], this->view_box[1]);
+}
+
+string ScreenSVG::getXRatio()
+{
+    return this->xRatio;
+}
+
+string ScreenSVG::getYRatio()
+{
+    return this->yRatio;
+}
+
+string ScreenSVG::getAspect()
+{
+    return this->aspect;
 }
