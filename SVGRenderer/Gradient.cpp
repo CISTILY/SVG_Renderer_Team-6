@@ -20,11 +20,11 @@ void Stop::setColor(string s) {
 	this->stop_color.setColor(s);
 }
 
-float stop::getStopOpacity() {
+float Stop::getStopOpacity() {
     return this->stop_opacity;
 }
 
-float stop::getOffset() {
+float Stop::getOffset() {
 	return this->offset;
 }
 
@@ -105,7 +105,7 @@ Point2D Gradient::getScale() {
     return this->scale;
 }
 
-vector<float> Gradient::getMatrix() {
+float* Gradient::getMatrix() {
     return this->matrix;
 }
 
@@ -281,14 +281,6 @@ void RadialGradientSVG::print() {
     }
 }
 
-vector<LinearGradientSVG> def::getLinearGradients() {
-    return this->LinearGradients;
-}
-
-vector<RadialGradientSVG> def::getRadialGradient() {
-    return this->RadialGradients;
-}
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Def::Def() {
@@ -296,6 +288,14 @@ Def::Def() {
 }
 
 Def::~Def() { }
+
+vector<LinearGradientSVG> Def::getLinearGradients() {
+    return this->LinearGradients;
+}
+
+vector<RadialGradientSVG> Def::getRadialGradient() {
+    return this->RadialGradients;
+}
 
 void Def::readGradient(xml_node<>* node) {
     LinearGradientSVG temp;
@@ -344,7 +344,7 @@ void Def::buildDef(string id, vector<char*> name, vector<char*> value) {
         delete temp;
     }
     else if (id == "stop") {
-        stop *temp = new Stop();
+        Stop *temp = new Stop();
         temp->buildStop(name, value); 
         if (this->previous == 1)
             this->LinearGradients[this->LinearGradients.size() - 1].addStop(*temp);
@@ -389,7 +389,6 @@ void Def::performHref() {
 
     for (int i = 0; i < this->RadialGradients.size(); ++i) {
         string temp = this->RadialGradients[i].getHref();
-        temp.erase(0, 1);
         for (int j = 0; j < this->LinearGradients.size(); ++j) {
             if (temp == this->LinearGradients[j].getID()) {
                 this->RadialGradients[i].replaceStop(this->LinearGradients[j].getStops());
