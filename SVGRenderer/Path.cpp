@@ -86,7 +86,7 @@ void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 				if (point[j] == ' ' || point[j] == ',' || point[j] == '\n' || point[j] == '\t')
 					continue;
 				
-				if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
+				if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-' && point[j] != 'e')
 				{
 					command.push_back(point[j]);
 					if (j + 1 < point.length() && point[j + 1] == ' ')
@@ -118,7 +118,7 @@ void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 				{
 					numberOfXY = 6;
 				}
-				else if (toupper(command[n]) == 'S')
+				else if (toupper(command[n]) == 'S' || toupper(command[n]) == 'Q')
 				{
 					numberOfXY = 4;
 				}
@@ -138,7 +138,7 @@ void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 
 				for (; j < point.length(); ++j)
 				{
-					if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-')
+					if ((point[j] < '0' || point[j] > '9') && point[j] != '.' && point[j] != '-' && point[j] != 'e')
 						++count;
 					if (count == numberOfXY)
 					{
@@ -169,11 +169,11 @@ void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 				if (toupper(command[n]) == 'A')
 				{
 					int countXY = 0;
-					int phiStart = 0, phiEnd;
+					int phiStart = 0, phiEnd = 0;
 
 					for (int k = 0; k < temp.length(); ++k)
 					{
-						if ((temp[k] < '0' || temp[k] > '9') && temp[k] != '.' && temp[k] != '-')
+						if ((temp[k] < '0' || temp[k] > '9') && temp[k] != '.' && temp[k] != '-' && point[j] != 'e')
 							++countXY;
 						if (countXY == 2 && phiStart == 0)
 						{
