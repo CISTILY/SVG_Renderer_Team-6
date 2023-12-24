@@ -23,7 +23,6 @@ public:
 
 	// Setters
 	void setOffset(float);
-	void setColor(string);
 	void setStopOpacity(float);
 
 	// Getters
