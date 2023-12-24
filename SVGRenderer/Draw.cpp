@@ -35,7 +35,7 @@ LinearGradientBrush& Draw::createLinearGradient(LinearGradientSVG lgSVG)
 {
     int n = lgSVG.getStops().size();
 
-    Color* colors = new Color(n);
+    Color* colors = new Color[n];
     REAL* pos = new REAL[n];
     for (int i = 0; i < n; i++)
     {
@@ -64,7 +64,7 @@ PathGradientBrush& Draw::createRadialGradient(RadialGradientSVG rgSVG)
     int n = rgSVG.getStops().size();
     Rect rectangle(rgSVG.getPoint1().getX() - radius, rgSVG.getPoint1().getY() - radius, radius * 2, radius * 2);
     path.AddEllipse(rectangle);
-    Color* colors = new Color(n);
+    Color* colors = new Color[n];
     REAL* pos = new REAL[n];
     for (int i = 0; i < n; i++)
     {
