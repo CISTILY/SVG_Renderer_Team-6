@@ -31,7 +31,7 @@ void Draw::transform(Graphics& graphics, Shape* shape) {
     }
 }
 
-LinearGradientBrush& Draw::createLinearGradient(LinearGradientSVG lgSVG)
+LinearGradientBrush* Draw::createLinearGradient(LinearGradientSVG lgSVG)
 {
     int n = lgSVG.getStops().size();
 
@@ -39,15 +39,15 @@ LinearGradientBrush& Draw::createLinearGradient(LinearGradientSVG lgSVG)
     REAL* pos = new REAL[n];
     for (int i = 0; i < n; i++)
     {
-        colors[i] = Color(lgSVG.getStops()[i].getStopColor().getRed(), lgSVG.getStops()[i].getStopColor().getGreen(), lgSVG.getStops()[i].getStopColor().getBlue(), lgSVG.getStops()[i].getStopOpacity());
-        pos[i] = lgSVG.getStops()[i].getOffset();
+        colors[i] = Color(255 * lgSVG.getStops()[i].getStopOpacity(), lgSVG.getStops()[i].getStopColor().getRed(), lgSVG.getStops()[i].getStopColor().getGreen(), lgSVG.getStops()[i].getStopColor().getBlue());
+        pos[i] = (lgSVG.getStops()[i].getOffset() / 100);
     }
 
     Point point1(lgSVG.getPoint1().getX(), lgSVG.getPoint1().getY());
     Point point2(lgSVG.getPoint2().getX(), lgSVG.getPoint2().getY());
-
-    LinearGradientBrush brush(point1, point2, colors[0], colors[n - 1]);
-    brush.SetInterpolationColors(colors, pos, n);
+        
+    LinearGradientBrush *brush = new LinearGradientBrush(point1, point2, colors[0], colors[n-1]);
+    brush->SetInterpolationColors(colors, pos, n);
 
     delete[] colors;
     delete[] pos;
@@ -55,7 +55,7 @@ LinearGradientBrush& Draw::createLinearGradient(LinearGradientSVG lgSVG)
     return brush;
 }
 
-PathGradientBrush& Draw::createRadialGradient(RadialGradientSVG rgSVG)
+PathGradientBrush* Draw::createRadialGradient(RadialGradientSVG rgSVG)
 {
     GraphicsPath path;
 
@@ -68,16 +68,16 @@ PathGradientBrush& Draw::createRadialGradient(RadialGradientSVG rgSVG)
     REAL* pos = new REAL[n];
     for (int i = 0; i < n; i++)
     {
-        colors[i] = Color(rgSVG.getStops()[i].getStopColor().getRed(), rgSVG.getStops()[i].getStopColor().getGreen(), rgSVG.getStops()[i].getStopColor().getBlue(), rgSVG.getStops()[i].getStopOpacity());
-        pos[i] = rgSVG.getStops()[i].getOffset();
+        colors[i] = Color(255 * rgSVG.getStops()[i].getStopOpacity(), rgSVG.getStops()[i].getStopColor().getRed(), rgSVG.getStops()[i].getStopColor().getGreen(), rgSVG.getStops()[i].getStopColor().getBlue());
+        pos[i] = rgSVG.getStops()[i].getOffset() / 100;
     }
     Matrix matrix(rgSVG.getMatrix()[0], rgSVG.getMatrix()[1], rgSVG.getMatrix()[2], rgSVG.getMatrix()[3], rgSVG.getMatrix()[4], rgSVG.getMatrix()[5]);
 
-    PathGradientBrush pthGrBrush(&path);
-    pthGrBrush.SetCenterPoint(center);
-    pthGrBrush.SetInterpolationColors(colors, pos, n);
-    pthGrBrush.SetSurroundColors(colors, &n);
-    pthGrBrush.SetTransform(&matrix);
+    PathGradientBrush* pthGrBrush = new PathGradientBrush(&path);
+    pthGrBrush->SetCenterPoint(center);
+    pthGrBrush->SetInterpolationColors(colors, pos, n);
+    pthGrBrush->SetSurroundColors(colors, &n);
+    pthGrBrush->SetTransform(&matrix);
 
     delete[] colors;
     delete[] pos;
@@ -85,12 +85,28 @@ PathGradientBrush& Draw::createRadialGradient(RadialGradientSVG rgSVG)
     return pthGrBrush;
 }
 
-VOID Draw::DrawCircle(Graphics& graphics, CircleSVG circle)
+VOID Draw::DrawCircle(Graphics& graphics, CircleSVG circle, Def gradient)
 {
     Shape* shape = dynamic_cast<Shape*>(new CircleSVG(circle));
     transform(graphics, shape);
 
     Rect rect(circle.getCoordinateX() - circle.getRadiusX(), circle.getCoordinateY() - circle.getRadiusX(), 2 * circle.getRadiusX(), 2 * circle.getRadiusX());
+
+    for (int i = 0; i < gradient.getLinearGradients().size(); ++i) {
+        if (circle.getFill().getURL() == gradient.getLinearGradients()[i].getID()) {
+            //LinearGradientBrush& solid = Draw::createLinearGradient(gradient.getLinearGradients()[i]);
+            //graphics.FillEllipse(&solid, rect);
+            break;
+        }
+    }
+
+    for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
+        if (circle.getFill().getURL() == gradient.getLinearGradients()[i].getID()) {
+            //PathGradientBrush& path = Draw::createRadialGradient(gradient.getRadialGradient()[i]);
+            //graphics.FillEllipse(&path, rect);
+            break;
+        }
+    }
 
     SolidBrush brush(Color(round(255 * circle.getFillOpacity()), circle.getFill().getRed(), circle.getFill().getGreen(), circle.getFill().getBlue()));
     graphics.FillEllipse(&brush, rect);
@@ -100,32 +116,68 @@ VOID Draw::DrawCircle(Graphics& graphics, CircleSVG circle)
         graphics.DrawEllipse(&pen, rect);
 }
 
-VOID Draw::DrawRectangle(Graphics& graphics, RectangleSVG rect)
+VOID Draw::DrawRectangle(Graphics& graphics, RectangleSVG rect, Def gradient)
 {
     Shape* shape = dynamic_cast<Shape*>(new RectangleSVG(rect));
     transform(graphics, shape);
 
     Rect rectangle(rect.getCoordinateX(), rect.getCoordinateY(), rect.getWidth(), rect.getHeight());
 
+    for (int i = 0; i < gradient.getLinearGradients().size(); ++i) {
+        if (rect.getFill().getURL() == gradient.getLinearGradients()[i].getID()) {
+            //LinearGradientBrush& solid = Draw::createLinearGradient(gradient.getLinearGradients()[i]);
+            //graphics.FillRectangle(&solid, rectangle);
+            break;
+        }
+    }
+
+    for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
+        if (rect.getFill().getURL() == gradient.getLinearGradients()[i].getID()) {
+            /*PathGradientBrush& path = Draw::createRadialGradient(gradient.getRadialGradient()[i]);
+            graphics.FillRectangle(&path, rectangle);*/
+            break;
+        }
+            
+    }
+
     SolidBrush brush(Color(round(255 * rect.getFillOpacity()), rect.getFill().getRed(), rect.getFill().getGreen(), rect.getFill().getBlue()));
     graphics.FillRectangle(&brush, rectangle);
-
+    
     Pen pen(Color(round(255 * rect.getStrokeOpacity()), rect.getStroke().getRed(), rect.getStroke().getGreen(), rect.getStroke().getBlue()), rect.getStrokeWidth());
     if (rect.getStrokeWidth() != 0)
         graphics.DrawRectangle(&pen, rectangle);
 
 }
 
-VOID Draw::DrawEllipse(Graphics& graphics, EllipseSVG ellip)
+VOID Draw::DrawEllipse(Graphics& graphics, EllipseSVG ellip, Def gradient)
 {
+    int alreadyHasBrush = 0;
     Shape* shape = dynamic_cast<Shape*>(new EllipseSVG(ellip));
     transform(graphics, shape);
 
     Rect rect(ellip.getCoordinateX() - ellip.getRadiusX(), ellip.getCoordinateY() - ellip.getRadiusY(), 2 * ellip.getRadiusX(), 2 * ellip.getRadiusY());
 
-    SolidBrush brush(Color(round(255 * ellip.getFillOpacity()), ellip.getFill().getRed(), ellip.getFill().getGreen(), ellip.getFill().getBlue()));
-    graphics.FillEllipse(&brush, rect);
+    for (int i = 0; i < gradient.getLinearGradients().size(); ++i) {
+        if (ellip.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            graphics.FillEllipse(&*Draw::createLinearGradient(gradient.getLinearGradients()[i]), rect);
+            alreadyHasBrush = 1;
+            break;
+        }
+    }
 
+    for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
+        if (ellip.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            graphics.FillEllipse(&*Draw::createRadialGradient(gradient.getRadialGradient()[i]), rect);
+            alreadyHasBrush = 1;
+            break;
+        }
+    }
+
+    if (alreadyHasBrush == 0) {
+        SolidBrush brush(Color(round(255 * ellip.getFillOpacity()), ellip.getFill().getRed(), ellip.getFill().getGreen(), ellip.getFill().getBlue()));
+        graphics.FillEllipse(&brush, rect);
+    }
+    
     Pen pen(Color(round(255 * ellip.getStrokeOpacity()), ellip.getStroke().getRed(), ellip.getStroke().getGreen(), ellip.getStroke().getBlue()), ellip.getStrokeWidth());
     if (ellip.getStrokeWidth() != 0)
         graphics.DrawEllipse(&pen, rect);
@@ -140,8 +192,9 @@ VOID Draw::DrawLine(Graphics& graphics, LineSVG line)
     graphics.DrawLine(&pen, line.getCoordinateX(), line.getCoordinateY(), line.getEnd().getX(), line.getEnd().getY());
 }
 
-VOID Draw::DrawText(Graphics& graphics, TextSVG text)
+VOID Draw::DrawText(Graphics& graphics, TextSVG text, Def gradient)
 {
+    int alreadyHasBrush = 0;
     float delta = 0;
     Shape* shape = dynamic_cast<Shape*>(new TextSVG(text));
     transform(graphics, shape);
@@ -160,7 +213,6 @@ VOID Draw::DrawText(Graphics& graphics, TextSVG text)
         strFormat.SetAlignment(StringAlignmentNear);
         delta = -0.15;
     }
-    SolidBrush brush(Color(round(255 * text.getFillOpacity()), text.getFill().getRed(), text.getFill().getGreen(), text.getFill().getBlue()));
 
     PointF pointF(text.getCoordinateX() + text.getDx() + delta * text.getFont_size(),
         text.getCoordinateY() + text.getDy() - 0.89 * text.getFont_size());
@@ -185,9 +237,30 @@ VOID Draw::DrawText(Graphics& graphics, TextSVG text)
 
     wstring content = converter.from_bytes(text.getContent());
     path.AddString(content.c_str(), -1, &fontFamily, font_style, static_cast<REAL>(text.getFont_size()), pointF, &strFormat);
-    Pen pen(Color(round(255 * text.getStrokeOpacity()), text.getStroke().getRed(), text.getStroke().getGreen(), text.getStroke().getBlue()), text.getStrokeWidth());
 
-    graphics.FillPath(&brush, &path);
+    for (int i = 0; i < gradient.getLinearGradients().size(); ++i) {
+        cout << text.getFill().getURL() << " " << gradient.getLinearGradients()[i].getID() << " Result: " << (text.getFill().getURL() == gradient.getLinearGradients()[i].getID());
+        if (text.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            graphics.FillPath(&*Draw::createLinearGradient(gradient.getLinearGradients()[i]), &path);
+            alreadyHasBrush = 1;
+            break;
+        }
+    }
+
+    for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
+        if (text.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            graphics.FillPath(&*Draw::createRadialGradient(gradient.getRadialGradient()[i]), &path);
+            alreadyHasBrush = 1;
+            break;
+        }
+    }
+    cout << alreadyHasBrush;
+    if (alreadyHasBrush == 0) {
+        SolidBrush brush(Color(round(255 * text.getFillOpacity()), text.getFill().getRed(), text.getFill().getGreen(), text.getFill().getBlue()));
+        graphics.FillPath(&brush, &path);
+    }
+
+    Pen pen(Color(round(255 * text.getStrokeOpacity()), text.getStroke().getRed(), text.getStroke().getGreen(), text.getStroke().getBlue()), text.getStrokeWidth());
 
     if (text.getStrokeWidth() != 0)
         graphics.DrawPath(&pen, &path);
@@ -214,8 +287,9 @@ VOID Draw::DrawPolygon(Graphics& graphics, PolygonSVG plg)
         graphics.DrawPolygon(&pen, points, nPoint);
 }
 
-VOID Draw::DrawPath(Graphics& graphics, PathSVG path)
+VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
 {
+    int alreadyHasBrush = 0;
     Shape* shape = dynamic_cast<Shape*>(new PathSVG(path));
     transform(graphics, shape);
 
@@ -395,8 +469,26 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path)
         ++this->curent_path;
     }
     
-    SolidBrush brush(Color(round(255 * path.getFillOpacity()), path.getFill().getRed(), path.getFill().getGreen(), path.getFill().getBlue()));
-    graphics.FillPath(&brush, graphicsPath);
+    for (int i = 0; i < gradient.getLinearGradients().size(); ++i) {
+        if (path.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            graphics.FillPath(&*Draw::createLinearGradient(gradient.getLinearGradients()[i]), graphicsPath);
+            alreadyHasBrush = 1;
+            break;
+        }
+    }
+
+    for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
+        if (path.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            graphics.FillPath(&*Draw::createRadialGradient(gradient.getRadialGradient()[i]), graphicsPath);
+            alreadyHasBrush = 1;
+            break;
+        }
+    }
+    cout << alreadyHasBrush;
+    if (alreadyHasBrush == 0) {
+        SolidBrush brush(Color(round(255 * path.getFillOpacity()), path.getFill().getRed(), path.getFill().getGreen(), path.getFill().getBlue()));
+        graphics.FillPath(&brush, graphicsPath);
+    }
 
     Pen pen(Color(round(255 * path.getStrokeOpacity()), path.getStroke().getRed(), path.getStroke().getGreen(), path.getStroke().getBlue()), path.getStrokeWidth());
     if (path.getStrokeWidth() != 0)
@@ -428,24 +520,24 @@ VOID Draw::DrawPolyline(Graphics& graphics, PolylineSVG pll)
 
 }
 
-void Draw::drawShape(Graphics& graphics, vector<Shape*> shapesSVG)
+void Draw::drawShape(Graphics& graphics, vector<Shape*> shapesSVG, Def gradient)
 {
     for (int i = 0; i < shapesSVG.size(); ++i)
     {
         GraphicsState origin = graphics.Save();
         if (shapesSVG[i]->getTypeName() == "rect") {
             RectangleSVG* rect = dynamic_cast<RectangleSVG*> (shapesSVG[i]);
-            DrawRectangle(graphics, *rect);
+            DrawRectangle(graphics, *rect, gradient);
         }
 
         else if (shapesSVG[i]->getTypeName() == "circle") {
             CircleSVG* cir = dynamic_cast<CircleSVG*> (shapesSVG[i]);
-            DrawCircle(graphics, *cir);
+            DrawCircle(graphics, *cir, gradient);
         }
 
         else if (shapesSVG[i]->getTypeName() == "text") {
             TextSVG* txt = dynamic_cast<TextSVG*> (shapesSVG[i]);
-            DrawText(graphics, *txt);
+            DrawText(graphics, *txt, gradient);
         }
 
         else if (shapesSVG[i]->getTypeName() == "line") {
@@ -455,7 +547,7 @@ void Draw::drawShape(Graphics& graphics, vector<Shape*> shapesSVG)
 
         else if (shapesSVG[i]->getTypeName() == "ellipse") {
             EllipseSVG* ellip = dynamic_cast<EllipseSVG*> (shapesSVG[i]);
-            DrawEllipse(graphics, *ellip);
+            DrawEllipse(graphics, *ellip, gradient);
         }
 
         else if (shapesSVG[i]->getTypeName() == "polygon") {
@@ -468,11 +560,11 @@ void Draw::drawShape(Graphics& graphics, vector<Shape*> shapesSVG)
         }
         else if (shapesSVG[i]->getTypeName() == "path") {
             PathSVG* path = dynamic_cast<PathSVG*> (shapesSVG[i]);
-            DrawPath(graphics, *path);
+            DrawPath(graphics, *path, gradient);
         }
         else if (shapesSVG[i]->getTypeName() == "g") {
             GroupSVG* g = dynamic_cast<GroupSVG*> (shapesSVG[i]);
-            drawShape(graphics, g->getVectorShape());
+            drawShape(graphics, g->getVectorShape(), gradient);
         }
         graphics.Restore(origin);
     }

@@ -1,9 +1,9 @@
 <svg height="250" width="700" xmlns="http://www.w3.org/2000/svg">
 	<defs>
 		<linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-			<stop offset="10%" stop-color="lightsalmon" />
+			<stop offset="0%" stop-color="lightsalmon" />
 			<stop offset="50%" stop-color="teal" />
-			<stop offset="90%" stop-color="lightpink" />
+			<stop offset="100%" stop-color="lightpink" />
 		</linearGradient>
 		<radialGradient id="myRG" cx="0.5" cy="0.5" r="0.9" fx="0.5" fy="0.5" spreadMethod="pad">
             <stop offset="0%"   stop-color="BISQUE" />  

@@ -100,7 +100,7 @@ void ColorSVG::setColor(string s) {
         }
 
         for (int i = 0; i < basic_color_name.size(); ++i)
-            if (s == basic_color_name[i])
+            if (temp == basic_color_name[i])
             {
                 this->setColor(basic_color_value[i]);
                 return;

@@ -45,6 +45,7 @@ public:
     // Getters
     vector<Shape*> getVectorShape();
     ScreenSVG getScreen();
+    Def getDef();
 
     //void readFile(xml_node<>* node, vector<ShapeData>& data, string, int&);
     void readSVG(string);
