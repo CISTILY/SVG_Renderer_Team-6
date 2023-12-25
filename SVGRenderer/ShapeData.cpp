@@ -32,6 +32,10 @@ ScreenSVG ShapeData::getScreen()
     return this->screen;
 }
 
+Def ShapeData::getDef() {
+    return this->gradients;
+}
+
 void ShapeData::readSVG(string filename)
 {
     if (this->read == false) 

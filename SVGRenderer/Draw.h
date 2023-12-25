@@ -17,18 +17,18 @@ public:
     
     void transform(Graphics&, Shape*);
 
-    LinearGradientBrush& createLinearGradient(LinearGradientSVG);
-    PathGradientBrush& createRadialGradient(RadialGradientSVG);
+    LinearGradientBrush* createLinearGradient(LinearGradientSVG);
+    PathGradientBrush* createRadialGradient(RadialGradientSVG);
 
-    void drawShape(Graphics&, vector<Shape*> shapesSVG);
+    void drawShape(Graphics&, vector<Shape*> shapesSVG, Def);
 
-    VOID DrawCircle(Graphics&, CircleSVG);
-    VOID DrawRectangle(Graphics&, RectangleSVG);
-    VOID DrawEllipse(Graphics&, EllipseSVG);
+    VOID DrawCircle(Graphics&, CircleSVG, Def);
+    VOID DrawRectangle(Graphics&, RectangleSVG, Def);
+    VOID DrawEllipse(Graphics&, EllipseSVG, Def);
     VOID DrawLine(Graphics&, LineSVG);
-    VOID DrawText(Graphics&, TextSVG);
+    VOID DrawText(Graphics&, TextSVG, Def);
     VOID DrawPolygon(Graphics&, PolygonSVG);
-    VOID DrawPath(Graphics&, PathSVG); 
+    VOID DrawPath(Graphics&, PathSVG, Def); 
     VOID DrawPolyline(Graphics&, PolylineSVG);
 
     static void setDrew(bool);

@@ -37,7 +37,7 @@ VOID OnPaint(HDC hdc, int offsetX, int offsetY, int angle, Point2D scale)
     ShapeData* data = ShapeData::getInstance();
 
     Draw pen;
-    pen.drawShape(graphics, data->getVectorShape());
+    pen.drawShape(graphics, data->getVectorShape(), data->getDef());
     Draw::setDrew(1);
 }
 
