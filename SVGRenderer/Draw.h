@@ -5,6 +5,21 @@ using namespace rapidxml;
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
 
+const double PI = 3.14159265359;
+
+struct EllipticalArc
+{
+	double x1, y1, rx, ry, phi, fA, fS, x2, y2;
+};
+
+struct CenterParameterization
+{
+	double cx, cy, theta1, deltaTheta;
+};
+
+double angleBetweenVectors(double, double, double, double);
+CenterParameterization convertEndpoint2Center(EllipticalArc&);
+Point* creatPoint(EllipticalArc&);
 
 class Draw {
 private:
