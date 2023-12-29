@@ -14,6 +14,117 @@ Draw::~Draw()
 	//cout << "Draw::Destructor\n";
 }
 
+double angleBetweenVectors(double ux, double uy, double vx, double vy)
+{
+    double angle = acos((ux * vx + uy * vy) / sqrt((ux * ux + uy * uy) * (vx * vx + vy * vy))) * 180 / PI;
+    if (ux * vx + uy * vy < 0)
+        return -angle;
+    return angle;
+}
+
+CenterParameterization convertEndpoint2Center(EllipticalArc& arc)
+{
+    double x1 = arc.x1;
+    double y1 = arc.y1;
+    double x2 = arc.x2;
+    double y2 = arc.y2;
+    double fA = arc.fA;
+    double fS = arc.fS;
+    double rx = arc.rx;
+    double ry = arc.ry;
+    double phi = arc.phi * PI / 180;
+
+    double x1_prime = cos(phi) * ((x1 - x2) / 2) + sin(phi) * ((y1 - y2) / 2);
+    double y1_prime = -sin(phi) * ((x1 - x2) / 2) + cos(phi) * ((y1 - y2) / 2);
+
+    double sign = (fA == fS) ? -1 : 1;
+    double tmp = sign * sqrt((rx * rx * ry * ry - rx * rx * y1_prime * y1_prime - ry * ry * x1_prime * x1_prime) / (rx * rx * y1_prime * y1_prime + ry * ry * x1_prime * x1_prime));
+    double cx_prime = tmp * (rx * y1_prime / ry);
+    double cy_prime = -tmp * (ry * x1_prime / rx);
+
+    double cx = cos(phi) * cx_prime - sin(phi) * cy_prime + (x1 + x2) / 2;
+    double cy = sin(phi) * cx_prime + cos(phi) * cy_prime + (y1 + y2) / 2;
+
+    double theta1 = angleBetweenVectors(1, 0, (x1_prime - cx_prime) / rx, (y1_prime - cy_prime) / ry);
+    double deltaTheta = (int)angleBetweenVectors((x1_prime - cx_prime) / rx, (y1_prime - cy_prime) / ry, (-x1_prime - cx_prime) / rx, (-y1_prime - cy_prime) / ry) % 360;
+    if (fS == 0 && deltaTheta > 0)
+        deltaTheta -= 360;
+    else if (fS == 1 && deltaTheta < 0)
+        deltaTheta += 360;
+
+    return { cx,cy,theta1,deltaTheta };
+}
+
+Point* creatPoint(EllipticalArc& arc)
+{
+    CenterParameterization centerParams = convertEndpoint2Center(arc);
+
+    double cx = centerParams.cx;
+    double cy = centerParams.cy;
+    double theta1 = centerParams.theta1;
+    double deltaTheta = centerParams.deltaTheta;
+
+    double phi = arc.phi;
+    double rx = arc.rx;
+    double ry = arc.ry;
+    double fA = arc.fA;
+    double fS = arc.fS;
+
+    Point* point = new Point[9];
+    point[0] = Point(arc.x1, arc.y1);
+    if (fA == 0 && fS == 0)
+    {
+        double t = -(360 + deltaTheta) / 8;
+        for (int i = 1; i < 8; i++)
+        {
+            double theta = (arc.y1 > cy) ? (theta1 + t) * PI / 180 : (-theta1 + t) * PI / 180;
+            double x = rx * cos(theta) * cos(phi) - ry * sin(theta) * sin(phi) + cx;
+            double y = rx * cos(theta) * sin(phi) + ry * sin(theta) * cos(phi) + cy;
+            point[i] = Point(x, y);
+            t += -(360 + deltaTheta) / 8;
+        }
+    }
+    else if (fA == 0 && fS == 1)
+    {
+        double t = (arc.y1 > cx) ? (360 - deltaTheta) / 8 : deltaTheta / 8;
+        for (int i = 1; i < 8; i++)
+        {
+            double theta = (theta1 + t) * PI / 180;
+            double x = rx * cos(theta) * cos(phi) - ry * sin(theta) * sin(phi) + cx;
+            double y = rx * cos(theta) * sin(phi) + ry * sin(theta) * cos(phi) + cy;
+            point[i] = Point(x, y);
+            t += (arc.y1 > cx) ? (360 - deltaTheta) / 8 : deltaTheta / 8;
+        }
+    }
+    else if (fA == 1 && fS == 0)
+    {
+        double t = deltaTheta / 8;
+        for (int i = 1; i < 8; i++)
+        {
+            double theta = (theta1 + t) * PI / 180;
+            double x = rx * cos(theta) * cos(phi) - ry * sin(theta) * sin(phi) + cx;
+            double y = rx * cos(theta) * sin(phi) + ry * sin(theta) * cos(phi) + cy;
+            point[i] = Point(x, y);
+            t += deltaTheta / 8;
+        }
+    }
+    else if (fA == 1 && fS == 1)
+    {
+        double t = (360 - deltaTheta) / 8;
+        for (int i = 1; i < 8; i++)
+        {
+            double theta = (arc.y1 > cy) ? (theta1 + t) * PI / 180 : (-theta1 + t) * PI / 180;
+            double x = rx * cos(theta) * cos(phi) - ry * sin(theta) * sin(phi) + cx;
+            double y = rx * cos(theta) * sin(phi) + ry * sin(theta) * cos(phi) + cy;
+            point[i] = Point(x, y);
+            t += (360 - deltaTheta) / 8;
+        }
+    }
+    point[8] = Point(arc.x2, arc.y2);
+    return point;
+
+}
+
 void Draw::transform(Graphics& graphics, Shape* shape) {
     for (int i = shape->getTransform().size() - 1; i >= 0; --i) {
         for (int j = 0; j < 3; ++j)
@@ -368,6 +479,24 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
 
                 j += 2;
             }
+	    else if (path.getCommand()[i] == 'A')
+            {
+                EllipticalArc arc;
+                arc.x1 = path.getPoints()[j - 1].getX();
+                arc.y1 = path.getPoints()[j - 1].getY();
+                arc.rx = path.getPoints()[j].getX();
+                arc.ry = path.getPoints()[j].getY();
+                arc.phi = path.getPoints()[j + 1].getX();
+                arc.fA = path.getPoints()[j + 2].getX();
+                arc.fS = path.getPoints()[j + 2].getY();
+                arc.x2 = path.getPoints()[j + 3].getX();
+                arc.y2 = path.getPoints()[j + 3].getY();
+
+                Point* point = creatPoint(arc);
+                graphicsPath->AddCurve(point, 9);
+
+                j += 4;
+            }
             else if (path.getCommand()[i] == 'Z' || path.getCommand()[i] == 'z')
             {
                 graphicsPath->AddLine(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
@@ -458,6 +587,27 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
                 }
 
                 j += 2;
+            }
+	    else if (path.getCommand()[i] == 'a')
+            {
+                Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j + 3].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j + 3].getY());
+                path.replaceOnePoint(temp, j + 3);
+
+                EllipticalArc arc;
+                arc.x1 = path.getPoints()[j - 1].getX();
+                arc.y1 = path.getPoints()[j - 1].getY();
+                arc.rx = path.getPoints()[j].getX();
+                arc.ry = path.getPoints()[j].getY();
+                arc.phi = path.getPoints()[j + 1].getX();
+                arc.fA = path.getPoints()[j + 2].getX();
+                arc.fS = path.getPoints()[j + 2].getY();
+                arc.x2 = path.getPoints()[j + 3].getX();
+                arc.y2 = path.getPoints()[j + 3].getY();
+
+                Point* point = creatPoint(arc);
+                graphicsPath->AddCurve(point, 9);
+
+                j += 4;
             }
         }
 
