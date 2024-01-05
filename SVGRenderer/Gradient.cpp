@@ -13,7 +13,7 @@ void Stop::setStopOpacity(float opacity) {
 }
 
 void Stop::setOffset(float offset) {
-	this->offset = offset;
+    this->offset = offset;
 }
 
 float Stop::getStopOpacity() {
@@ -21,11 +21,11 @@ float Stop::getStopOpacity() {
 }
 
 float Stop::getOffset() {
-	return this->offset;
+    return this->offset;
 }
 
 ColorSVG Stop::getStopColor() {
-	return this->stop_color;
+    return this->stop_color;
 }
 
 void Stop::buildStop(vector<char*> name, vector<char*> value) {
@@ -44,9 +44,9 @@ void Stop::buildStop(vector<char*> name, vector<char*> value) {
 }
 
 void Stop::printStop() {
-    cout << "offset: " << this->offset 
-        << "  stop color: "; 
-    this->stop_color.print(); 
+    cout << "offset: " << this->offset
+        << "  stop color: ";
+    this->stop_color.print();
     cout << "  stop opacity: " << this->stop_opacity << endl;
 }
 
@@ -105,6 +105,16 @@ float* Gradient::getMatrix() {
     return this->matrix;
 }
 
+void Gradient::setPoint1(double x, double y) {
+    this->p1.setX(x);
+    this->p1.setY(y);
+}
+
+void Gradient::setPoint2(double x, double y) {
+    this->p2.setX(x);
+    this->p2.setY(y);
+}
+
 void Gradient::setID(char* id) {
     string temp = id;
     this->id = temp;
@@ -155,7 +165,7 @@ void Gradient::setGradientTransform(string transform) {
         posStart = transform.find("matrix");
         posEnd = transform.find(')', posStart);
         value = transform.substr(posStart + 7, posEnd - 7);
-        
+
         string dup;
 
         for (int j = 0; j < 6; ++j)
@@ -298,6 +308,11 @@ vector<RadialGradientSVG> Def::getRadialGradient() {
     return this->RadialGradients;
 }
 
+vector<LinearGradientSVG>* Def::getLinearGradientAddress()
+{
+    return &this->LinearGradients;
+}
+
 void Def::readGradient(xml_node<>* node) {
     LinearGradientSVG temp;
 
@@ -305,15 +320,15 @@ void Def::readGradient(xml_node<>* node) {
         vector<char*> attrName;
         vector<char*> attrValue;
         int id = 0;
-	    
+
         string nameSVGReader = node->name();
-	    
-	if (nameSVGReader == "title")
+
+        if (nameSVGReader == "title")
         {
             node = node->next_sibling();
             continue;
         }
-	    
+
         if (nameSVGReader != "linearGradient" && nameSVGReader != "stop" && nameSVGReader != "defs" && nameSVGReader != "radialGradient")
             break;
 
@@ -325,7 +340,7 @@ void Def::readGradient(xml_node<>* node) {
             attrValue.push_back(Attr->value());
         }
         buildDef(nameSVGReader, attrName, attrValue);
-            
+
         if (child != NULL)
         {
             if (nameSVGReader == "defs" || nameSVGReader == "linearGradient" || nameSVGReader == "radialGradient")

@@ -6,12 +6,12 @@ vector< GraphicsPath*> Draw::graphicsPaths;
 Draw::Draw()
 {
     this->curent_path = 0;
-	//cout << "Draw::Default Constructor\n";
+    //cout << "Draw::Default Constructor\n";
 }
 
 Draw::~Draw()
 {
-	//cout << "Draw::Destructor\n";
+    //cout << "Draw::Destructor\n";
 }
 
 double angleBetweenVectors(double ux, double uy, double vx, double vy)
@@ -22,17 +22,9 @@ double angleBetweenVectors(double ux, double uy, double vx, double vy)
     return angle;
 }
 
-CenterParameterization convertEndpoint2Center(EllipticalArc& arc)
+Point* createEllipticalArc(double x1, double y1, double rx, double ry, double phi, double fA, double fS, double x2, double y2)
 {
-    double x1 = arc.x1;
-    double y1 = arc.y1;
-    double x2 = arc.x2;
-    double y2 = arc.y2;
-    double fA = arc.fA;
-    double fS = arc.fS;
-    double rx = arc.rx;
-    double ry = arc.ry;
-    double phi = arc.phi * PI / 180;
+    phi = phi * PI / 180;
 
     double x1_prime = cos(phi) * ((x1 - x2) / 2) + sin(phi) * ((y1 - y2) / 2);
     double y1_prime = -sin(phi) * ((x1 - x2) / 2) + cos(phi) * ((y1 - y2) / 2);
@@ -52,28 +44,11 @@ CenterParameterization convertEndpoint2Center(EllipticalArc& arc)
     else if (fS == 1 && deltaTheta < 0)
         deltaTheta += 360;
 
-    return { cx,cy,theta1,deltaTheta };
-}
-
-Point* creatPoint(EllipticalArc& arc)
-{
-    CenterParameterization centerParams = convertEndpoint2Center(arc);
-
-    double cx = centerParams.cx;
-    double cy = centerParams.cy;
-    double theta1 = centerParams.theta1;
-    double deltaTheta = centerParams.deltaTheta;
-
-    double phi = arc.phi;
-    double rx = arc.rx;
-    double ry = arc.ry;
-    double fA = arc.fA;
-    double fS = arc.fS;
-
     Point* point = new Point[9];
-    point[0] = Point(arc.x1, arc.y1);
+    point[0] = Point(x1, y1);
+
     double t = deltaTheta / 8;
-    for (int i = 1; i < 8; i++)
+    for (int i = 1; i < 9; i++)
     {
         double theta = (theta1 + t) * PI / 180;
         double x = rx * cos(theta) * cos(phi) - ry * sin(theta) * sin(phi) + cx;
@@ -81,7 +56,8 @@ Point* creatPoint(EllipticalArc& arc)
         point[i] = Point(x, y);
         t += deltaTheta / 8;
     }
-    point[8] = Point(arc.x2, arc.y2);
+    point[8] = Point(x2, y2);
+
     return point;
 }
 
@@ -116,8 +92,8 @@ LinearGradientBrush* Draw::createLinearGradient(LinearGradientSVG lgSVG)
 
     Point point1(lgSVG.getPoint1().getX(), lgSVG.getPoint1().getY());
     Point point2(lgSVG.getPoint2().getX(), lgSVG.getPoint2().getY());
-        
-    LinearGradientBrush *brush = new LinearGradientBrush(point1, point2, colors[0], colors[n-1]);
+
+    LinearGradientBrush* brush = new LinearGradientBrush(point1, point2, colors[0], colors[n - 1]);
     brush->SetInterpolationColors(colors, pos, n);
 
     delete[] colors;
@@ -158,29 +134,41 @@ PathGradientBrush* Draw::createRadialGradient(RadialGradientSVG rgSVG)
 
 VOID Draw::DrawCircle(Graphics& graphics, CircleSVG circle, Def gradient)
 {
+    int alreadyHasBrush = 0;
     Shape* shape = dynamic_cast<Shape*>(new CircleSVG(circle));
     transform(graphics, shape);
 
     Rect rect(circle.getCoordinateX() - circle.getRadiusX(), circle.getCoordinateY() - circle.getRadiusX(), 2 * circle.getRadiusX(), 2 * circle.getRadiusX());
 
     for (int i = 0; i < gradient.getLinearGradients().size(); ++i) {
-        if (circle.getFill().getURL() == gradient.getLinearGradients()[i].getID()) {
-            //LinearGradientBrush& solid = Draw::createLinearGradient(gradient.getLinearGradients()[i]);
-            //graphics.FillEllipse(&solid, rect);
+        if (circle.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            gradient.getLinearGradientAddress()[i][i].setPoint1(circle.getCoordinateX() - circle.getRadiusX(), circle.getCoordinateY() - circle.getRadiusY());
+            gradient.getLinearGradientAddress()[i][i].setPoint2(circle.getCoordinateX() - circle.getRadiusX() + 2 * circle.getRadiusX(), circle.getCoordinateY() - circle.getRadiusY());
+
+            graphics.FillEllipse(&*Draw::createLinearGradient(gradient.getLinearGradients()[i]), rect);
+            alreadyHasBrush = 1;
             break;
         }
     }
 
     for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
-        if (circle.getFill().getURL() == gradient.getLinearGradients()[i].getID()) {
-            //PathGradientBrush& path = Draw::createRadialGradient(gradient.getRadialGradient()[i]);
-            //graphics.FillEllipse(&path, rect);
+        if (circle.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            int nColor = gradient.getRadialGradient()[i].getStops().size();
+            SolidBrush brush(Color(round(255 * gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopOpacity()),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getRed(),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getGreen(),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getBlue()));
+            graphics.FillEllipse(&brush, rect);
+            graphics.FillEllipse(&*Draw::createRadialGradient(gradient.getRadialGradient()[i]), rect);
+            alreadyHasBrush = 1;
             break;
         }
     }
 
-    SolidBrush brush(Color(round(255 * circle.getFillOpacity()), circle.getFill().getRed(), circle.getFill().getGreen(), circle.getFill().getBlue()));
-    graphics.FillEllipse(&brush, rect);
+    if (alreadyHasBrush == 0) {
+        SolidBrush brush(Color(round(255 * circle.getFillOpacity()), circle.getFill().getRed(), circle.getFill().getGreen(), circle.getFill().getBlue()));
+        graphics.FillEllipse(&brush, rect);
+    }
 
     Pen pen(Color(round(255 * circle.getStrokeOpacity()), circle.getStroke().getRed(), circle.getStroke().getGreen(), circle.getStroke().getBlue()), circle.getStrokeWidth());
     if (circle.getStrokeWidth() != 0)
@@ -189,31 +177,43 @@ VOID Draw::DrawCircle(Graphics& graphics, CircleSVG circle, Def gradient)
 
 VOID Draw::DrawRectangle(Graphics& graphics, RectangleSVG rect, Def gradient)
 {
+    int alreadyHasBrush = 0;
     Shape* shape = dynamic_cast<Shape*>(new RectangleSVG(rect));
     transform(graphics, shape);
 
     Rect rectangle(rect.getCoordinateX(), rect.getCoordinateY(), rect.getWidth(), rect.getHeight());
 
     for (int i = 0; i < gradient.getLinearGradients().size(); ++i) {
-        if (rect.getFill().getURL() == gradient.getLinearGradients()[i].getID()) {
-            //LinearGradientBrush& solid = Draw::createLinearGradient(gradient.getLinearGradients()[i]);
-            //graphics.FillRectangle(&solid, rectangle);
+        if (rect.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            gradient.getLinearGradientAddress()[i][i].setPoint1(rect.getCoordinateX(), rect.getCoordinateY());
+            gradient.getLinearGradientAddress()[i][i].setPoint2(rect.getCoordinateX() + rect.getWidth(), rect.getCoordinateY());
+
+            graphics.FillRectangle(&*Draw::createLinearGradient(gradient.getLinearGradients()[i]), rectangle);
+            alreadyHasBrush = 1;
             break;
         }
     }
 
     for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
-        if (rect.getFill().getURL() == gradient.getLinearGradients()[i].getID()) {
-            /*PathGradientBrush& path = Draw::createRadialGradient(gradient.getRadialGradient()[i]);
-            graphics.FillRectangle(&path, rectangle);*/
+        if (rect.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            int nColor = gradient.getRadialGradient()[i].getStops().size();
+            SolidBrush brush(Color(round(255 * gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopOpacity()),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getRed(),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getGreen(),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getBlue()));
+            graphics.FillRectangle(&brush, rectangle);
+            graphics.FillRectangle(&*Draw::createRadialGradient(gradient.getRadialGradient()[i]), rectangle);
+            alreadyHasBrush = 1;
             break;
         }
-            
+
     }
 
-    SolidBrush brush(Color(round(255 * rect.getFillOpacity()), rect.getFill().getRed(), rect.getFill().getGreen(), rect.getFill().getBlue()));
-    graphics.FillRectangle(&brush, rectangle);
-    
+    if (alreadyHasBrush == 0) {
+        SolidBrush brush(Color(round(255 * rect.getFillOpacity()), rect.getFill().getRed(), rect.getFill().getGreen(), rect.getFill().getBlue()));
+        graphics.FillRectangle(&brush, rectangle);
+    }
+
     Pen pen(Color(round(255 * rect.getStrokeOpacity()), rect.getStroke().getRed(), rect.getStroke().getGreen(), rect.getStroke().getBlue()), rect.getStrokeWidth());
     if (rect.getStrokeWidth() != 0)
         graphics.DrawRectangle(&pen, rectangle);
@@ -230,6 +230,9 @@ VOID Draw::DrawEllipse(Graphics& graphics, EllipseSVG ellip, Def gradient)
 
     for (int i = 0; i < gradient.getLinearGradients().size(); ++i) {
         if (ellip.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            gradient.getLinearGradientAddress()[i][i].setPoint1(ellip.getCoordinateX() - ellip.getRadiusX(), ellip.getCoordinateY() - ellip.getRadiusY());
+            gradient.getLinearGradientAddress()[i][i].setPoint2(ellip.getCoordinateX() - ellip.getRadiusX() + 2 * ellip.getRadiusX(), ellip.getCoordinateY() - ellip.getRadiusY());
+
             graphics.FillEllipse(&*Draw::createLinearGradient(gradient.getLinearGradients()[i]), rect);
             alreadyHasBrush = 1;
             break;
@@ -238,6 +241,12 @@ VOID Draw::DrawEllipse(Graphics& graphics, EllipseSVG ellip, Def gradient)
 
     for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
         if (ellip.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            int nColor = gradient.getRadialGradient()[i].getStops().size();
+            SolidBrush brush(Color(round(255 * gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopOpacity()),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getRed(),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getGreen(),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getBlue()));
+            graphics.FillEllipse(&brush, rect);
             graphics.FillEllipse(&*Draw::createRadialGradient(gradient.getRadialGradient()[i]), rect);
             alreadyHasBrush = 1;
             break;
@@ -248,7 +257,7 @@ VOID Draw::DrawEllipse(Graphics& graphics, EllipseSVG ellip, Def gradient)
         SolidBrush brush(Color(round(255 * ellip.getFillOpacity()), ellip.getFill().getRed(), ellip.getFill().getGreen(), ellip.getFill().getBlue()));
         graphics.FillEllipse(&brush, rect);
     }
-    
+
     Pen pen(Color(round(255 * ellip.getStrokeOpacity()), ellip.getStroke().getRed(), ellip.getStroke().getGreen(), ellip.getStroke().getBlue()), ellip.getStrokeWidth());
     if (ellip.getStrokeWidth() != 0)
         graphics.DrawEllipse(&pen, rect);
@@ -279,7 +288,7 @@ VOID Draw::DrawText(Graphics& graphics, TextSVG text, Def gradient)
         strFormat.SetAlignment(StringAlignmentFar);
         delta = 0.15;
     }
-    else 
+    else
     {
         strFormat.SetAlignment(StringAlignmentNear);
         delta = -0.15;
@@ -290,9 +299,9 @@ VOID Draw::DrawText(Graphics& graphics, TextSVG text, Def gradient)
     wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
 
     vector<string> fonts = text.getFont_family();
-    
+
     wstring wFontFamily;
-    
+
     for (int i = 0; i < fonts.size(); i++) {
         wFontFamily = converter.from_bytes(fonts[i]);
         FontFamily fontFamily(wFontFamily.c_str());
@@ -312,6 +321,9 @@ VOID Draw::DrawText(Graphics& graphics, TextSVG text, Def gradient)
     for (int i = 0; i < gradient.getLinearGradients().size(); ++i) {
         cout << text.getFill().getURL() << " " << gradient.getLinearGradients()[i].getID() << " Result: " << (text.getFill().getURL() == gradient.getLinearGradients()[i].getID());
         if (text.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            gradient.getLinearGradientAddress()[i][i].setPoint1(text.getCoordinateX(), text.getCoordinateY());
+            gradient.getLinearGradientAddress()[i][i].setPoint2(text.getFont_size() * 7.15, text.getCoordinateY());
+
             graphics.FillPath(&*Draw::createLinearGradient(gradient.getLinearGradients()[i]), &path);
             alreadyHasBrush = 1;
             break;
@@ -320,6 +332,12 @@ VOID Draw::DrawText(Graphics& graphics, TextSVG text, Def gradient)
 
     for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
         if (text.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            int nColor = gradient.getRadialGradient()[i].getStops().size();
+            SolidBrush brush(Color(round(255 * gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopOpacity()),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getRed(),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getGreen(),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getBlue()));
+            graphics.FillPath(&brush, &path);
             graphics.FillPath(&*Draw::createRadialGradient(gradient.getRadialGradient()[i]), &path);
             alreadyHasBrush = 1;
             break;
@@ -337,21 +355,60 @@ VOID Draw::DrawText(Graphics& graphics, TextSVG text, Def gradient)
         graphics.DrawPath(&pen, &path);
 }
 
-VOID Draw::DrawPolygon(Graphics& graphics, PolygonSVG plg)
+VOID Draw::DrawPolygon(Graphics& graphics, PolygonSVG plg, Def gradient)
 {
+    int alreadyHasBrush = 0;
     Shape* shape = dynamic_cast<Shape*>(new PolygonSVG(plg));
     transform(graphics, shape);
 
     int nPoint = plg.getPoints().size();
     Point* points = new Point[nPoint];
+    double xMin = 0;
+    double xMax = 0;
     for (int i = 0; i < nPoint; i++)
     {
+        if (plg.getPoints()[i].getX() < xMin)
+        {
+            xMin = plg.getPoints()[i].getX();
+        }
+        if (plg.getPoints()[i].getX() > xMax)
+        {
+            xMax = plg.getPoints()[i].getX();
+        }
         points[i].X = plg.getPoints()[i].getX();
         points[i].Y = plg.getPoints()[i].getY();
     }
 
-    SolidBrush brush(Color(round(255 * plg.getStrokeOpacity()), plg.getFill().getRed(), plg.getFill().getGreen(), plg.getFill().getBlue()));
-    graphics.FillPolygon(&brush, points, nPoint, FillModeWinding);
+    for (int i = 0; i < gradient.getLinearGradients().size(); ++i) {
+        if (plg.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+
+            gradient.getLinearGradientAddress()[i][i].setPoint1(xMin, 0);
+            gradient.getLinearGradientAddress()[i][i].setPoint2(xMax, 0);
+
+            graphics.FillPolygon(&*Draw::createLinearGradient(gradient.getLinearGradients()[i]), points, nPoint);
+            alreadyHasBrush = 1;
+            break;
+        }
+    }
+
+    for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
+        if (plg.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            int nColor = gradient.getRadialGradient()[i].getStops().size();
+            SolidBrush brush(Color(round(255 * gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopOpacity()),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getRed(),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getGreen(),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getBlue()));
+            graphics.FillPolygon(&brush, points, nPoint);
+            graphics.FillPolygon(&*Draw::createRadialGradient(gradient.getRadialGradient()[i]), points, nPoint);
+            alreadyHasBrush = 1;
+            break;
+        }
+    }
+
+    if (alreadyHasBrush == 0) {
+        SolidBrush brush(Color(round(255 * plg.getStrokeOpacity()), plg.getFill().getRed(), plg.getFill().getGreen(), plg.getFill().getBlue()));
+        graphics.FillPolygon(&brush, points, nPoint, FillModeWinding);
+    }
 
     Pen pen(Color(round(255 * plg.getStrokeOpacity()), plg.getStroke().getRed(), plg.getStroke().getGreen(), plg.getStroke().getBlue()), plg.getStrokeWidth());
     if (plg.getStrokeWidth() != 0)
@@ -364,9 +421,9 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
     Shape* shape = dynamic_cast<Shape*>(new PathSVG(path));
     transform(graphics, shape);
 
-    
+
     GraphicsPath* graphicsPath;
-    
+
     if (drew == 0)
     {
         int nPath = path.getCommand().size();
@@ -439,20 +496,13 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
 
                 j += 2;
             }
-	    else if (path.getCommand()[i] == 'A')
+            else if (path.getCommand()[i] == 'A')
             {
-                EllipticalArc arc;
-                arc.x1 = path.getPoints()[j - 1].getX();
-                arc.y1 = path.getPoints()[j - 1].getY();
-                arc.rx = path.getPoints()[j].getX();
-                arc.ry = path.getPoints()[j].getY();
-                arc.phi = path.getPoints()[j + 1].getX();
-                arc.fA = path.getPoints()[j + 2].getX();
-                arc.fS = path.getPoints()[j + 2].getY();
-                arc.x2 = path.getPoints()[j + 3].getX();
-                arc.y2 = path.getPoints()[j + 3].getY();
-
-                Point* point = creatPoint(arc);
+                Point* point = createEllipticalArc(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                    path.getPoints()[j].getX(), path.getPoints()[j].getY(),
+                    path.getPoints()[j + 1].getX(),
+                    path.getPoints()[j + 2].getX(), path.getPoints()[j + 2].getY(),
+                    path.getPoints()[j + 3].getX(), path.getPoints()[j + 3].getY());
                 graphicsPath->AddCurve(point, 9);
 
                 j += 4;
@@ -564,28 +614,21 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
 
                 j += 2;
             }
-	    else if (path.getCommand()[i] == 'a')
+            else if (path.getCommand()[i] == 'a')
             {
                 Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j + 3].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j + 3].getY());
                 path.replaceOnePoint(temp, j + 3);
 
-                EllipticalArc arc;
-                arc.x1 = path.getPoints()[j - 1].getX();
-                arc.y1 = path.getPoints()[j - 1].getY();
-                arc.rx = path.getPoints()[j].getX();
-                arc.ry = path.getPoints()[j].getY();
-                arc.phi = path.getPoints()[j + 1].getX();
-                arc.fA = path.getPoints()[j + 2].getX();
-                arc.fS = path.getPoints()[j + 2].getY();
-                arc.x2 = path.getPoints()[j + 3].getX();
-                arc.y2 = path.getPoints()[j + 3].getY();
-
-                Point* point = creatPoint(arc);
+                Point* point = createEllipticalArc(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                    path.getPoints()[j].getX(), path.getPoints()[j].getY(),
+                    path.getPoints()[j + 1].getX(),
+                    path.getPoints()[j + 2].getX(), path.getPoints()[j + 2].getY(),
+                    path.getPoints()[j + 3].getX(), path.getPoints()[j + 3].getY());
                 graphicsPath->AddCurve(point, 9);
 
                 j += 4;
             }
-	    else if (path.getCommand()[i] == 'q')
+            else if (path.getCommand()[i] == 'q')
             {
                 Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j].getY());
                 path.replaceOnePoint(temp, j);
@@ -611,13 +654,29 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
         this->graphicsPaths.push_back(graphicsPath);
     }
     else
-    {   
+    {
         graphicsPath = this->graphicsPaths[this->curent_path];
         ++this->curent_path;
     }
-    
+
+    double xMin = 0, xMax = 0;
+    for (int i = 0; i < path.getPoints().size(); i++)
+    {
+        if (path.getPoints()[i].getX() < xMin)
+        {
+            xMin = path.getPoints()[i].getX();
+        }
+        if (path.getPoints()[i].getX() > xMax)
+        {
+            xMax = path.getPoints()[i].getX();
+        }
+    }
+
     for (int i = 0; i < gradient.getLinearGradients().size(); ++i) {
         if (path.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            gradient.getLinearGradientAddress()[i][i].setPoint1(xMin, 0);
+            gradient.getLinearGradientAddress()[i][i].setPoint2(xMax, 0);
+
             graphics.FillPath(&*Draw::createLinearGradient(gradient.getLinearGradients()[i]), graphicsPath);
             alreadyHasBrush = 1;
             break;
@@ -626,6 +685,12 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
 
     for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
         if (path.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            int nColor = gradient.getRadialGradient()[i].getStops().size();
+            SolidBrush brush(Color(round(255 * gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopOpacity()),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getRed(),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getGreen(),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getBlue()));
+            graphics.FillPath(&brush, graphicsPath);
             graphics.FillPath(&*Draw::createRadialGradient(gradient.getRadialGradient()[i]), graphicsPath);
             alreadyHasBrush = 1;
             break;
@@ -642,11 +707,9 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
         graphics.DrawPath(&pen, graphicsPath);
 }
 
-
-// graphicsPath*
-
-VOID Draw::DrawPolyline(Graphics& graphics, PolylineSVG pll)
+VOID Draw::DrawPolyline(Graphics& graphics, PolylineSVG pll, Def gradient)
 {
+    int alreadyHasBrush = 0;
     Shape* shape = dynamic_cast<Shape*>(new PolylineSVG(pll));
     transform(graphics, shape);
 
@@ -658,13 +721,52 @@ VOID Draw::DrawPolyline(Graphics& graphics, PolylineSVG pll)
         points[i].Y = pll.getPoints()[i].getY();
     }
 
-    SolidBrush brush(Color(round(255 * pll.getFillOpacity()), pll.getFill().getRed(), pll.getFill().getGreen(), pll.getFill().getBlue()));
-    graphics.FillPolygon(&brush, points, nPoint);
-    Pen pen(Color(round(255 * pll.getStrokeOpacity()), pll.getStroke().getRed(), pll.getStroke().getGreen(), pll.getStroke().getBlue()), pll.getStrokeWidth());
+    double xMin = 0, xMax = 0;
+    for (int i = 0; i < pll.getPoints().size(); i++)
+    {
+        if (pll.getPoints()[i].getX() < xMin)
+        {
+            xMin = pll.getPoints()[i].getX();
+        }
+        if (pll.getPoints()[i].getX() > xMax)
+        {
+            xMax = pll.getPoints()[i].getX();
+        }
+    }
 
+    for (int i = 0; i < gradient.getLinearGradients().size(); ++i) {
+        if (pll.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            gradient.getLinearGradientAddress()[i][i].setPoint1(xMin, 0);
+            gradient.getLinearGradientAddress()[i][i].setPoint2(xMax, 0);
+
+            graphics.FillPolygon(&*Draw::createLinearGradient(gradient.getLinearGradients()[i]), points, nPoint);
+            alreadyHasBrush = 1;
+            break;
+        }
+    }
+
+    for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
+        if (pll.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+            int nColor = gradient.getRadialGradient()[i].getStops().size();
+            SolidBrush brush(Color(round(255 * gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopOpacity()),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getRed(),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getGreen(),
+                gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getBlue()));
+            graphics.FillPolygon(&brush, points, nPoint);
+            graphics.FillPolygon(&*Draw::createRadialGradient(gradient.getRadialGradient()[i]), points, nPoint);
+            alreadyHasBrush = 1;
+            break;
+        }
+    }
+
+    if (alreadyHasBrush == 0) {
+        SolidBrush brush(Color(round(255 * pll.getFillOpacity()), pll.getFill().getRed(), pll.getFill().getGreen(), pll.getFill().getBlue()));
+        graphics.FillPolygon(&brush, points, nPoint);
+    }
+
+    Pen pen(Color(round(255 * pll.getStrokeOpacity()), pll.getStroke().getRed(), pll.getStroke().getGreen(), pll.getStroke().getBlue()), pll.getStrokeWidth());
     if (pll.getStrokeWidth() != 0)
         graphics.DrawLines(&pen, points, nPoint);
-
 }
 
 void Draw::drawShape(Graphics& graphics, vector<Shape*> shapesSVG, Def gradient)
@@ -699,11 +801,11 @@ void Draw::drawShape(Graphics& graphics, vector<Shape*> shapesSVG, Def gradient)
 
         else if (shapesSVG[i]->getTypeName() == "polygon") {
             PolygonSVG* polygon = dynamic_cast<PolygonSVG*> (shapesSVG[i]);
-            DrawPolygon(graphics, *polygon);
+            DrawPolygon(graphics, *polygon, gradient);
         }
         else if (shapesSVG[i]->getTypeName() == "polyline") {
             PolylineSVG* polyline = dynamic_cast<PolylineSVG*> (shapesSVG[i]);
-            DrawPolyline(graphics, *polyline);
+            DrawPolyline(graphics, *polyline, gradient);
         }
         else if (shapesSVG[i]->getTypeName() == "path") {
             PathSVG* path = dynamic_cast<PathSVG*> (shapesSVG[i]);

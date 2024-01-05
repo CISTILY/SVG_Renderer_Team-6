@@ -7,19 +7,8 @@ using namespace Gdiplus;
 
 const double PI = 3.14159265359;
 
-struct EllipticalArc
-{
-	double x1, y1, rx, ry, phi, fA, fS, x2, y2;
-};
-
-struct CenterParameterization
-{
-	double cx, cy, theta1, deltaTheta;
-};
-
 double angleBetweenVectors(double, double, double, double);
-CenterParameterization convertEndpoint2Center(EllipticalArc&);
-Point* creatPoint(EllipticalArc&);
+Point* createEllipticalArc(double, double, double, double, double, double, double, double, double);
 
 class Draw {
 private:
@@ -42,9 +31,9 @@ public:
     VOID DrawEllipse(Graphics&, EllipseSVG, Def);
     VOID DrawLine(Graphics&, LineSVG);
     VOID DrawText(Graphics&, TextSVG, Def);
-    VOID DrawPolygon(Graphics&, PolygonSVG);
+    VOID DrawPolygon(Graphics&, PolygonSVG, Def);
     VOID DrawPath(Graphics&, PathSVG, Def); 
-    VOID DrawPolyline(Graphics&, PolylineSVG);
+    VOID DrawPolyline(Graphics&, PolylineSVG, Def);
 
     static void setDrew(bool);
 };

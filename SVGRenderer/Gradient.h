@@ -59,6 +59,8 @@ public:
 	virtual void print() = 0;										// Print out data
 
 	// Setters
+	void setPoint1(double, double);
+	void setPoint2(double, double);
 	void setID(char*);
 	void setGradientUnits(string);
 	void setSpreadMethod(string);
@@ -107,7 +109,7 @@ public:
 
 	// Destructor
 	~RadialGradientSVG();
-	
+
 	// Overrided functions
 	void buildGradient(vector<char*>, vector<char*>) override;
 	void print() override;
@@ -143,4 +145,5 @@ public:
 	// Getters
 	vector<LinearGradientSVG> getLinearGradients();
 	vector<RadialGradientSVG> getRadialGradient();
+	vector<LinearGradientSVG>* getLinearGradientAddress();
 };
