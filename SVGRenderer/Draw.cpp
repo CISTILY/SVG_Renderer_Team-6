@@ -17,7 +17,7 @@ Draw::~Draw()
 double angleBetweenVectors(double ux, double uy, double vx, double vy)
 {
     double angle = acos((ux * vx + uy * vy) / sqrt((ux * ux + uy * uy) * (vx * vx + vy * vy))) * 180 / PI;
-    if (ux * vx + uy * vy < 0)
+    if (ux * vy - uy * vx < 0)
         return -angle;
     return angle;
 }
@@ -46,7 +46,7 @@ CenterParameterization convertEndpoint2Center(EllipticalArc& arc)
     double cy = sin(phi) * cx_prime + cos(phi) * cy_prime + (y1 + y2) / 2;
 
     double theta1 = angleBetweenVectors(1, 0, (x1_prime - cx_prime) / rx, (y1_prime - cy_prime) / ry);
-    double deltaTheta = (int)angleBetweenVectors((x1_prime - cx_prime) / rx, (y1_prime - cy_prime) / ry, (-x1_prime - cx_prime) / rx, (-y1_prime - cy_prime) / ry) % 360;
+    double deltaTheta = (int)angleBetweenVectors((x1_prime - cx_prime) / rx, (y1_prime - cy_prime) / ry, (-x1_prime - cx_prime) / rx, (-y1_prime - cy_prime) / ry);
     if (fS == 0 && deltaTheta > 0)
         deltaTheta -= 360;
     else if (fS == 1 && deltaTheta < 0)
