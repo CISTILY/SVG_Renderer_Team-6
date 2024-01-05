@@ -479,7 +479,7 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
 
                 j += 2;
             }
-	        else if (path.getCommand()[i] == 'A')
+	    else if (path.getCommand()[i] == 'A')
             {
                 EllipticalArc arc;
                 arc.x1 = path.getPoints()[j - 1].getX();
@@ -503,11 +503,15 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
                 int i = 0;
                 for (double t = 0; t <= 1; t += 0.1)
                 {
-                    double x = (1 - t) * (1 - t) * path.getPoints()[j - 1].getX() + 2 * (1 - t) * t * path.getPoints()[j].getX() + t * t * ;
-                    double y = (1 - t) * (1 - t) * y1 + 2 * (1 - t) * t * y2 + t * t * y3;
+                    double x = (1 - t) * (1 - t) * path.getPoints()[j - 1].getX() + 2 * (1 - t) * t * path.getPoints()[j].getX() + t * t * path.getPoints()[j + 1].getX();
+                    double y = (1 - t) * (1 - t) * path.getPoints()[j - 1].getY() + 2 * (1 - t) * t * path.getPoints()[j].getY() + t * t * path.getPoints()[j + 1].getY();
                     point[i] = Point(x, y);
                     i++;
                 }
+
+                graphicsPath->AddCurve(point, 11);
+
+                j += 2;
             }
             else if (path.getCommand()[i] == 'Z' || path.getCommand()[i] == 'z')
             {
@@ -620,6 +624,27 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
                 graphicsPath->AddCurve(point, 9);
 
                 j += 4;
+            }
+	    else if (path.getCommand()[i] == 'q')
+            {
+                Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j].getY());
+                path.replaceOnePoint(temp, j);
+                Point2D temp2(path.getPoints()[j - 1].getX() + path.getPoints()[j + 1].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j + 1].getY());
+                path.replaceOnePoint(temp2, j + 1);
+
+                Point* point = new Point[11];
+                int i = 0;
+                for (double t = 0; t <= 1; t += 0.1)
+                {
+                    double x = (1 - t) * (1 - t) * path.getPoints()[j - 1].getX() + 2 * (1 - t) * t * path.getPoints()[j].getX() + t * t * path.getPoints()[j + 1].getX();
+                    double y = (1 - t) * (1 - t) * path.getPoints()[j - 1].getY() + 2 * (1 - t) * t * path.getPoints()[j].getY() + t * t * path.getPoints()[j + 1].getY();
+                    point[i] = Point(x, y);
+                    i++;
+                }
+
+                graphicsPath->AddCurve(point, 11);
+
+                j += 2;
             }
         }
 
