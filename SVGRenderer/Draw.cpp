@@ -72,57 +72,17 @@ Point* creatPoint(EllipticalArc& arc)
 
     Point* point = new Point[9];
     point[0] = Point(arc.x1, arc.y1);
-    if (fA == 0 && fS == 0)
+    double t = deltaTheta / 8;
+    for (int i = 1; i < 8; i++)
     {
-        double t = -(360 + deltaTheta) / 8;
-        for (int i = 1; i < 8; i++)
-        {
-            double theta = (arc.y1 > cy) ? (theta1 + t) * PI / 180 : (-theta1 + t) * PI / 180;
-            double x = rx * cos(theta) * cos(phi) - ry * sin(theta) * sin(phi) + cx;
-            double y = rx * cos(theta) * sin(phi) + ry * sin(theta) * cos(phi) + cy;
-            point[i] = Point(x, y);
-            t += -(360 + deltaTheta) / 8;
-        }
-    }
-    else if (fA == 0 && fS == 1)
-    {
-        double t = (arc.y1 > cx) ? (360 - deltaTheta) / 8 : deltaTheta / 8;
-        for (int i = 1; i < 8; i++)
-        {
-            double theta = (theta1 + t) * PI / 180;
-            double x = rx * cos(theta) * cos(phi) - ry * sin(theta) * sin(phi) + cx;
-            double y = rx * cos(theta) * sin(phi) + ry * sin(theta) * cos(phi) + cy;
-            point[i] = Point(x, y);
-            t += (arc.y1 > cx) ? (360 - deltaTheta) / 8 : deltaTheta / 8;
-        }
-    }
-    else if (fA == 1 && fS == 0)
-    {
-        double t = deltaTheta / 8;
-        for (int i = 1; i < 8; i++)
-        {
-            double theta = (theta1 + t) * PI / 180;
-            double x = rx * cos(theta) * cos(phi) - ry * sin(theta) * sin(phi) + cx;
-            double y = rx * cos(theta) * sin(phi) + ry * sin(theta) * cos(phi) + cy;
-            point[i] = Point(x, y);
-            t += deltaTheta / 8;
-        }
-    }
-    else if (fA == 1 && fS == 1)
-    {
-        double t = (360 - deltaTheta) / 8;
-        for (int i = 1; i < 8; i++)
-        {
-            double theta = (arc.y1 > cy) ? (theta1 + t) * PI / 180 : (-theta1 + t) * PI / 180;
-            double x = rx * cos(theta) * cos(phi) - ry * sin(theta) * sin(phi) + cx;
-            double y = rx * cos(theta) * sin(phi) + ry * sin(theta) * cos(phi) + cy;
-            point[i] = Point(x, y);
-            t += (360 - deltaTheta) / 8;
-        }
+        double theta = (theta1 + t) * PI / 180;
+        double x = rx * cos(theta) * cos(phi) - ry * sin(theta) * sin(phi) + cx;
+        double y = rx * cos(theta) * sin(phi) + ry * sin(theta) * cos(phi) + cy;
+        point[i] = Point(x, y);
+        t += deltaTheta / 8;
     }
     point[8] = Point(arc.x2, arc.y2);
     return point;
-
 }
 
 void Draw::transform(Graphics& graphics, Shape* shape) {
