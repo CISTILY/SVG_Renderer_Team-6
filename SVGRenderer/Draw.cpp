@@ -479,7 +479,7 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
 
                 j += 2;
             }
-	    else if (path.getCommand()[i] == 'A')
+	        else if (path.getCommand()[i] == 'A')
             {
                 EllipticalArc arc;
                 arc.x1 = path.getPoints()[j - 1].getX();
@@ -496,6 +496,18 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
                 graphicsPath->AddCurve(point, 9);
 
                 j += 4;
+            }
+            else if (path.getCommand()[i] == 'Q')
+            {
+                Point* point = new Point[11];
+                int i = 0;
+                for (double t = 0; t <= 1; t += 0.1)
+                {
+                    double x = (1 - t) * (1 - t) * path.getPoints()[j - 1].getX() + 2 * (1 - t) * t * path.getPoints()[j].getX() + t * t * ;
+                    double y = (1 - t) * (1 - t) * y1 + 2 * (1 - t) * t * y2 + t * t * y3;
+                    point[i] = Point(x, y);
+                    i++;
+                }
             }
             else if (path.getCommand()[i] == 'Z' || path.getCommand()[i] == 'z')
             {
