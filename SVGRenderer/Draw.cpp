@@ -116,7 +116,7 @@ PathGradientBrush* Draw::createRadialGradient(RadialGradientSVG rgSVG)
     for (int i = 0; i < n; i++)
     {
         colors[i] = Color(255 * rgSVG.getStops()[i].getStopOpacity(), rgSVG.getStops()[i].getStopColor().getRed(), rgSVG.getStops()[i].getStopColor().getGreen(), rgSVG.getStops()[i].getStopColor().getBlue());
-        pos[i] = rgSVG.getStops()[i].getOffset() / 100;
+        pos[i] = rgSVG.getStops()[i].getOffset();
     }
     Matrix matrix(rgSVG.getMatrix()[0], rgSVG.getMatrix()[1], rgSVG.getMatrix()[2], rgSVG.getMatrix()[3], rgSVG.getMatrix()[4], rgSVG.getMatrix()[5]);
 
