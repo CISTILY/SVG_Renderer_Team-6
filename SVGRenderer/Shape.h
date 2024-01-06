@@ -30,6 +30,8 @@ protected:
     double stroke_opacity;
     ColorSVG fill;
     ColorSVG stroke;
+    string style;
+
 public:
     // Constructor
     Shape();
