@@ -152,7 +152,7 @@ VOID Draw::DrawCircle(Graphics& graphics, CircleSVG circle, Def gradient)
     }
 
     for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
-        if (circle.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+        if (circle.getFill().getURL() == gradient.getRadialGradient()[i].getID() && alreadyHasBrush == 0) {
             int nColor = gradient.getRadialGradient()[i].getStops().size();
             SolidBrush brush(Color(round(255 * gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopOpacity()),
                 gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getRed(),
@@ -195,7 +195,7 @@ VOID Draw::DrawRectangle(Graphics& graphics, RectangleSVG rect, Def gradient)
     }
 
     for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
-        if (rect.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+        if (rect.getFill().getURL() == gradient.getRadialGradient()[i].getID() && alreadyHasBrush == 0) {
             int nColor = gradient.getRadialGradient()[i].getStops().size();
             SolidBrush brush(Color(round(255 * gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopOpacity()),
                 gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getRed(),
@@ -240,7 +240,7 @@ VOID Draw::DrawEllipse(Graphics& graphics, EllipseSVG ellip, Def gradient)
     }
 
     for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
-        if (ellip.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+        if (ellip.getFill().getURL() == gradient.getRadialGradient()[i].getID() && alreadyHasBrush == 0) {
             int nColor = gradient.getRadialGradient()[i].getStops().size();
             SolidBrush brush(Color(round(255 * gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopOpacity()),
                 gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getRed(),
@@ -331,7 +331,7 @@ VOID Draw::DrawText(Graphics& graphics, TextSVG text, Def gradient)
     }
 
     for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
-        if (text.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+        if (text.getFill().getURL() == gradient.getRadialGradient()[i].getID() && alreadyHasBrush == 0) {
             int nColor = gradient.getRadialGradient()[i].getStops().size();
             SolidBrush brush(Color(round(255 * gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopOpacity()),
                 gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getRed(),
@@ -392,7 +392,7 @@ VOID Draw::DrawPolygon(Graphics& graphics, PolygonSVG plg, Def gradient)
     }
 
     for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
-        if (plg.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+        if (plg.getFill().getURL() == gradient.getRadialGradient()[i].getID() && alreadyHasBrush == 0) {
             int nColor = gradient.getRadialGradient()[i].getStops().size();
             SolidBrush brush(Color(round(255 * gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopOpacity()),
                 gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getRed(),
@@ -684,7 +684,7 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
     }
 
     for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
-        if (path.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+        if (path.getFill().getURL() == gradient.getRadialGradient()[i].getID() && alreadyHasBrush == 0) {
             int nColor = gradient.getRadialGradient()[i].getStops().size();
             SolidBrush brush(Color(round(255 * gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopOpacity()),
                 gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getRed(),
@@ -746,7 +746,7 @@ VOID Draw::DrawPolyline(Graphics& graphics, PolylineSVG pll, Def gradient)
     }
 
     for (int i = 0; i < gradient.getRadialGradient().size(); ++i) {
-        if (pll.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
+        if (pll.getFill().getURL() == gradient.getRadialGradient()[i].getID() && alreadyHasBrush == 0) {
             int nColor = gradient.getRadialGradient()[i].getStops().size();
             SolidBrush brush(Color(round(255 * gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopOpacity()),
                 gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getRed(),
