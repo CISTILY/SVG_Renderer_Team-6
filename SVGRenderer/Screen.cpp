@@ -29,19 +29,22 @@ void ScreenSVG::buildScreen(vector<char*> name, vector<char*> value)
         
         if (temp == "width")
         {
-	    string value = value[i];
-            this->width = stof(value);
-	    if(value.find("pt" != string::npos)
-		this->width *= 4.0/3;
+	        string valuePos = value[i];
+            this->width = stof(valuePos);
+            if (valuePos.find("pt") != string::npos) {
+                this->width *= 4.0 / 3.0;
+            }
             this->flagWidth = 1;
         }
             
         else if (temp == "height")
         {
-	    string value = value[i];
-            this->height = stof(value);
-	    if(value.find("pt" != string::npos)
-		this->height *= 4.0/3;
+            string valuePos = value[i];
+            this->height = stof(valuePos);
+            if (valuePos.find("pt") != string::npos)
+            {
+                this->height *= 4.0 / 3.0;
+            }
             this->flagHeight = 1;
         }
             
