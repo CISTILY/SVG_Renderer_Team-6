@@ -4,6 +4,7 @@
 #include "Point2D.h"
 #include <iostream>
 #include <sstream>
+#include <cstring>
 
 using namespace std;
 
