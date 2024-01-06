@@ -4,6 +4,7 @@
 #include "Point2D.h"
 #include <iostream>
 #include <sstream>
+#include <cstring>
 
 using namespace std;
 
@@ -30,6 +31,8 @@ protected:
     double stroke_opacity;
     ColorSVG fill;
     ColorSVG stroke;
+    string style;
+
 public:
     // Constructor
     Shape();
@@ -38,7 +41,7 @@ public:
     virtual ~Shape();
 
     // Setters
-    void buildProperties(vector<char*>, vector<char*>);
+    void buildProperties(vector<char*>&, vector<char*>&);
     void setStroke(ColorSVG);
     void setStrokeWidth(float);
     void setStrokeOpacity(double);

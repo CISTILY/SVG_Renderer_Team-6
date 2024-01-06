@@ -20,7 +20,7 @@ Shape::~Shape() {
     //cout << "Shape::Destructor" << endl;
 }
 
-void Shape::buildProperties(vector<char*> name, vector<char*> value) {
+void Shape::buildProperties(vector<char*>& name, vector<char*>& value) {
     string temp;
     for (int i = 0; i < name.size(); ++i) {
         temp = name[i];
@@ -78,8 +78,46 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value) {
             this->flagFillOpacity = 1;
             this->fill_opacity = stof(value[i]);
         }
-            
+        else if (temp == "style") {
+            string val = value[i];
+            this->style = val;
 
+            int posStartVal;
+            int posEndVal;
+            while(val.find(":") != string::npos)
+            {        
+                while(val[0] == ' ')
+                    val.erase(0,1);
+
+                posStartVal = val.find(":");
+                if(val[posStartVal + 1] == ' ')
+                    val.erase(posStartVal + 1, 1);
+                
+                posEndVal = val.find(";");
+                if(posEndVal == string::npos)
+                    posEndVal = val.length();
+                
+                string styleName = val.substr(0, posStartVal);
+                string styleVal = val.substr(posStartVal + 1, posEndVal - posStartVal - 1);
+
+                vector<char> charVectorName(styleName.begin(), styleName.end());
+                charVectorName.push_back('\0');
+                char* namePtr = new char[charVectorName.size()];  
+                strcpy(namePtr, charVectorName.data());           
+                name.push_back(namePtr);
+
+                vector<char> charVectorValue(styleVal.begin(), styleVal.end());
+                charVectorValue.push_back('\0');
+                char* valuePtr = new char[charVectorValue.size()];  
+                strcpy(valuePtr, charVectorValue.data());           
+                value.push_back(valuePtr);
+
+                if(posEndVal == val.length())
+                    val.erase(0, posEndVal);
+                else
+                    val.erase(0, posEndVal + 1);
+            }
+        }
         else if (temp == "transform") {
             this->flagTransform = 1;
             this->transform.push_back(value[i]);
