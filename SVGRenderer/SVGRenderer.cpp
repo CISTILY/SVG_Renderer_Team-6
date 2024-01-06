@@ -25,17 +25,19 @@ string ConvertLPCWSTRToString(LPCWSTR lpcwszStr)
     return str;
 }
 
-VOID OnPaint(HDC hdc, int offsetX, int offsetY, int angle, Point2D scale)
+VOID OnPaint(HDC hdc, float xPos, float yPos, int angle, Point2D scale, float zoom)
 {
+    ShapeData* data = ShapeData::getInstance();
+    ScreenSVG screen = data->getScreen();
+
     // Ref: https://docs.microsoft.com/en-us/windows/desktop/gdiplus/-gdiplus-getting-started-use
     Graphics graphics(hdc);
     graphics.SetSmoothingMode(SmoothingModeAntiAlias);
-    graphics.TranslateTransform(static_cast<REAL>(offsetX), static_cast<REAL>(offsetY));
     graphics.RotateTransform(static_cast<REAL> (angle));
-    graphics.ScaleTransform(scale.getX(), scale.getY());
-
-    ShapeData* data = ShapeData::getInstance();
-
+    graphics.TranslateTransform(static_cast<REAL>(xPos), static_cast<REAL>(yPos));
+    graphics.SetClip(RectF(0, 0, screen.getSize().getX() * zoom, screen.getSize().getY() * zoom));
+    graphics.ScaleTransform(scale.getX() * zoom, scale.getY() * zoom);
+    
     Draw pen;
     pen.drawShape(graphics, data->getVectorShape(), data->getDef());
     Draw::setDrew(1);
@@ -67,7 +69,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
         wcout << szArglist[k] << endl;
     }
 
-    filename = ConvertLPCWSTRToString(szArglist[1]);
+    //filename = ConvertLPCWSTRToString(szArglist[1]);
+    filename = "Instagram_logo_2016.svg";
 
     ShapeData* data = ShapeData::getInstance();
     data->readSVG(filename);
@@ -126,9 +129,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     ShapeData* data = ShapeData::getInstance();
     static Point2D scale(1.0, 1.0);
     
-    static int xPos = 0;
-    static int yPos = 0;
+    static float xPos = 0;
+    static float yPos = 0;
     static int angle = 0;
+    static float zoom = 1.0;
     const int a = 5;
     const int stepSize = 30;
 
@@ -137,52 +141,61 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     case WM_CREATE:
         if (data->getScreen().getFlagViewBox() == true) 
         {
+            ScreenSVG screen = data->getScreen();
             RECT rect;
             GetClientRect(hWnd, &rect); // get port size
 
             int width = rect.right - rect.left;
             int height = rect.bottom - rect.top;
-            float scrWidth = data->getScreen().getView().getX();
-            float scrHeight = data->getScreen().getView().getY();
+            float scrWidth = screen.getView().getX();
+            float scrHeight = screen.getView().getY();
 
-            if (data->getScreen().getFlagRatio())
-            { 
+            scale.setX(width / scrWidth);
+            scale.setY(height / scrHeight);
 
-                if (data->getScreen().getAspect() == "none") 
-                {
-                    scale.setX(width / scrWidth);
-                    scale.setY(height / scrHeight);
-                }
-                else if (data->getScreen().getAspect() == "slice") 
+            if (screen.getFlagRatio())
+            {
+                if (screen.getAspect() == "slice")
                 {
                     if (width > height)
                     {
-                        scale.setX(width / scrWidth);
                         scale.setY(scale.getX());
                     }
                     else if (width < height)
                     {
-                        scale.setY(height / scrHeight);
                         scale.setX(scale.getY());
                     }
                 }
-                else {
-                    scale.setY(height / scrHeight);
-                    scale.setX(scale.getY());
+                else if (screen.getAspect() == "meet") {
+                    if (scale.getX() > scale.getY())
+                        scale.setX(scale.getY());
+                    else scale.setY(scale.getX());
                 }
+
+                string xRatio = screen.getXRatio();
+                string yRatio = screen.getYRatio();
+                if (xRatio == "Mid")
+                    xPos = abs(static_cast<float>(width) - screen.getView().getX() * scale.getX()) / 2;
+                else if (xRatio == "Max")
+                    xPos = abs(static_cast<float>(width) - screen.getView().getX() * scale.getX());
+                if (yRatio == "Mid")
+                    yPos = abs(static_cast<float>(height) - screen.getView().getY() * scale.getY()) / 2;
+                else if (yRatio == "Max")
+                    yPos = abs(static_cast<float>(height) - screen.getView().getY() * scale.getY());
             }
             else {
-                scale.setY(height / scrHeight);
-                scale.setX(scale.getY());
-            }
+                if (scale.getX() > scale.getY())
+                    scale.setX(scale.getY());
+                else scale.setY(scale.getX());
 
-            xPos = -data->getScreen().getViewPosition().getX() * scale.getX();
-            yPos = -data->getScreen().getViewPosition().getY() * scale.getY();
+                xPos = -data->getScreen().getViewPosition().getX() * scale.getX();
+                yPos = -data->getScreen().getViewPosition().getY() * scale.getY();
+            }
         }
         break;
     case WM_PAINT:
         hdc = BeginPaint(hWnd, &ps);
-        OnPaint(hdc, xPos, yPos, angle, scale);
+        OnPaint(hdc, xPos, yPos, angle, scale, zoom);
         EndPaint(hWnd, &ps);
         return 0;
     case WM_DESTROY:
@@ -216,12 +229,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     {
         int delta = GET_WHEEL_DELTA_WPARAM(wParam);
         if (delta > 0) {
-            scale.setX(scale.getX() * 1.1);
-            scale.setY(scale.getY() * 1.1);
+            zoom *= 1.1;
         }
         else {
-            scale.setX(scale.getX() * 0.9);
-            scale.setY(scale.getY() * 0.9);
+            zoom *= 0.9;
         }
         InvalidateRect(hWnd, NULL, TRUE);
         break;
@@ -229,60 +240,4 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
-} // WndProc
-
-//int __cdecl main() {
-//    string filename;
-//    LPWSTR* szArglist;
-//    int nArgs;
-//    int k;
-//
-//    szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
-//    if (NULL == szArglist)
-//    {
-//        wprintf(L"CommandLineToArgvW failed\n");
-//        return 0;
-//    }
-//    else for (k = 0; k < nArgs; k++) {
-//        wcout << "line " << k << ": ";
-//        wcout << szArglist[k] << endl;
-//    }
-//
-//    if (nArgs > 1)
-//        filename = ConvertLPCWSTRToString(szArglist[1]);
-//    else {
-//        cout << "Enter file name: ";
-//        getline(cin, filename);
-//        filename += ".svg";
-//        cout << filename << endl;
-//    }
-//    LocalFree(szArglist);
-//
-//    // Read XML
-//    xml_document<> doc;
-//    xml_node<>* rootNode;
-//    // Read the xml file into a vector
-//    ifstream file(filename);
-//    vector<char> buffer((istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
-//    buffer.push_back('\0');
-//    // Parse the buffer using the xml file parsing library into doc 
-//    doc.parse<0>(&buffer[0]);
-//
-//    rootNode = doc.first_node("svg");
-//    ScreenSVG screen;
-//    screen.readScreen(rootNode);
-//
-//    xml_node<>* node = rootNode->first_node();
-//    ShapeData temp;
-//    vector<ShapeData> data;
-//
-//    // Load font for text rendering
-//    int text_order = 0;
-//    temp.readFile(node, data, filename, text_order); 
-//    for (int i = 0; i < data.size(); ++i) {
-//        string temp = data[i].getTypeName();
-//        if (temp == "g")
-//            data[i].ReplaceProperties();
-//    }
-//    return (1);
-//}
+}
