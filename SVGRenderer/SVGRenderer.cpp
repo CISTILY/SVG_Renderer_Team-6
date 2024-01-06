@@ -35,7 +35,7 @@ VOID OnPaint(HDC hdc, float xPos, float yPos, int angle, Point2D scale, float zo
     graphics.SetSmoothingMode(SmoothingModeAntiAlias);
     graphics.RotateTransform(static_cast<REAL> (angle));
     graphics.TranslateTransform(static_cast<REAL>(xPos), static_cast<REAL>(yPos));
-    graphics.SetClip(RectF(0, 0, screen.getSize().getX() * zoom, screen.getSize().getY() * zoom));
+    //graphics.SetClip(RectF(0, 0, screen.getSize().getX() * zoom, screen.getSize().getY() * zoom));
     graphics.ScaleTransform(scale.getX() * zoom, scale.getY() * zoom);
     
     Draw pen;
@@ -69,8 +69,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
         wcout << szArglist[k] << endl;
     }
 
-    //filename = ConvertLPCWSTRToString(szArglist[1]);
-    filename = "Instagram_logo_2016.svg";
+    filename = ConvertLPCWSTRToString(szArglist[1]);
+    //filename = "Instagram_logo_2016.svg";
 
     ShapeData* data = ShapeData::getInstance();
     data->readSVG(filename);
