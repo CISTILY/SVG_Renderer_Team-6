@@ -129,11 +129,9 @@ bool ScreenSVG::getFlagRatio()
 }
 
 Point2D ScreenSVG::getSize() {
-    if (!this->flagHeight)
-        this->height = 0x80000000;
-    if (!this->flagWidth)
-        this->width = 0x80000000;
-    return Point2D(this->width, this->height);
+    if (this->flagHeight && this->flagWidth)
+        return Point2D(this->width + 16, this->height + 39);
+    else return Point2D(0x80000000, 0x80000000);
 }
 
 
