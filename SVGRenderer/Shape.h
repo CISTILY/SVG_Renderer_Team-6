@@ -40,7 +40,7 @@ public:
     virtual ~Shape();
 
     // Setters
-    void buildProperties(vector<char*>, vector<char*>);
+    void buildProperties(vector<char*>&, vector<char*>&);
     void setStroke(ColorSVG);
     void setStrokeWidth(float);
     void setStrokeOpacity(double);
