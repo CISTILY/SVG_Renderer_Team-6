@@ -69,8 +69,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
         wcout << szArglist[k] << endl;
     }
 
-    filename = ConvertLPCWSTRToString(szArglist[1]);
-    //filename = "Instagram_logo_2016.svg";
+    //filename = ConvertLPCWSTRToString(szArglist[1]);
+    filename = "svg-14.svg";
 
     ShapeData* data = ShapeData::getInstance();
     data->readSVG(filename);
@@ -101,8 +101,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
         WS_OVERLAPPEDWINDOW,      // window style
         CW_USEDEFAULT,            // initial x position
         CW_USEDEFAULT,            // initial y position
-        data->getScreen().getSize().getX() + 20,            // initial x size
-        data->getScreen().getSize().getY() + 40,            // initial y size
+        data->getScreen().getSize().getX(),            // initial x size
+        data->getScreen().getSize().getY(),            // initial y size
         NULL,                     // parent window handle
         NULL,                     // window menu handle
         hInstance,                // program instance handle
