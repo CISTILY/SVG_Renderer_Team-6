@@ -659,8 +659,8 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
 
     for (int i = 0; i < gradient.getLinearGradients().size(); ++i) {
         if (path.getFill().getURL() == gradient.getLinearGradients()[i].getID() && alreadyHasBrush == 0) {
-            gradient.getLinearGradientAddress()[i][i].setPoint1(xMin, 0);
-            gradient.getLinearGradientAddress()[i][i].setPoint2(xMax, 0);
+            gradient.getLinearGradients()[i].setPoint1(xMin, 0);
+            gradient.getLinearGradients()[i].setPoint2(xMax, 0);
 
             graphics.FillPath(&*Draw::createLinearGradient(gradient.getLinearGradients()[i]), graphicsPath);
             alreadyHasBrush = 1;
