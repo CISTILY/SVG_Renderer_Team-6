@@ -14,51 +14,38 @@ Draw::~Draw()
     //cout << "Draw::Destructor\n";
 }
 
-double angleBetweenVectors(double ux, double uy, double vx, double vy)
+float angleBetweenVectors(float ux, float uy, float vx, float vy)
 {
-    double angle = acos((ux * vx + uy * vy) / sqrt((ux * ux + uy * uy) * (vx * vx + vy * vy))) * 180 / PI;
+    float angle = acos((ux * vx + uy * vy) / sqrt((ux * ux + uy * uy) * (vx * vx + vy * vy))) * 180 / PI;
     if (ux * vy - uy * vx < 0)
         return -angle;
     return angle;
 }
 
-Point* createEllipticalArc(double x1, double y1, double rx, double ry, double phi, double fA, double fS, double x2, double y2)
+EllipticalArc createEllipticalArc(float x1, float y1, float rx, float ry, float phi, float fA, float fS, float x2, float y2)
 {
     phi = phi * PI / 180;
 
-    double x1_prime = cos(phi) * ((x1 - x2) / 2) + sin(phi) * ((y1 - y2) / 2);
-    double y1_prime = -sin(phi) * ((x1 - x2) / 2) + cos(phi) * ((y1 - y2) / 2);
+    float x1_prime = cos(phi) * ((x1 - x2) / 2) + sin(phi) * ((y1 - y2) / 2);
+    float y1_prime = -sin(phi) * ((x1 - x2) / 2) + cos(phi) * ((y1 - y2) / 2);
 
-    double sign = (fA == fS) ? -1 : 1;
-    double tmp = sign * sqrt((rx * rx * ry * ry - rx * rx * y1_prime * y1_prime - ry * ry * x1_prime * x1_prime) / (rx * rx * y1_prime * y1_prime + ry * ry * x1_prime * x1_prime));
-    double cx_prime = tmp * (rx * y1_prime / ry);
-    double cy_prime = -tmp * (ry * x1_prime / rx);
+    float sign = (fA == fS) ? -1 : 1;
+    float tmp = sign * sqrt((rx * rx * ry * ry - rx * rx * y1_prime * y1_prime - ry * ry * x1_prime * x1_prime) / (rx * rx * y1_prime * y1_prime + ry * ry * x1_prime * x1_prime));
+    float cx_prime = tmp * (rx * y1_prime / ry);
+    float cy_prime = -tmp * (ry * x1_prime / rx);
 
-    double cx = cos(phi) * cx_prime - sin(phi) * cy_prime + (x1 + x2) / 2;
-    double cy = sin(phi) * cx_prime + cos(phi) * cy_prime + (y1 + y2) / 2;
+    float cx = cos(phi) * cx_prime - sin(phi) * cy_prime + (x1 + x2) / 2;
+    float cy = sin(phi) * cx_prime + cos(phi) * cy_prime + (y1 + y2) / 2;
 
-    double theta1 = angleBetweenVectors(1, 0, (x1_prime - cx_prime) / rx, (y1_prime - cy_prime) / ry);
-    double deltaTheta = (int)angleBetweenVectors((x1_prime - cx_prime) / rx, (y1_prime - cy_prime) / ry, (-x1_prime - cx_prime) / rx, (-y1_prime - cy_prime) / ry);
+    float theta1 = angleBetweenVectors(1, 0, (x1_prime - cx_prime) / rx, (y1_prime - cy_prime) / ry);
+    float deltaTheta = angleBetweenVectors((x1_prime - cx_prime) / rx, (y1_prime - cy_prime) / ry, (-x1_prime - cx_prime) / rx, (-y1_prime - cy_prime) / ry);
+    
     if (fS == 0 && deltaTheta > 0)
         deltaTheta -= 360;
     else if (fS == 1 && deltaTheta < 0)
         deltaTheta += 360;
 
-    Point* point = new Point[9];
-    point[0] = Point(x1, y1);
-
-    double t = deltaTheta / 8;
-    for (int i = 1; i < 9; i++)
-    {
-        double theta = (theta1 + t) * PI / 180;
-        double x = rx * cos(theta) * cos(phi) - ry * sin(theta) * sin(phi) + cx;
-        double y = rx * cos(theta) * sin(phi) + ry * sin(theta) * cos(phi) + cy;
-        point[i] = Point(x, y);
-        t += deltaTheta / 8;
-    }
-    point[8] = Point(x2, y2);
-
-    return point;
+    return { cx,cy,theta1,deltaTheta };
 }
 
 void Draw::transform(Graphics& graphics, Shape* shape) {
@@ -498,13 +485,12 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
             }
             else if (path.getCommand()[i] == 'A')
             {
-                Point* point = createEllipticalArc(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                EllipticalArc arc = createEllipticalArc(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
                     path.getPoints()[j].getX(), path.getPoints()[j].getY(),
                     path.getPoints()[j + 1].getX(),
                     path.getPoints()[j + 2].getX(), path.getPoints()[j + 2].getY(),
                     path.getPoints()[j + 3].getX(), path.getPoints()[j + 3].getY());
-                graphicsPath->AddCurve(point, 9);
-
+                graphicsPath->AddArc(arc.cx - path.getPoints()[j].getX(), arc.cy - path.getPoints()[j].getY(), 2 * path.getPoints()[j].getX(), 2 * path.getPoints()[j].getY(), fmod((long double)arc.theta1, 360), fmod((long double)arc.deltaTheta, 360));
                 j += 4;
             }
             else if (path.getCommand()[i] == 'Q')
@@ -619,13 +605,12 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
                 Point2D temp(path.getPoints()[j - 1].getX() + path.getPoints()[j + 3].getX(), path.getPoints()[j - 1].getY() + path.getPoints()[j + 3].getY());
                 path.replaceOnePoint(temp, j + 3);
 
-                Point* point = createEllipticalArc(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
+                EllipticalArc arc = createEllipticalArc(path.getPoints()[j - 1].getX(), path.getPoints()[j - 1].getY(),
                     path.getPoints()[j].getX(), path.getPoints()[j].getY(),
                     path.getPoints()[j + 1].getX(),
                     path.getPoints()[j + 2].getX(), path.getPoints()[j + 2].getY(),
                     path.getPoints()[j + 3].getX(), path.getPoints()[j + 3].getY());
-                graphicsPath->AddCurve(point, 9);
-
+                graphicsPath->AddArc(arc.cx - path.getPoints()[j].getX(), arc.cy - path.getPoints()[j].getY(), 2 * path.getPoints()[j].getX(), 2 * path.getPoints()[j].getY(), fmod((long double)arc.theta1, 360), fmod((long double)arc.deltaTheta, 360));
                 j += 4;
             }
             else if (path.getCommand()[i] == 'q')

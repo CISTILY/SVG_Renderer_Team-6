@@ -5,10 +5,15 @@ using namespace rapidxml;
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
 
-const double PI = 3.14159265359;
+const double PI = 3.14159265358979323846;
 
-double angleBetweenVectors(double, double, double, double);
-Point* createEllipticalArc(double, double, double, double, double, double, double, double, double);
+struct EllipticalArc
+{
+    float cx, cy, theta1, deltaTheta;
+};
+
+float angleBetweenVectors(float, float, float, float);
+EllipticalArc createEllipticalArc(float, float, float, float, float, float, float, float, float);
 
 class Draw {
 private:
