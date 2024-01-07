@@ -3,7 +3,8 @@
 
 using namespace std;
 
-class PolygonSVG : public PolylineSVG {
+class PolygonSVG : public PolylineSVG 
+{
 public:
     // Constructor
     PolygonSVG();

@@ -12,18 +12,16 @@ ScreenSVG::ScreenSVG()
     this->flagHeight = 0;
     this->flagViewBox = 0;
     this->flagRatio = 0;
-
-    cout << "ScreenSVG::Default Constructor" << endl;
 }
 
 ScreenSVG::~ScreenSVG()
 {
-    cout << "ScreenSVG::Destructor" << endl;
+
 }
 
 void ScreenSVG::buildScreen(vector<char*> name, vector<char*> value)
 {
-    for(int i = 0; i < name.size(); ++i)
+    for (int i = 0; i < name.size(); ++i)
     {
         string temp = name[i];
         
@@ -36,7 +34,6 @@ void ScreenSVG::buildScreen(vector<char*> name, vector<char*> value)
             }
             this->flagWidth = 1;
         }
-            
         else if (temp == "height")
         {
             string valuePos = value[i];
@@ -47,7 +44,6 @@ void ScreenSVG::buildScreen(vector<char*> name, vector<char*> value)
             }
             this->flagHeight = 1;
         }
-            
         else if (temp == "viewBox")
         {
             this->flagViewBox = 1;
@@ -66,7 +62,6 @@ void ScreenSVG::buildScreen(vector<char*> name, vector<char*> value)
 			          this->view_box[j] = stof(dup);
             }
         }
-
         else if (temp == "preserveAspectRatio")
         {
             this->flagRatio = 1;
@@ -128,14 +123,16 @@ bool ScreenSVG::getFlagRatio()
     return this->flagRatio;
 }
 
-Point2D ScreenSVG::getSize() {
+Point2D ScreenSVG::getSize() 
+{
     if (this->flagHeight && this->flagWidth)
         return Point2D(this->width + 16, this->height + 39);
     else return Point2D(0x80000000, 0x80000000);
 }
 
 
-Point2D ScreenSVG::getView() {
+Point2D ScreenSVG::getView() 
+{
     return Point2D(this->view_box[2], this->view_box[3]);
 }
 

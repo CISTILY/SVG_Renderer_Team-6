@@ -1,19 +1,21 @@
 #include "Rect.h"
 
-RectangleSVG::RectangleSVG() {
+RectangleSVG::RectangleSVG() 
+{
     this->width = 0;
     this->height = 0;
-
-    //cout << "Rectangle::Default Constructor" << endl;
 }
 
-RectangleSVG::~RectangleSVG() {
-    //cout << "Rectangle::Destructor" << endl;
+RectangleSVG::~RectangleSVG() 
+{
+
 }
 
-void RectangleSVG::buildShape(vector<char*> name, vector<char*> value) {
+void RectangleSVG::buildShape(vector<char*> name, vector<char*> value) 
+{
     string temp;
-    for (int i = 0; i < name.size(); ++i) {
+    for (int i = 0; i < name.size(); ++i) 
+    {
         temp = name[i];
         if (temp == "x")
             this->coordinate.setX(stof(value[i]));
@@ -26,23 +28,28 @@ void RectangleSVG::buildShape(vector<char*> name, vector<char*> value) {
     }
 }
 
-void RectangleSVG::setWidth(float w) {
+void RectangleSVG::setWidth(float w) 
+{
     this->width = w;
 }
 
-void RectangleSVG::setHeight(float h) {
+void RectangleSVG::setHeight(float h) 
+{
     this->height = h;
 }
 
-float RectangleSVG::getHeight() {
+float RectangleSVG::getHeight() 
+{
     return this->height;
 }
 
-float RectangleSVG::getWidth() {
+float RectangleSVG::getWidth() 
+{
     return this->width;
 }
 
-void RectangleSVG::print() {
+void RectangleSVG::print() 
+{
     this->coordinate.print();
     cout << " " << this->width << " " << this->height << " ";
     Shape::print();

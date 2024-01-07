@@ -2,7 +2,8 @@
 
 using namespace std;
 
-Shape::Shape() {
+Shape::Shape() 
+{
     this->flagStroke = 0;
     this->flagStrokeWidth = 0;
     this->flagStrokeOpacity = 0;
@@ -13,24 +14,28 @@ Shape::Shape() {
     this->stroke_width = 0;
     this->stroke_opacity = 1;
     this->fill_opacity = 1;
-    //cout << "Shape::Constructor" << endl;
 }
 
-Shape::~Shape() {
-    //cout << "Shape::Destructor" << endl;
+Shape::~Shape() 
+{
+
 }
 
-void Shape::buildProperties(vector<char*>& name, vector<char*>& value) {
+void Shape::buildProperties(vector<char*> name, vector<char*> value) 
+{
     string temp;
-    for (int i = 0; i < name.size(); ++i) {
+    for (int i = 0; i < name.size(); ++i) 
+    {
         temp = name[i];
         if (temp == "type-name")
         {
             this->typeName = value[i];
         }
-        else if (temp == "stroke") {
+        else if (temp == "stroke") 
+        {
             string stroke = value[i];
-            if (stroke == "none") {
+            if (stroke == "none") 
+            {
                 this->flagStroke = 1;
                 this->stroke.setColor("-1, -1, -1");
                 
@@ -39,7 +44,8 @@ void Shape::buildProperties(vector<char*>& name, vector<char*>& value) {
                 continue;
             }
             
-            else {
+            else 
+            {
                 this->flagStroke = 1;
                 this->stroke.setColor(stroke);
                 
@@ -58,9 +64,11 @@ void Shape::buildProperties(vector<char*>& name, vector<char*>& value) {
             this->flagStrokeOpacity = 1;
             this->stroke_opacity = stof(value[i]);
         }
-        else if (temp == "fill") {
+        else if (temp == "fill") 
+        {
             string fill = value[i];
-            if (fill == "none") {
+            if (fill == "none") 
+            {
                 this->flagFill = 1;
                 this->fill.setColor("-1, -1, -1");
 
@@ -68,23 +76,25 @@ void Shape::buildProperties(vector<char*>& name, vector<char*>& value) {
                 this->fill_opacity = 0;
                 continue;
             }
-
-            else {
+            else 
+            {
                 this->flagFill = 1;
                 this->fill.setColor(fill);
             }
         }
-        else if (temp == "fill-opacity") {
+        else if (temp == "fill-opacity") 
+        {
             this->flagFillOpacity = 1;
             this->fill_opacity = stof(value[i]);
         }
-        else if (temp == "style") {
+        else if (temp == "style") 
+        {
             string val = value[i];
             this->style = val;
 
             int posStartVal;
             int posEndVal;
-            while(val.find(":") != string::npos)
+            while (val.find(":") != string::npos)
             {        
                 while(val[0] == ' ')
                     val.erase(0,1);
@@ -103,25 +113,24 @@ void Shape::buildProperties(vector<char*>& name, vector<char*>& value) {
                 vector<char> charVectorName(styleName.begin(), styleName.end());
                 charVectorName.push_back('\0');
                 char* namePtr = new char[charVectorName.size()];  
-                strcpy(namePtr, charVectorName.data());           
+                strcpy_s(namePtr, charVectorName.size(), charVectorName.data());           
                 name.push_back(namePtr);
-
                 vector<char> charVectorValue(styleVal.begin(), styleVal.end());
                 charVectorValue.push_back('\0');
                 char* valuePtr = new char[charVectorValue.size()];  
-                strcpy(valuePtr, charVectorValue.data());           
+                strcpy_s(valuePtr, charVectorName.size(), charVectorValue.data());
                 value.push_back(valuePtr);
 
-                if(posEndVal == val.length())
+                if (posEndVal == val.length())
                     val.erase(0, posEndVal);
                 else
                     val.erase(0, posEndVal + 1);
             }
         }
-        else if (temp == "transform") {
+        else if (temp == "transform") 
+        {
             this->flagTransform = 1;
             this->transform.push_back(value[i]);
-
             this->convertTransform(value[i]);
             this->findOrderTransform(value[i]);
         }
@@ -131,7 +140,6 @@ void Shape::buildProperties(vector<char*>& name, vector<char*>& value) {
 void Shape::findOrderTransform(string transform)
 {
     int* TranslateRotateScale = new int[3];
-
     int posTranslate = transform.find("translate");
     int posRotate = transform.find("rotate");
     int posScale = transform.find("scale");
@@ -189,14 +197,16 @@ void Shape::findOrderTransform(string transform)
     this->order_of_TranslateRotateScale.push_back(TranslateRotateScale);
 }
 
-void Shape::convertTransform(string str) {
+void Shape::convertTransform(string str) 
+{
     this->translate.push_back(Point2D(0, 0));
     this->rotateAngle.push_back(0);
     this->scalePoint.push_back(Point2D(1, 1));
 
     string value;
     int posStart = 0, posEnd = 0;
-    if (str.find("translate") != string::npos) {
+    if (str.find("translate") != string::npos) 
+    {
         posStart = str.find("translate");
         posEnd = str.find(')', posStart);
         value = str.substr(posStart + 10, posEnd - 10);
@@ -204,13 +214,15 @@ void Shape::convertTransform(string str) {
         this->translate[this->translate.size() - 1] = *temp;
         delete temp;
     }
-    if (str.find("rotate") != string::npos) {
+    if (str.find("rotate") != string::npos) 
+    {
         posStart = str.find("rotate");
         posEnd = str.find(')', posStart);
         value = str.substr(posStart + 7, posEnd - 7);
         this->rotateAngle[this->rotateAngle.size() - 1] = stof(value);
     }
-    if (str.find("scale") != string::npos) {
+    if (str.find("scale") != string::npos) 
+    {
         posStart = str.find("scale");
         posEnd = str.find(')', posStart);
         value = str.substr(posStart + 6, posEnd - 6);
@@ -220,9 +232,11 @@ void Shape::convertTransform(string str) {
     }
 }
 
-void Shape::print() {
+void Shape::print() 
+{
     cout << "Properties flag: ";
-    cout << this->flagStroke << " " << this->flagStrokeWidth << " " << this->flagStrokeOpacity << " " << this->flagFill << " " << this->flagFillOpacity << " " << this->flagTransform;
+    cout << this->flagStroke << " " << this->flagStrokeWidth << " " << this->flagStrokeOpacity << " " 
+        << this->flagFill << " " << this->flagFillOpacity << " " << this->flagTransform;
     cout << "(fill-opacity: " << this->fill_opacity << "), (fill: ";
     this->fill.print();
     cout << "), (stroke: ";
@@ -233,7 +247,8 @@ void Shape::print() {
         cout << "No. " << i << this->transform[i] << " ";
 }
 
-void Shape::setStroke(ColorSVG stroke) {
+void Shape::setStroke(ColorSVG stroke) 
+{
     this->flagStroke = 1;
     this->stroke = stroke;
     
@@ -241,22 +256,26 @@ void Shape::setStroke(ColorSVG stroke) {
         this->stroke_width = 1;
 }
 
-void Shape::setStrokeWidth(float strokeWidth) {
+void Shape::setStrokeWidth(float strokeWidth) 
+{
     this->flagStrokeWidth = 1;
     this->stroke_width = strokeWidth;
 }
 
-void Shape::setStrokeOpacity(double strokeOpacity) {
+void Shape::setStrokeOpacity(double strokeOpacity) 
+{
     this->flagStrokeOpacity = 1;
     this->stroke_opacity = strokeOpacity;
 }
 
-void Shape::setFill(ColorSVG fill) {
+void Shape::setFill(ColorSVG fill) 
+{
     this->flagFill = 1;
     this->fill = fill;
 }
 
-void Shape::setFillOpacity(double fillOpacity) {
+void Shape::setFillOpacity(double fillOpacity) 
+{
     this->flagFillOpacity = 1;
     this->fill_opacity = fillOpacity;
 }
@@ -264,6 +283,7 @@ void Shape::setFillOpacity(double fillOpacity) {
 void Shape::setTransform(vector<string> transform, vector<Point2D> translate, vector<float> rotateAngle, vector<Point2D> scalePoint, vector<int*> order_of_TranslateRotateScale) 
 {
     this->flagTransform = 1;
+
     for (int i = 0; i < transform.size(); ++i)
     {
         this->transform.push_back(transform[i]);
@@ -279,19 +299,23 @@ string Shape::getTypeName()
     return this->typeName;
 }
 
-float Shape::getCoordinateX() {
+float Shape::getCoordinateX() 
+{
     return this->coordinate.getX();
 }
 
-float Shape::getCoordinateY() {
+float Shape::getCoordinateY() 
+{
     return this->coordinate.getY();
 }
 
-ColorSVG Shape::getStroke() {
+ColorSVG Shape::getStroke() 
+{
     return this->stroke;
 }
 
-ColorSVG Shape::getFill() {
+ColorSVG Shape::getFill() 
+{
     return this->fill;
 }
 
@@ -300,40 +324,49 @@ bool Shape::getFlagStroke()
     return this->flagStroke;
 }
 
-bool Shape::getFlagStrokeWidth() {
+bool Shape::getFlagStrokeWidth() 
+{
     return this->flagStrokeWidth;
 }
 
-bool Shape::getFlagStrokeOpacity() {
+bool Shape::getFlagStrokeOpacity() 
+{
     return this->flagStrokeOpacity;
 }
 
-bool Shape::getFlagFill() {
+bool Shape::getFlagFill() 
+{
     return this->flagFill;
 }
 
-bool Shape::getFlagFillOpacity() {
+bool Shape::getFlagFillOpacity() 
+{
     return this->flagFillOpacity;
 }
 
-bool Shape::getFlagTransform() {
+bool Shape::getFlagTransform() 
+{
     return this->flagTransform;
 }
 
 
-float Shape::getStrokeWidth() {
+float Shape::getStrokeWidth() 
+{
     return this->stroke_width;
 }
 
-double Shape::getFillOpacity() {
+double Shape::getFillOpacity() 
+{
     return this->fill_opacity;
 }
 
-double Shape::getStrokeOpacity() {
+double Shape::getStrokeOpacity() 
+{
     return this->stroke_opacity;
 }
 
-vector<string> Shape::getTransform() {
+vector<string> Shape::getTransform() 
+{
     return this->transform;
 }
 

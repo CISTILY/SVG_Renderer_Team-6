@@ -2,12 +2,14 @@
 
 using namespace std;
 
-LineSVG::LineSVG() {
-    //cout << "Line::Constructor" << endl;
+LineSVG::LineSVG() 
+{
+
 }
 
-LineSVG::~LineSVG() {
-    //cout << "Line::Destructor" << endl;
+LineSVG::~LineSVG() 
+{
+
 }
 
 Point2D LineSVG::getEnd()
@@ -15,9 +17,11 @@ Point2D LineSVG::getEnd()
     return this->end;
 }
 
-void LineSVG::buildShape(vector<char*> name, vector<char*> value) {
+void LineSVG::buildShape(vector<char*> name, vector<char*> value) 
+{
     string temp;
-    for (int i = 0; i < name.size(); ++i) {
+    for (int i = 0; i < name.size(); ++i) 
+    {
         temp = name[i];
         if (temp == "x1")
             this->coordinate.setX(stof(value[i]));
@@ -30,7 +34,8 @@ void LineSVG::buildShape(vector<char*> name, vector<char*> value) {
     }
 }
 
-void LineSVG::print() {
+void LineSVG::print() 
+{
     this->coordinate.print();
     cout << " ";
     this->end.print();

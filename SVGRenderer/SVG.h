@@ -11,7 +11,8 @@
 using namespace std;
 using namespace rapidxml;
 
-class SVGReader {
+class SVGReader 
+{
 private:
     char* nodeName;
     vector<char*> PropsAttrName;
@@ -20,6 +21,7 @@ private:
     vector<char*> OtherAttrValue;
 
     static vector<string> content;
+
 public:
     // Constructor
     SVGReader();
@@ -38,6 +40,5 @@ public:
     vector<char*> getOtherAttrValue();
     vector<char*> getPropsAttrName();
     vector<char*> getPropsAttrValue();
-
     static vector<string> getContent();
 };

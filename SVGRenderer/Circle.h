@@ -4,7 +4,8 @@
 
 using namespace std;
 
-class CircleSVG : public EllipseSVG {
+class CircleSVG : public EllipseSVG 
+{
 public:
     // Constructor
     CircleSVG();

@@ -25,14 +25,22 @@ private:
     bool flagRatio;
 
 public:
+    // Constructor
     ScreenSVG();
   
+    // Destructor
     ~ScreenSVG();
     
-    void buildScreen(vector<char*>, vector<char*>);
+    // Parsing Screen from xml node
     void readScreen(xml_node<>* node);
+
+    // Build data for screen
+    void buildScreen(vector<char*>, vector<char*>);
+
+    // Print data
     void printScreen();
 
+    // Getters
     bool getFlagViewBox();
     bool getFlagRatio();
     Point2D getSize();

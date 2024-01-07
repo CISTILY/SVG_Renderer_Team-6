@@ -8,7 +8,8 @@
 
 using namespace std;
 
-class Shape {
+class Shape 
+{
 protected:
     string typeName;
     Point2D coordinate;
@@ -41,7 +42,7 @@ public:
     virtual ~Shape();
 
     // Setters
-    void buildProperties(vector<char*>&, vector<char*>&);
+    void buildProperties(vector<char*>, vector<char*>);
     void setStroke(ColorSVG);
     void setStrokeWidth(float);
     void setStrokeOpacity(double);
@@ -70,6 +71,7 @@ public:
     double getFillOpacity();
     ColorSVG getStroke();
     ColorSVG getFill();
+
     vector<string> getTransform();
     vector<Point2D>getTranslate();
     vector<float>getRotateAngle();
@@ -78,5 +80,7 @@ public:
 
     // Print out attributes
     virtual void print();
+
+    // pure virtual function to parse Shape from xml node
     virtual void buildShape(vector<char*>, vector<char*>) = 0;
 };

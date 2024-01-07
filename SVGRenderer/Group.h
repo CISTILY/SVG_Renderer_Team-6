@@ -4,9 +4,11 @@
 
 class ShapeData;
 
-class GroupSVG : public Shape {
+class GroupSVG : public Shape 
+{
 private:
 	vector<Shape*> shapes;
+
 public:
 	// Constructor
 	GroupSVG();

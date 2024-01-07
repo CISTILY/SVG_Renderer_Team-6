@@ -2,7 +2,8 @@
 
 #include "Shape.h"
 
-class TextSVG : public Shape {
+class TextSVG : public Shape 
+{
 private:
     int font_size;
     float dx, dy;

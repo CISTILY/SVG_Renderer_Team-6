@@ -2,8 +2,9 @@
 
 using namespace std;
 
-PolylineSVG::PolylineSVG() {
-    //cout << "Polyline::Default Constructor" << endl;
+PolylineSVG::PolylineSVG() 
+{
+
 }
 
 vector<Point2D> PolylineSVG::getPoints()
@@ -11,35 +12,44 @@ vector<Point2D> PolylineSVG::getPoints()
     return this->points;
 }
 
-void PolylineSVG::buildShape(vector<char*> name, vector<char*> value) {
+void PolylineSVG::buildShape(vector<char*> name, vector<char*> value) 
+{
     string temp;
     this->points.clear();
-    for (int i = 0; i < name.size(); ++i) {
+    for (int i = 0; i < name.size(); ++i) 
+    {
         temp = name[i];
-        if (temp == "points") {
-            string point = value[i];;
+        if (temp == "points") 
+        {
+            string point = value[i];
 
-            while (!isdigit(point[point.length() - 1]))
+            while (!isdigit(point[point.length() - 1])) 
+            {
                 point.erase(point.length() - 1, 1);
+            }
 
-            while (true) {
+            while (true) 
+            {
                 string dup;
                 int flag = 0, pos = 0;
 
-                for (int j = 0; j < point.length(); ++j)
+                for (int j = 0; j < point.length(); ++j) 
+                {
                     if (point[j] == ' ' || point[j] == ',')
                     {
-                        if(flag == 0)
+                        if (flag == 0)
                             ++flag;
                         else
                         {
                             pos = j;
                             break;
                         }
-                    
+
                     }
+                }
                         
-                if (pos == 0) {
+                if (pos == 0) 
+                {
                     Point2D a(point);
                     this->points.push_back(a);
                     break;
@@ -55,13 +65,16 @@ void PolylineSVG::buildShape(vector<char*> name, vector<char*> value) {
     }
 }
 
-PolylineSVG::~PolylineSVG() {
-    //cout << "Polyline::Destructor" << endl;
+PolylineSVG::~PolylineSVG() 
+{
+
 }
 
-void PolylineSVG::print() {
+void PolylineSVG::print() 
+{
     
-    for (int i = 0; i < this->points.size(); ++i) {
+    for (int i = 0; i < this->points.size(); ++i) 
+    {
         this->points[i].print();
         cout << "; ";
     }
