@@ -151,6 +151,7 @@ PathGradientBrush* Draw::createRadialGradient(RadialGradientSVG rgSVG)
     return pthGrBrush;
 }
 
+
 VOID Draw::DrawCircle(Graphics& graphics, CircleSVG circle, Def gradient)
 {
     int alreadyHasBrush = 0;
@@ -736,12 +737,20 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
     {
         if (path.getFill().getURL() == gradient.getRadialGradient()[i].getID() && alreadyHasBrush == 0) 
         {
+            Region* region = new Region(graphicsPath);
+            GraphicsPath fill;
+            fill.AddEllipse(Rect(gradient.getRadialGradient()[i].getPoint1().getX() - gradient.getRadialGradient()[i].getRadius(), gradient.getRadialGradient()[i].getPoint1().getY() - gradient.getRadialGradient()[i].getRadius(), gradient.getRadialGradient()[i].getRadius() * 2, gradient.getRadialGradient()[i].getRadius() * 2));
+            Matrix matrix(gradient.getRadialGradient()[i].getMatrix()[0], gradient.getRadialGradient()[i].getMatrix()[1], gradient.getRadialGradient()[i].getMatrix()[2], gradient.getRadialGradient()[i].getMatrix()[3], gradient.getRadialGradient()[i].getMatrix()[4], gradient.getRadialGradient()[i].getMatrix()[5]);
+            fill.Transform(&matrix);
+            region->Exclude(&fill);
+
             int nColor = gradient.getRadialGradient()[i].getStops().size();
             SolidBrush brush(Color(round(255 * gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopOpacity()),
                 gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getRed(),
                 gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getGreen(),
                 gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getBlue()));
-            graphics.FillPath(&brush, graphicsPath);
+            //graphics.FillPath(&brush, graphicsPath);
+            graphics.FillRegion(&brush, region);
             graphics.FillPath(&*Draw::createRadialGradient(gradient.getRadialGradient()[i]), graphicsPath);
             alreadyHasBrush = 1;
             break;
