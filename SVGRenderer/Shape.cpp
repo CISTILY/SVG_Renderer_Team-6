@@ -118,13 +118,14 @@ void Shape::buildProperties(vector<char*> name, vector<char*> value)
                 vector<char> charVectorValue(styleVal.begin(), styleVal.end());
                 charVectorValue.push_back('\0');
                 char* valuePtr = new char[charVectorValue.size()];  
-                strcpy_s(valuePtr, charVectorName.size(), charVectorValue.data());
+                strcpy_s(valuePtr, charVectorValue.size(), charVectorValue.data());
                 value.push_back(valuePtr);
 
                 if (posEndVal == val.length())
                     val.erase(0, posEndVal);
                 else
                     val.erase(0, posEndVal + 1);
+                
             }
         }
         else if (temp == "transform") 

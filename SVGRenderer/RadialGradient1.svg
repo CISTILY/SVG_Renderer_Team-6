@@ -1,8 +1,8 @@
-<svg height="300" width="600" xmlns="http://www.w3.org/2000/svg">
+<svg height="300" width="600" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
         <radialGradient id="myRG" cx="0.5" cy="0.5" r="0.9" fx="0.5" fy="0.5" spreadMethod="pad">
-            <stop offset="0%"   stop-color="BISQUE" />  
-            <stop offset="60%" stop-color="CADETBLUE" />
+            <stop offset="0"   stop-color="BISQUE" />  
+            <stop offset="1"   stop-color="CADETBLUE" />
         </radialGradient>
     </defs>
     <ellipse cx="300" cy="170" rx="165" ry="55" fill="url(#myRG)" />
