@@ -390,8 +390,6 @@ VOID Draw::DrawText(Graphics& graphics, TextSVG text, Def gradient)
         }
     }
 
-    cout << alreadyHasBrush;
-
     if (alreadyHasBrush == 0) 
     {
         SolidBrush brush(Color(round(255 * text.getFillOpacity()), text.getFill().getRed(), text.getFill().getGreen(), text.getFill().getBlue()));
@@ -756,7 +754,7 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
             break;
         }
     }
-    cout << alreadyHasBrush;
+
     if (alreadyHasBrush == 0) 
     {
         SolidBrush brush(Color(round(255 * path.getFillOpacity()), path.getFill().getRed(), path.getFill().getGreen(), path.getFill().getBlue()));

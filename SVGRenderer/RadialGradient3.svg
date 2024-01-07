@@ -9,9 +9,9 @@
     <defs>
       <radialGradient id="MyGradient" gradientUnits="userSpaceOnUse"
                       cx="400" cy="200" r="300" fx="400" fy="200">
-        <stop offset="0%" stop-color="red" />
-        <stop offset="50%" stop-color="blue" />
-        <stop offset="100%" stop-color="red" />
+        <stop offset="0" stop-color="red" />
+        <stop offset="0.5" stop-color="blue" />
+        <stop offset="1" stop-color="red" />
       </radialGradient>
     </defs>
 

@@ -38,7 +38,7 @@ void SVGReader::PropertiesBuilder(char* attrName, char* attrVal)
             PropsAttrValue.push_back(attrVal);
         }
     }
-    else if (temp == "fill-opacity" || temp == "fill" || temp == "stroke-opacity" || temp == "stroke-width" || temp == "stroke" || temp == "transform") 
+    else if (temp == "fill-opacity" || temp == "fill" || temp == "stroke-opacity" || temp == "stroke-width" || temp == "stroke" || temp == "transform" || temp == "style")
     {
         PropsAttrName.push_back(attrName);
         PropsAttrValue.push_back(attrVal);
