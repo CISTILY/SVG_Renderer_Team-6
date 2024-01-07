@@ -749,7 +749,7 @@ VOID Draw::DrawPath(Graphics& graphics, PathSVG path, Def gradient)
                 gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getRed(),
                 gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getGreen(),
                 gradient.getRadialGradient()[i].getStops()[nColor - 1].getStopColor().getBlue()));
-            //graphics.FillPath(&brush, graphicsPath);
+
             graphics.FillRegion(&brush, region);
             graphics.FillPath(&*Draw::createRadialGradient(gradient.getRadialGradient()[i]), graphicsPath);
             alreadyHasBrush = 1;

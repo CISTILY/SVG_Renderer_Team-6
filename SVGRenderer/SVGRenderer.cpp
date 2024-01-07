@@ -71,8 +71,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
         }
     }
 
-    //filename = ConvertLPCWSTRToString(szArglist[1]);
-    filename = "Firefox_logo,_2019.svg";
+    filename = ConvertLPCWSTRToString(szArglist[1]);
 
     ShapeData* data = ShapeData::getInstance();
     data->readSVG(filename);
