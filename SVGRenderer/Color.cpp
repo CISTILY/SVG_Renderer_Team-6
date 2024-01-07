@@ -10,45 +10,50 @@ vector<string> ColorSVG::basic_color_value = { "rgb(240, 248, 255)", "rgb(250, 2
 "rgb(211, 211, 211)", "rgb(255, 182, 193)", "rgb(255, 160, 122)", "rgb(32, 178, 170)", "rgb(135, 206, 250)", "rgb(119, 136, 153)", "rgb(119, 136, 153)", "rgb(176, 196, 222)", "rgb(255, 255, 224)", "rgb(0, 255, 0)", "rgb(50, 205, 50)", "rgb(250, 240, 230)", "rgb(255, 0, 255)", "rgb(128, 0, 0)", "rgb(102, 205, 170)", "rgb(0, 0, 205)", "rgb(186, 85, 211)", "rgb(147, 112, 219)", "rgb(60, 179, 113)", "rgb(123, 104, 238)", "rgb(0, 250, 154)", "rgb(72, 209, 204)", "rgb(199, 21, 133)", "rgb(25, 25, 112)", "rgb(245, 255, 250)", "rgb(255, 228, 225)", "rgb(255, 228, 181)", "rgb(255, 222, 173)", "rgb(0, 0, 128)", "rgb(253, 245, 230)", "rgb(128, 128, 0)", "rgb(107, 142, 35)", "rgb(255, 165, 0)", "rgb(255, 69, 0)", "rgb(218, 112, 214)", "rgb(238, 232, 170)", "rgb(152, 251, 152)", "rgb(175, 238, 238)", "rgb(219, 112, 147)", "rgb(255, 239, 213)", "rgb(255, 218, 185)", "rgb(205, 133, 63)", "rgb(255, 192, 203)", "rgb(221, 160, 221)", "rgb(176, 224, 230)", "rgb(128, 0, 128)", "rgb(255, 0, 0)", "rgb(188, 143, 143)", "rgb(65, 105, 225)", "rgb(139, 69, 19)", "rgb(250, 128, 114)", "rgb(244, 164, 96)", "rgb(46, 139, 87)", "rgb(255, 245, 238)", "rgb(160, 82, 45)", "rgb(192, 192, 192)", "rgb(135, 206, 235)", "rgb(106, 90, 205)", "rgb(112, 128, 144)", "rgb(112, 128, 144)", "rgb(255, 250, 250)", "rgb(0, 255, 127)", "rgb(70, 130, 180)", "rgb(210, 180, 140)", "rgb(0, 128, 128)", "rgb(216, 191, 216)", "rgb(255, 99, 71)", "rgb(64, 224, 208)", "rgb(238, 130, 238)", "rgb(245, 222, 179)", "rgb(255, 255, 255)", "rgb(245, 245, 245)", "rgb(255, 255, 0)", "rgb(154, 205, 50)"
 };
 
-ColorSVG::ColorSVG() {
+ColorSVG::ColorSVG() 
+{
     red = blue = green = 0;
     this->flagURL = 0;
-
-    //cout << "Color::Default Constructor" << endl;
 }
 
 ColorSVG::~ColorSVG()
 {
-    //cout << "Color::Destructor" << endl;
+
 }
-int ColorSVG::HexadecimalToDecimal(string hex) {
+
+int ColorSVG::HexadecimalToDecimal(string hex) 
+{
     int decimalValue = 0;
 
     // Iterate through each character in the hexadecimal string
-    for (int i = hex.size() - 1; i >= 0; --i) {
+    for (int i = hex.size() - 1; i >= 0; --i) 
+    {
         char digit = hex[i];
 
         // Convert hexadecimal digit to decimal equivalent
         int digitValue;
-        if (isdigit(digit)) {
+        if (isdigit(digit)) 
+        {
             digitValue = digit - '0';
         }
-        else {
+        else 
+        {
             digitValue = toupper(digit) - 'A' + 10;
         }
 
         // Update the decimal value
         decimalValue += digitValue * pow(16, hex.size() - 1 - i);
     }
-
     return decimalValue;
 }
 
-void ColorSVG::setColor(string s) {
+void ColorSVG::setColor(string s) 
+{
 
     string temp = s;
 
-    if (temp[0] == '#') {
+    if (temp[0] == '#') 
+    {
         if (temp.length() <= 4)
         {
             temp.insert(2, 1, temp[1]);
@@ -61,7 +66,8 @@ void ColorSVG::setColor(string s) {
         this->green = HexadecimalToDecimal(temp.substr(2, 2));
         this->blue = HexadecimalToDecimal(temp.substr(4, 2));
     }
-    else if (temp.find("rgb") != string::npos) {
+    else if (temp.find("rgb") != string::npos) 
+    {
         int tempColor = 0;
 
         int pos = s.find(',');
@@ -95,7 +101,8 @@ void ColorSVG::setColor(string s) {
     }
     else
     {
-        for (auto& x : temp) {
+        for (auto& x : temp) 
+        {
             x = tolower(x);
         }
 
@@ -109,26 +116,31 @@ void ColorSVG::setColor(string s) {
     }
 }
 
-bool ColorSVG::operator!= (const ColorSVG& other) {
+bool ColorSVG::operator!= (const ColorSVG& other) 
+{
     return !(this->red == other.red && this->green == other.green && this->blue == other.blue);
 } 
 
-void ColorSVG::print() {
+void ColorSVG::print() 
+{
     if (this->flagURL == false)
         cout << this->red << ", " << this->green << ", " << this->blue;
     else
         cout << this->url;
 }
 
-int ColorSVG::getRed() {
+int ColorSVG::getRed() 
+{
     return this->red;
 }
 
-int ColorSVG::getBlue() {
+int ColorSVG::getBlue() 
+{
     return this->blue;
 }
 
-int ColorSVG::getGreen() {
+int ColorSVG::getGreen() 
+{
     return this->green;
 }
 

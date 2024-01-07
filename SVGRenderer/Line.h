@@ -3,9 +3,11 @@
 
 using namespace std;
 
-class LineSVG : public Shape {
+class LineSVG : public Shape 
+{
 private:
     Point2D end;
+
 public:
     // Constructor
     LineSVG();

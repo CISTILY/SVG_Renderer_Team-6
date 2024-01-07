@@ -2,12 +2,12 @@
 
 GroupSVG::GroupSVG()
 {
-	//cout << "Group::Default Constructor" << endl;
+
 }
 
 GroupSVG::~GroupSVG()
 {
-	//cout << "Group::Destructor" << endl;
+
 }
 
 vector<Shape*> GroupSVG::getVectorShape()

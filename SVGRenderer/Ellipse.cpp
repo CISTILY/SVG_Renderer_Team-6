@@ -2,20 +2,22 @@
 
 using namespace std;
 
-EllipseSVG::EllipseSVG() {
+EllipseSVG::EllipseSVG() 
+{
     this->rx = 0;
     this->ry = 0;
-
-    //cout << "Ellipse::Default Constructor" << endl;
 }
 
-EllipseSVG::~EllipseSVG() {
-    //cout << "Ellipse::Destructor" << endl;
+EllipseSVG::~EllipseSVG() 
+{
+
 }
 
-void EllipseSVG::buildShape(vector<char*> name, vector<char*> value) {
+void EllipseSVG::buildShape(vector<char*> name, vector<char*> value) 
+{
     string temp;
-    for (int i = 0; i < name.size(); ++i) {
+    for (int i = 0; i < name.size(); ++i) 
+    {
         temp = name[i];
         if (temp == "cx")
             this->coordinate.setX(stof(value[i]));
@@ -28,11 +30,13 @@ void EllipseSVG::buildShape(vector<char*> name, vector<char*> value) {
     }
 }
 
-void EllipseSVG::setRadiusX(float x) {
+void EllipseSVG::setRadiusX(float x) 
+{
     this->rx = x;
 }
 
-void EllipseSVG::setRadiusY(float y) {
+void EllipseSVG::setRadiusY(float y) 
+{
     this->ry = y;
 }
 
@@ -46,7 +50,8 @@ float EllipseSVG::getRadiusY()
     return this->ry;
 }
 
-void EllipseSVG::print() {
+void EllipseSVG::print() 
+{
     this->coordinate.print();
     cout << " " << this->rx << " " << this->ry << " ";
     Shape::print();

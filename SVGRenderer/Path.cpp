@@ -2,36 +2,46 @@
 
 using namespace std;
 
-PathSVG::PathSVG() {
-	//cout << "Path::Constructor" << endl;
+PathSVG::PathSVG() 
+{
+
 }
 
-PathSVG::~PathSVG() {
-	//cout << "Path::Destructor" << endl;
+PathSVG::~PathSVG() 
+{
+
 }
 
-void PathSVG::setCommand(vector<char> command) {
+void PathSVG::setCommand(vector<char> command) 
+{
 	this->command = command;
 }
 
-void PathSVG::setPoints(vector<Point2D> point) {
+void PathSVG::setPoints(vector<Point2D> point) 
+{
 	this->Points = point;
 }
 
-vector<char> PathSVG::getCommand() {
+vector<char> PathSVG::getCommand() 
+{
 	return this->command;
 }
 
-vector<Point2D> PathSVG::getPoints() {
+vector<Point2D> PathSVG::getPoints() 
+{
 	return this->Points;
 }
 
-void PathSVG::replaceOnePoint(Point2D temp, int j) {
+void PathSVG::replaceOnePoint(Point2D temp, int j) 
+{
 	for (int i = 0; i < this->Points.size(); ++i)
-		if (i == j) {
+	{
+		if (i == j)
+		{
 			this->Points[j].setX(temp.getX());
 			this->Points[j].setY(temp.getY());
 		}
+	}
 }
 
 void PathSVG::buildShape(vector<char*> name, vector<char*> value)
@@ -47,12 +57,14 @@ void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 
 			for (int j = 0; j < point.length(); ++j)
 			{
-				if(j > 0 && point[j] == '-')
+				if (j > 0 && point[j] == '-') 
+				{
 					if (point[j - 1] >= '0' && point[j - 1] <= '9')
 					{
 						point.insert(j, " ");
 						++j;
 					}
+				}
 			}
 
 			if (point.find('.') != string::npos)
@@ -62,9 +74,10 @@ void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 				int k;
 				while (posDotEnd != string::npos)
 				{
-					for (k = posDotStart + 1; k < posDotEnd; ++k)
-						if (!isdigit(point[k]))
+					for (k = posDotStart + 1; k < posDotEnd; ++k) {
+						if (!isdigit(point[k])) 
 							break;
+					}
 
 					if (k == posDotEnd)
 					{
@@ -185,7 +198,6 @@ void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 							break;
 						}
 					}
-					
 					string addPhi = temp.substr(phiStart, phiEnd - phiStart);
 					temp.insert(phiEnd, addPhi);
 				}
@@ -225,12 +237,15 @@ void PathSVG::buildShape(vector<char*> name, vector<char*> value)
 	}
 }
 
-void PathSVG::print() {
-	for (int i = 0; i < this->command.size(); ++i) {
+void PathSVG::print() 
+{
+	for (int i = 0; i < this->command.size(); ++i) 
+	{
 		cout << this->command[i] << " ";
 	}
 	cout << endl;
-	for (int j = 0; j < this->Points.size(); ++j) {
+	for (int j = 0; j < this->Points.size(); ++j) 
+	{
 		this->Points[j].print();
 		cout << "; ";
 	}

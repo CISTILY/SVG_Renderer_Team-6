@@ -4,10 +4,12 @@
 
 using namespace std;
 
-class EllipseSVG : public Shape {
+class EllipseSVG : public Shape 
+{
 protected:
     float rx;
     float ry;
+
 public:
     // Constructor
     EllipseSVG();

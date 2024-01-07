@@ -3,9 +3,11 @@
 
 using namespace std;
 
-class PolylineSVG : public Shape {
+class PolylineSVG : public Shape 
+{
 protected:
     vector<Point2D> points;
+
 public:
     // Constructor
     PolylineSVG();

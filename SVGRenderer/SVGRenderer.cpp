@@ -51,8 +51,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
     GdiplusStartupInput gdiplusStartupInput;
     ULONG_PTR           gdiplusToken;
 
-    ////////////////////////////////////////////////////
-
     string filename; 
     LPWSTR* szArglist;
     int nArgs;
@@ -64,20 +62,22 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
     {
         wprintf(L"CommandLineToArgvW failed\n");
     }
-    else for (k = 0; k < nArgs; k++) {
-        wcout << "line " << k << ": ";
-        wcout << szArglist[k] << endl;
+    else 
+    {
+        for (k = 0; k < nArgs; k++)
+        {
+            wcout << "line " << k << ": ";
+            wcout << szArglist[k] << endl;
+        }
     }
 
-    filename = ConvertLPCWSTRToString(szArglist[1]);
-    //filename = "chrome-logo.svg";
+    //filename = ConvertLPCWSTRToString(szArglist[1]);
+    filename = "svg-01.svg";
 
     ShapeData* data = ShapeData::getInstance();
     data->readSVG(filename);
 
     LocalFree(szArglist);
-
-    ////////////////////////////////////////////////////
 
     // Initialize GDI+.
     GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
@@ -101,8 +101,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
         WS_OVERLAPPEDWINDOW,      // window style
         CW_USEDEFAULT,            // initial x position
         CW_USEDEFAULT,            // initial y position
-        data->getScreen().getSize().getX(),            // initial x size
-        data->getScreen().getSize().getY(),            // initial y size
+        data->getScreen().getSize().getX(),   // initial x size
+        data->getScreen().getSize().getY(),   // initial y size
         NULL,                     // parent window handle
         NULL,                     // window menu handle
         hInstance,                // program instance handle
@@ -115,20 +115,18 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, PSTR, INT iCmdShow)
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
-
     GdiplusShutdown(gdiplusToken);
     return msg.wParam;
-}  // WinMain
+}
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
-    WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     HDC          hdc;
     PAINTSTRUCT  ps;
 
     ShapeData* data = ShapeData::getInstance();
+
     static Point2D scale(1.0, 1.0);
-    
     static float xPos = 0;
     static float yPos = 0;
     static int angle = 0;
@@ -158,18 +156,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
                 if (screen.getAspect() == "slice")
                 {
                     if (width > height)
-                    {
                         scale.setY(scale.getX());
-                    }
                     else if (width < height)
-                    {
                         scale.setX(scale.getY());
-                    }
                 }
-                else if (screen.getAspect() == "meet") {
+                else if (screen.getAspect() == "meet") 
+                {
                     if (scale.getX() > scale.getY())
                         scale.setX(scale.getY());
-                    else scale.setY(scale.getX());
+                    else 
+                        scale.setY(scale.getX());
                 }
 
                 string xRatio = screen.getXRatio();
@@ -183,10 +179,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
                 else if (yRatio == "Max")
                     yPos = abs(static_cast<float>(height) - screen.getView().getY() * scale.getY());
             }
-            else {
+            else 
+            {
                 if (scale.getX() > scale.getY())
                     scale.setX(scale.getY());
-                else scale.setY(scale.getX());
+                else 
+                    scale.setY(scale.getX());
 
                 xPos = -data->getScreen().getViewPosition().getX() * scale.getX();
                 yPos = -data->getScreen().getViewPosition().getY() * scale.getY();
@@ -228,10 +226,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     case WM_MOUSEWHEEL:
     {
         int delta = GET_WHEEL_DELTA_WPARAM(wParam);
-        if (delta > 0) {
+        if (delta > 0) 
+        {
             zoom *= 1.1;
         }
-        else {
+        else 
+        {
             zoom *= 0.9;
         }
         InvalidateRect(hWnd, NULL, TRUE);

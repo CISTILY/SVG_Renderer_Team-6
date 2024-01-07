@@ -6,7 +6,8 @@
 
 using namespace std;
 
-class ColorSVG {
+class ColorSVG 
+{
 private:
 	bool flagURL;
 	string url;
@@ -33,6 +34,7 @@ public:
 
 	// Print data of color
 	void print();
+
 	int HexadecimalToDecimal(string);
 	bool operator!= (const ColorSVG&);
 };

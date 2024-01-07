@@ -22,7 +22,8 @@
 using namespace rapidxml;
 using namespace std;
 
-class ShapeData {
+class ShapeData 
+{
 private:
     vector<Shape*> shapesSVG;   
     Def gradients;
@@ -32,6 +33,7 @@ private:
 
     static ShapeData* instance;
     ShapeData();
+
 public:
     // Constructor
     static ShapeData* getInstance();
@@ -47,8 +49,10 @@ public:
     ScreenSVG getScreen();
     Def getDef();
 
-    //void readFile(xml_node<>* node, vector<ShapeData>& data, string, int&);
+    // Parsing file
     void readSVG(string);
     void readFile(xml_node<>* node, vector<Shape*>&, string, int&);
+
+    // Copy transform info and attributes to Shapes in group
     void ReplaceProperties(Shape*);
 };

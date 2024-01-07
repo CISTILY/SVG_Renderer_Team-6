@@ -1,9 +1,11 @@
 #pragma once
 #include "Shape.h"
 
-class RectangleSVG : public Shape {
+class RectangleSVG : public Shape 
+{
 private:
 	float width, height;
+
 public:
 	// Constructor
 	RectangleSVG();
