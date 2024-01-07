@@ -65,23 +65,33 @@ void Draw::transform(Graphics& graphics, Shape* shape) {
     }
 }
 
+
 LinearGradientBrush* Draw::createLinearGradient(LinearGradientSVG lgSVG)
 {
     int n = lgSVG.getStops().size();
 
     Color* colors = new Color[n];
     REAL* pos = new REAL[n];
-    for (int i = 0; i < n; i++)
+
+    colors[0] = Color(255 * lgSVG.getStops()[0].getStopOpacity(), lgSVG.getStops()[0].getStopColor().getRed(), lgSVG.getStops()[0].getStopColor().getGreen(), lgSVG.getStops()[0].getStopColor().getBlue());
+    pos[0] = 0;
+    for (int i = 1; i < n - 1; i++)
     {
         colors[i] = Color(255 * lgSVG.getStops()[i].getStopOpacity(), lgSVG.getStops()[i].getStopColor().getRed(), lgSVG.getStops()[i].getStopColor().getGreen(), lgSVG.getStops()[i].getStopColor().getBlue());
-        pos[i] = (lgSVG.getStops()[i].getOffset() / 100);
+        if (lgSVG.getStops()[i].getOffset() > 1)
+            pos[i] = (lgSVG.getStops()[i].getOffset() / 100);
+        else pos[i] = lgSVG.getStops()[i].getOffset();
     }
+    colors[n - 1] = Color(255 * lgSVG.getStops()[n - 1].getStopOpacity(), lgSVG.getStops()[n - 1].getStopColor().getRed(), lgSVG.getStops()[n - 1].getStopColor().getGreen(), lgSVG.getStops()[n - 1].getStopColor().getBlue());
+    pos[n - 1] = 1;
 
     Point point1(lgSVG.getPoint1().getX(), lgSVG.getPoint1().getY());
     Point point2(lgSVG.getPoint2().getX(), lgSVG.getPoint2().getY());
 
     LinearGradientBrush* brush = new LinearGradientBrush(point1, point2, colors[0], colors[n - 1]);
+    brush->TranslateTransform(lgSVG.getTranslate().getX(), lgSVG.getTranslate().getX());
     brush->SetInterpolationColors(colors, pos, n);
+    brush->SetWrapMode(WrapModeTileFlipXY);
 
     delete[] colors;
     delete[] pos;
@@ -100,14 +110,21 @@ PathGradientBrush* Draw::createRadialGradient(RadialGradientSVG rgSVG)
     path.AddEllipse(rectangle);
     Color* colors = new Color[n];
     REAL* pos = new REAL[n];
-    for (int i = 0; i < n; i++)
+    colors[0] = Color(255 * rgSVG.getStops()[0].getStopOpacity(), rgSVG.getStops()[0].getStopColor().getRed(), rgSVG.getStops()[0].getStopColor().getGreen(), rgSVG.getStops()[0].getStopColor().getBlue());
+    pos[0] = 0;
+    for (int i = 1; i < n - 1; i++)
     {
         colors[i] = Color(255 * rgSVG.getStops()[i].getStopOpacity(), rgSVG.getStops()[i].getStopColor().getRed(), rgSVG.getStops()[i].getStopColor().getGreen(), rgSVG.getStops()[i].getStopColor().getBlue());
-        pos[i] = rgSVG.getStops()[i].getOffset();
+        if (rgSVG.getStops()[i].getOffset() > 1)
+            pos[i] = (rgSVG.getStops()[i].getOffset());
+        else pos[i] = rgSVG.getStops()[i].getOffset();
     }
+    colors[n - 1] = Color(255 * rgSVG.getStops()[n - 1].getStopOpacity(), rgSVG.getStops()[n - 1].getStopColor().getRed(), rgSVG.getStops()[n - 1].getStopColor().getGreen(), rgSVG.getStops()[n - 1].getStopColor().getBlue());
+    pos[n - 1] = 1;
     Matrix matrix(rgSVG.getMatrix()[0], rgSVG.getMatrix()[1], rgSVG.getMatrix()[2], rgSVG.getMatrix()[3], rgSVG.getMatrix()[4], rgSVG.getMatrix()[5]);
 
     PathGradientBrush* pthGrBrush = new PathGradientBrush(&path);
+    pthGrBrush->TranslateTransform(rgSVG.getTranslate().getX(), rgSVG.getTranslate().getY());
     pthGrBrush->SetCenterPoint(center);
     pthGrBrush->SetInterpolationColors(colors, pos, n);
     pthGrBrush->SetSurroundColors(colors, &n);
